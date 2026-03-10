@@ -1,0 +1,19 @@
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
+
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        shinchong: resolve(__dirname, 'shinchong.html'),
+        admin: resolve(__dirname, 'admin.html')
+      }
+    }
+  },
+  server: {
+    port: 3010,
+    strictPort: true,
+    open: true
+  }
+});

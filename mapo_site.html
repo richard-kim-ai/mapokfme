@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마포구 소상공인연합회</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0B6E6E;
+  --teal-dark:#094F4F;
+  --teal-light:#12918F;
+  --teal-xlight:#E6F4F4;
+  --blue:#1565C0;
+  --blue-light:#E8F0FC;
+  --green:#2E7D55;
+  --green-light:#E8F5ED;
+  --amber:#E67E22;
+  --amber-light:#FEF3E2;
+  --red:#C0392B;
+  --white:#fff;
+  --bg:#F5F8F8;
+  --card:#fff;
+  --text:#1A2B2B;
+  --text2:#4A6060;
+  --text3:#7A9090;
+  --border:#D8EAEA;
+  --shadow:0 2px 16px rgba(11,110,110,0.10);
+  --shadow-md:0 4px 28px rgba(11,110,110,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* ───────── TOPBAR ───────── */
+.topbar{background:var(--teal-dark);padding:6px 0;font-size:12px;color:rgba(255,255,255,0.65)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar a{color:rgba(255,255,255,0.65);text-decoration:none}
+.topbar a:hover{color:#fff}
+.topbar-links{display:flex;gap:16px}
+
+/* ───────── HEADER ───────── */
+.site-header{background:#fff;box-shadow:0 2px 12px rgba(11,110,110,0.08);position:sticky;top:0;z-index:200}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--teal),var(--green));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:900;flex-shrink:0}
+.logo-text{line-height:1.2}
+.logo-text .main{font-size:16px;font-weight:900;color:var(--teal-dark);font-family:'Noto Serif KR',serif}
+.logo-text .sub{font-size:11px;color:var(--text3);letter-spacing:0.5px}
+
+/* ───────── NAV ───────── */
+nav{display:flex;align-items:center;gap:4px}
+.nav-item{position:relative}
+.nav-link{display:flex;align-items:center;gap:4px;padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--text2);text-decoration:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;background:none;border:none;font-family:'Noto Sans KR',sans-serif}
+.nav-link:hover,.nav-link.active{color:var(--teal);background:var(--teal-xlight)}
+.nav-link svg{width:14px;height:14px;transition:transform 0.2s}
+.nav-item:hover .nav-link svg{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-md);min-width:180px;padding:6px;z-index:300}
+.nav-item:hover .dropdown{display:block}
+.drop-link{display:block;padding:9px 14px;border-radius:7px;font-size:13.5px;color:var(--text2);text-decoration:none;cursor:pointer;transition:all 0.15s}
+.drop-link:hover{background:var(--teal-xlight);color:var(--teal)}
+
+.header-right{display:flex;align-items:center;gap:8px}
+.btn-login,.btn-join{padding:8px 18px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all 0.2s}
+.btn-login{background:transparent;border:1.5px solid var(--teal);color:var(--teal)}
+.btn-login:hover{background:var(--teal-xlight)}
+.btn-join{background:var(--teal);color:#fff;box-shadow:0 2px 10px rgba(11,110,110,0.25)}
+.btn-join:hover{background:var(--teal-dark)}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border:none;background:none}
+.hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
+
+/* ───────── MOBILE NAV ───────── */
+.mobile-nav{display:none;position:fixed;inset:0;background:#fff;z-index:500;overflow-y:auto;padding:20px}
+.mobile-nav.open{display:block}
+.mobile-nav-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.close-nav{font-size:26px;background:none;border:none;cursor:pointer;color:var(--text)}
+.mobile-menu-item{padding:14px 0;border-bottom:1px solid var(--border);font-size:15px;font-weight:600;color:var(--text2);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+
+/* ───────── PAGES ───────── */
+.page{display:none}
+.page.active{display:block}
+
+/* ───────── HERO BANNER ───────── */
+.hero{background:linear-gradient(135deg,var(--teal-dark) 0%,var(--teal) 50%,var(--green) 100%);padding:80px 20px;text-align:center;position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center}
+.hero-content{max-width:800px;margin:0 auto;position:relative}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:6px 18px;font-size:13px;font-weight:600;letter-spacing:1px;margin-bottom:20px;backdrop-filter:blur(4px)}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(26px,5vw,46px);font-weight:700;color:#fff;line-height:1.35;margin-bottom:16px}
+.hero h1 em{color:#7FEAEA;font-style:normal}
+.hero p{font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,0.80);max-width:580px;margin:0 auto 32px;line-height:1.75}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-btn{padding:13px 28px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all 0.2s;text-decoration:none;display:inline-block}
+.hero-btn.primary{background:#fff;color:var(--teal-dark);box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+.hero-btn.secondary{background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.4);backdrop-filter:blur(4px)}
+.hero-stats{display:flex;gap:32px;justify-content:center;margin-top:44px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:clamp(22px,4vw,34px);font-weight:900;color:#fff;line-height:1}
+.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.65);margin-top:4px}
+
+/* ───────── QUICK ACCESS ───────── */
+.quick-access{background:#fff;padding:0;box-shadow:var(--shadow)}
+.quick-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.quick-item{display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 12px;cursor:pointer;border-right:1px solid var(--border);transition:all 0.2s;text-decoration:none;color:var(--text2)}
+.quick-item:last-child{border-right:none}
+.quick-item:hover{background:var(--teal-xlight);color:var(--teal)}
+.qi-icon{width:46px;height:46px;background:var(--teal-xlight);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all 0.2s}
+.qi-label{font-size:13px;font-weight:600;text-align:center;line-height:1.3}
+
+/* ───────── SECTION ───────── */
+.section{padding:56px 20px}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;gap:12px;flex-wrap:wrap}
+.section-title{font-family:'Noto Serif KR',serif;font-size:clamp(18px,3vw,24px);font-weight:700;color:var(--teal-dark)}
+.section-title span{color:var(--teal);display:block;font-size:13px;font-weight:600;font-family:'Noto Sans KR',sans-serif;margin-bottom:4px;letter-spacing:1px}
+
+/* ───────── NOTICE CARDS ───────── */
+.notice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.notice-card{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.notice-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.notice-tag{display:inline-block;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:0.5px;margin-bottom:10px}
+.tag-support{background:var(--green-light);color:var(--green)}
+.tag-event{background:var(--blue-light);color:var(--blue)}
+.tag-news{background:var(--teal-xlight);color:var(--teal)}
+.tag-notice{background:#FFF3E0;color:#E65100}
+.notice-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:8px}
+.notice-meta{font-size:12px;color:var(--text3);display:flex;gap:12px}
+
+/* ───────── EVENT CARDS ───────── */
+.event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.event-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.event-thumb{height:150px;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden}
+.event-date-badge{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.95);border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:11px;color:var(--teal-dark);line-height:1.3}
+.event-body{padding:16px}
+.event-title{font-size:15px;font-weight:700;margin-bottom:8px}
+.btn-apply{width:100%;padding:9px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+
+/* ───────── BANNER SECTION ───────── */
+.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--green));border-radius:20px;padding:48px 40px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%}
+.cta-banner h2{font-family:'Noto Serif KR',serif;font-size:clamp(18px,3vw,26px);font-weight:700;margin-bottom:12px}
+.cta-banner p{font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:24px}
+.cta-banner .hero-btn.primary{background:#fff;color:var(--teal-dark)}
+
+/* ───────── AD BANNER SYSTEM ───────── */
+.ad-zone{position:relative;overflow:hidden}
+.ad-label{position:absolute;top:4px;left:6px;font-size:9px;font-weight:700;letter-spacing:1px;color:rgba(0,0,0,0.35);text-transform:uppercase;pointer-events:none;z-index:2}
+.ad-zone:hover .ad-edit-btn{opacity:1}
+.ad-edit-btn{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;opacity:0;transition:opacity 0.2s;z-index:3;font-family:'Noto Sans KR',sans-serif}
+.ad-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;transition:opacity 0.2s}
+.ad-inner img{width:100%;height:100%;object-fit:cover;display:block}
+.ad-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#f8f8f8 10px,#f8f8f8 20px);border:2px dashed #ccc;border-radius:0;cursor:pointer}
+.ad-placeholder .ap-icon{font-size:28px;opacity:0.5}
+.ad-placeholder .ap-text{font-size:12px;font-weight:700;color:#aaa;letter-spacing:0.5px}
+
+.ad-header-strip{background:#fff;border-bottom:1px solid var(--border);padding:8px 0}
+.ad-header-strip .ad-zone{max-width:728px;height:90px;margin:0 auto;border-radius:6px;overflow:hidden}
+.ad-section-strip{background:#F0F5F5;padding:14px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.ad-section-strip .ad-zone{max-width:970px;height:90px;margin:0 auto;border-radius:8px;overflow:hidden}
+.ad-mid-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.ad-mid-row .ad-zone{height:250px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+
+.popup-banner-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.3s ease}
+.popup-banner-overlay.open{display:flex}
+.popup-banner-box{position:relative;max-width:520px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:popUp 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+.popup-banner-close{position:absolute;top:10px;right:10px;width:32px;height:32px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;font-size:16px;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.popup-banner-img{width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--teal-dark),var(--green));font-size:60px;position:relative}
+.popup-banner-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.popup-banner-footer{background:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+.floating-banner{position:fixed;bottom:0;left:0;right:0;z-index:1500;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.floating-banner.visible{transform:translateY(0)}
+
+/* ── 관리자 패널 ── */
+.admin-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;overflow-y:auto;padding:24px 16px}
+.admin-panel.open{display:block}
+.admin-box{background:#fff;max-width:860px;margin:0 auto;border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.3)}
+.admin-head{background:linear-gradient(135deg,#1A1A2E,#16213E);padding:20px 28px;display:flex;align-items:center;justify-content:space-between}
+.admin-head h2{color:#fff;font-size:18px;font-weight:700}
+.admin-head .admin-close{background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.admin-tabs{display:flex;background:#F8F8F8;border-bottom:2px solid var(--border)}
+.admin-tab{padding:12px 20px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;border:none;background:none;font-family:'Noto Sans KR',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+.admin-tab.on{color:var(--teal);border-bottom-color:var(--teal);background:#fff}
+.admin-content{padding:24px 28px}
+.admin-zone-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.admin-zone-card h4{font-size:14px;font-weight:700;color:var(--teal-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.admin-save-btn{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;transition:background 0.2s}
+.admin-save-btn:hover{background:var(--teal-dark)}
+.admin-hint{font-size:12px;color:var(--text3);margin-top:4px;line-height:1.6}
+.admin-trigger{position:fixed;bottom:80px;right:16px;width:44px;height:44px;background:var(--teal-dark);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:18px;z-index:1400;box-shadow:0 3px 14px rgba(0,0,0,0.25);display:none;align-items:center;justify-content:center;transition:transform 0.2s}
+.admin-trigger.show{display:flex}
+
+/* ── 광고 비활성 시 숨김 ── */
+.ad-zone.hidden{display:none!important}
+
+/* ───────── FOOTER ───────── */
+footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px 24px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-decoration:none}
+.footer-logo .fi{width:38px;height:38px;background:rgba(255,255,255,0.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:900}
+.footer-logo .ft{font-size:15px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif}
+.footer-desc{font-size:13px;line-height:1.8;margin-bottom:16px}
+.footer-contact{font-size:13px;line-height:2}
+.footer-contact strong{color:#fff}
+.footer-col h5{color:#fff;font-size:13px;font-weight:700;margin-bottom:14px;letter-spacing:0.5px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;cursor:pointer;transition:color 0.2s}
+.footer-links a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px}
+
+/* ───────── TOAST ───────── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--teal-dark);color:#fff;padding:12px 22px;border-radius:50px;font-size:13.5px;font-weight:600;z-index:9999;opacity:0;transition:all 0.3s;white-space:nowrap;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- ① 헤더 하단 리더보드 광고 (728×90) -->
+<div class="ad-header-strip" id="adZone-header-strip">
+  <div class="ad-zone" id="adEl-header-strip">
+    <span class="ad-label">광고</span>
+    <button class="ad-edit-btn" onclick="openAdAdmin('header-strip')">✏️ 광고 설정</button>
+    <a class="ad-inner" id="adLink-header-strip" href="#" target="_blank" rel="noopener">
+      <div class="ad-placeholder">
+        <div class="ap-icon">🖼️</div>
+        <div class="ap-text">헤더 광고 배너</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" onclick="showPage('home')">
+      <div class="logo-icon">마</div>
+      <div class="logo-text">
+        <div class="main">마포구 소상공인연합회</div>
+        <div class="sub">Mapo Small Business Association</div>
+      </div>
+    </a>
+    <div class="header-right">
+      <div id="authArea">
+        <button class="btn-login" onclick="openModal('authModal')">로그인</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-content">
+      <h1>지역 소상공인의<br><em>성장과 번영을 함께</em></h1>
+      <p>마포구 소상공인연합회는 지역 소상공인의 권익 보호와 경영 지원을 위해 함께합니다.</p>
+    </div>
+  </div>
+
+  <!-- ② 섹션간 광고 스트립 (970×90) -->
+  <div class="ad-section-strip" id="adZone-section-strip">
+    <div class="ad-zone" id="adEl-section-strip">
+      <span class="ad-label">광고</span>
+      <button class="ad-edit-btn" onclick="openAdAdmin('section-strip')">✏️ 광고 설정</button>
+      <a class="ad-inner" id="adLink-section-strip" href="#" target="_blank" rel="noopener">
+        <div class="ad-placeholder">
+          <div class="ap-icon">📢</div>
+          <div class="ap-text">섹션 광고 배너</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ③ 미드 광고 2컬럼 (300×250 × 2) -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="ad-mid-row">
+        <div class="ad-zone" id="adEl-mid-left">
+          <span class="ad-label">광고</span>
+          <button class="ad-edit-btn" onclick="openAdAdmin('mid-left')">✏️ 광고 설정</button>
+          <a class="ad-inner" id="adLink-mid-left" href="#" target="_blank" rel="noopener">
+            <div class="ad-placeholder">
+              <div class="ap-icon">🏪</div>
+              <div class="ap-text">미드 광고 (좌)</div>
+            </div>
+          </a>
+        </div>
+        <div class="ad-zone" id="adEl-mid-right">
+          <span class="ad-label">광고</span>
+          <button class="ad-edit-btn" onclick="openAdAdmin('mid-right')">✏️ 광고 설정</button>
+          <a class="ad-inner" id="adLink-mid-right" href="#" target="_blank" rel="noopener">
+            <div class="ad-placeholder">
+              <div class="ap-icon">🏪</div>
+              <div class="ap-text">미드 광고 (우)</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="popup-banner-overlay" id="popupBanner">
+  <div class="popup-banner-box">
+    <button class="popup-banner-close" onclick="closePopupBanner()">✕</button>
+    <a class="popup-banner-img" id="popupBannerLink" href="#" target="_blank" rel="noopener">
+      <div id="popupBannerContent">
+        <div style="font-size:20px;font-weight:900;margin-bottom:6px">팝업 광고 배너</div>
+      </div>
+    </a>
+    <div class="popup-banner-footer">
+      <button class="popup-go-btn" onclick="closePopupBanner(true)">닫기</button>
+    </div>
+  </div>
+</div>
+
+<div class="floating-banner" id="floatingBanner">
+  <div class="floating-inner">
+    <a class="floating-ad-content" id="floatingBannerLink" href="#" target="_blank" rel="noopener">
+      <div class="floating-ad-placeholder" id="floatingBannerContent">
+        <div class="fa-text">🏷️ 플로팅 광고 배너</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-box">
+    <div class="admin-head">
+      <h2>🛠️ 광고 배너 관리자 패널</h2>
+      <button class="admin-close" onclick="closeAdAdmin()">✕</button>
+    </div>
+    <div class="admin-tabs" id="adminTabRow">
+      <button class="admin-tab on"  onclick="switchAdTab(0)">① 헤더</button>
+      <button class="admin-tab"     onclick="switchAdTab(1)">② 섹션</button>
+      <button class="admin-tab"     onclick="switchAdTab(2)">③ 미드(좌)</button>
+      <button class="admin-tab"     onclick="switchAdTab(3)">③ 미드(우)</button>
+      <button class="admin-tab"     onclick="switchAdTab(7)">팝업</button>
+      <button class="admin-tab"     onclick="switchAdTab(8)">플로팅</button>
+    </div>
+    <div class="admin-content" id="adminContent"></div>
+  </div>
+</div>
+
+<button class="admin-trigger" id="adminTrigger" onclick="openAdAdmin()" title="광고 관리자 패널">⚙️</button>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a class="footer-logo">
+          <div class="fi">마</div>
+          <div class="ft">마포구 소상공인연합회</div>
+        </a>
+        <p class="footer-desc">마포구 소상공인의 권익 보호와 지속 가능한 경영 환경 조성을 위해 함께합니다.</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 마포구 소상공인연합회. All Rights Reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const DATA = {
+  notices: [],
+  events: [],
+  support: [],
+  members: [],
+  press: []
+};
+
+function getUsers(){try{return JSON.parse(localStorage.getItem('mp_users')||'[]')}catch{return[]}}
+function saveUsers(u){try{localStorage.setItem('mp_users',JSON.stringify(u))}catch{}}
+function getCurrentUser(){try{return JSON.parse(localStorage.getItem('mp_user')||'null')}catch{return null}}
+function setCurrentUser(u){try{localStorage.setItem('mp_user',u?JSON.stringify(u):null)}catch{}}
+
+let currentUser = getCurrentUser();
+
+function updateAuthUI(){
+  const area = document.getElementById('authArea');
+  if(currentUser){
+    area.innerHTML = `<span>${currentUser.name}님</span> <button onclick="doLogout()">로그아웃</button>`;
+  } else {
+    area.innerHTML = `<button onclick="openModal('authModal')">로그인</button>`;
+  }
+}
+
+function doLogout(){currentUser=null;setCurrentUser(null);updateAuthUI();updateAdminTrigger();location.reload();}
+
+const AD_ZONES = [
+  {key:'header-strip',  name:'① 헤더 리더보드',      size:'728×90'},
+  {key:'section-strip', name:'② 섹션간 빌보드',       size:'970×90'},
+  {key:'mid-left',      name:'③ 미드 레크탱글 (좌)',  size:'300×250'},
+  {key:'mid-right',     name:'③ 미드 레크탱글 (우)',  size:'300×250'},
+  {key:'popup',         name:'팝업 배너',              size:'모달'},
+  {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
+];
+const AD_CFG_KEY='mp_ad_config';
+
+function getAdConfig(){try{return JSON.parse(localStorage.getItem(AD_CFG_KEY)||'{}')}catch{return{}}}
+function saveAdConfig(cfg){try{localStorage.setItem(AD_CFG_KEY,JSON.stringify(cfg))}catch{}}
+
+function renderAdZone(key){
+  const cfg=getAdConfig();
+  const z=cfg[key]||{};
+  const el=document.getElementById('adEl-'+key);
+  const linkEl=document.getElementById('adLink-'+key);
+  if(!el)return;
+  if(z.active===false){ el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+  if(linkEl && z.imgUrl){ linkEl.innerHTML=`<img src="${z.imgUrl}" alt="광고">`; }
+}
+
+function renderAllAdZones(){AD_ZONES.forEach(z=>renderAdZone(z.key));}
+
+let _adTab=0;
+function openAdAdmin(zoneKey){
+  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4));
+  if(!isAdmin){
+    alert('⛔ 관리자 권한이 필요합니다.');
+    return;
+  }
+  if(zoneKey){
+    const idx=AD_ZONES.findIndex(z=>z.key===zoneKey);
+    if(idx>=0)_adTab=idx;
+  }
+  document.getElementById('adminPanel').classList.add('open');
+  renderAdminContent(_adTab);
+}
+function closeAdAdmin(){document.getElementById('adminPanel').classList.remove('open');}
+function switchAdTab(i){_adTab=i;renderAdminContent(i);}
+
+function renderAdminContent(i){
+  const z=AD_ZONES[i];
+  const cfg=getAdConfig();
+  const c=cfg[z.key]||{};
+  document.getElementById('adminContent').innerHTML=`
+    <div class="admin-zone-card">
+      <h4>${z.name}</h4>
+      <input type="checkbox" id="az-active" ${c.active!==false?'checked':''}> 활성화<br>
+      URL: <input type="text" id="az-imgUrl" value="${c.imgUrl||''}" style="width:100%"><br>
+      Link: <input type="text" id="az-linkUrl" value="${c.linkUrl||''}" style="width:100%"><br>
+      <button onclick="saveAdZone('${z.key}')">저장</button>
+    </div>
+  `;
+}
+
+function saveAdZone(key){
+  const cfg=getAdConfig();
+  cfg[key]={
+    active:document.getElementById('az-active').checked,
+    imgUrl:document.getElementById('az-imgUrl').value,
+    linkUrl:document.getElementById('az-linkUrl').value
+  };
+  saveAdConfig(cfg);
+  renderAdZone(key);
+  alert('저장되었습니다.');
+}
+
+function updateAdminTrigger(){
+  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4));
+  const btn=document.getElementById('adminTrigger');
+  if(btn) btn.classList.toggle('show', isAdmin);
+  document.querySelectorAll('.ad-edit-btn').forEach(el => {
+    el.style.display = isAdmin ? 'block' : 'none';
+  });
+}
+
+function showPage(p){ /* simple showPage */ }
+function openModal(id){ 
+  if(id==='authModal'){
+    const email = prompt('이메일을 입력하세요 (admin 포함 시 관리자)');
+    if(email){
+      currentUser = {name:email.split('@')[0], email:email, level: email.includes('admin')?4:1};
+      setCurrentUser(currentUser);
+      updateAuthUI();
+      updateAdminTrigger();
+    }
+  }
+}
+
+updateAuthUI();
+updateAdminTrigger();
+renderAllAdZones();
+</script>
+</body>
+</html>

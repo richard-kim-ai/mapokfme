@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마포구 소상공인연합회</title>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&family=Noto+Serif+KR:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --teal:#0B6E6E;
+  --teal-dark:#094F4F;
+  --teal-light:#12918F;
+  --teal-xlight:#E6F4F4;
+  --blue:#1565C0;
+  --blue-light:#E8F0FC;
+  --green:#2E7D55;
+  --green-light:#E8F5ED;
+  --amber:#E67E22;
+  --amber-light:#FEF3E2;
+  --red:#C0392B;
+  --white:#fff;
+  --bg:#F5F8F8;
+  --card:#fff;
+  --text:#1A2B2B;
+  --text2:#4A6060;
+  --text3:#7A9090;
+  --border:#D8EAEA;
+  --shadow:0 2px 16px rgba(11,110,110,0.10);
+  --shadow-md:0 4px 28px rgba(11,110,110,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* ───────── SCROLLBAR ───────── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#f0f5f5}
+::-webkit-scrollbar-thumb{background:var(--teal-light);border-radius:3px}
+
+/* ───────── TOPBAR ───────── */
+.topbar{background:var(--teal-dark);padding:6px 0;font-size:12px;color:rgba(255,255,255,0.65)}
+.topbar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.topbar a{color:rgba(255,255,255,0.65);text-decoration:none}
+.topbar a:hover{color:#fff}
+.topbar-links{display:flex;gap:16px}
+
+/* ───────── HEADER ───────── */
+.site-header{background:#fff;box-shadow:0 2px 12px rgba(11,110,110,0.08);position:sticky;top:0;z-index:200}
+.header-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:pointer}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--teal),var(--green));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:900;flex-shrink:0}
+.logo-text{line-height:1.2}
+.logo-text .main{font-size:16px;font-weight:900;color:var(--teal-dark);font-family:'Noto Serif KR',serif}
+.logo-text .sub{font-size:11px;color:var(--text3);letter-spacing:0.5px}
+
+/* ───────── NAV ───────── */
+nav{display:flex;align-items:center;gap:4px}
+.nav-item{position:relative}
+.nav-link{display:flex;align-items:center;gap:4px;padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;color:var(--text2);text-decoration:none;cursor:pointer;transition:all 0.2s;white-space:nowrap;background:none;border:none;font-family:'Noto Sans KR',sans-serif}
+.nav-link:hover,.nav-link.active{color:var(--teal);background:var(--teal-xlight)}
+.nav-link svg{width:14px;height:14px;transition:transform 0.2s}
+.nav-item:hover .nav-link svg{transform:rotate(180deg)}
+.dropdown{display:none;position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1px solid var(--border);border-radius:10px;box-shadow:var(--shadow-md);min-width:180px;padding:6px;z-index:300}
+.nav-item:hover .dropdown{display:block}
+.drop-link{display:block;padding:9px 14px;border-radius:7px;font-size:13.5px;color:var(--text2);text-decoration:none;cursor:pointer;transition:all 0.15s}
+.drop-link:hover{background:var(--teal-xlight);color:var(--teal)}
+
+.header-right{display:flex;align-items:center;gap:8px}
+.btn-login,.btn-join{padding:8px 18px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all 0.2s}
+.btn-login{background:transparent;border:1.5px solid var(--teal);color:var(--teal)}
+.btn-login:hover{background:var(--teal-xlight)}
+.btn-join{background:var(--teal);color:#fff;box-shadow:0 2px 10px rgba(11,110,110,0.25)}
+.btn-join:hover{background:var(--teal-dark)}
+
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;border:none;background:none}
+.hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s}
+
+/* ───────── MOBILE NAV ───────── */
+.mobile-nav{display:none;position:fixed;inset:0;background:#fff;z-index:500;overflow-y:auto;padding:20px}
+.mobile-nav.open{display:block}
+.mobile-nav-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+.close-nav{font-size:26px;background:none;border:none;cursor:pointer;color:var(--text)}
+.mobile-menu-item{padding:14px 0;border-bottom:1px solid var(--border);font-size:15px;font-weight:600;color:var(--text2);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.mobile-submenu{padding:6px 0 6px 16px}
+.mobile-sub-item{padding:10px 0;font-size:14px;color:var(--text3);cursor:pointer;display:block}
+.mobile-sub-item:hover{color:var(--teal)}
+
+/* ───────── PAGES ───────── */
+.page{display:none}
+.page.active{display:block}
+
+/* ───────── HERO BANNER ───────── */
+.hero{background:linear-gradient(135deg,var(--teal-dark) 0%,var(--teal) 50%,var(--green) 100%);padding:80px 20px;text-align:center;position:relative;overflow:hidden;min-height:480px;display:flex;align-items:center}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-content{max-width:800px;margin:0 auto;position:relative}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);border:1px solid rgba(255,255,255,0.3);border-radius:50px;padding:6px 18px;font-size:13px;font-weight:600;letter-spacing:1px;margin-bottom:20px;backdrop-filter:blur(4px)}
+.hero h1{font-family:'Noto Serif KR',serif;font-size:clamp(26px,5vw,46px);font-weight:700;color:#fff;line-height:1.35;margin-bottom:16px}
+.hero h1 em{color:#7FEAEA;font-style:normal}
+.hero p{font-size:clamp(14px,2vw,17px);color:rgba(255,255,255,0.80);max-width:580px;margin:0 auto 32px;line-height:1.75}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.hero-btn{padding:13px 28px;border-radius:50px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all 0.2s;text-decoration:none;display:inline-block}
+.hero-btn.primary{background:#fff;color:var(--teal-dark);box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+.hero-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.2)}
+.hero-btn.secondary{background:rgba(255,255,255,0.15);color:#fff;border:1.5px solid rgba(255,255,255,0.4);backdrop-filter:blur(4px)}
+.hero-btn.secondary:hover{background:rgba(255,255,255,0.25)}
+.hero-stats{display:flex;gap:32px;justify-content:center;margin-top:44px;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .num{font-size:clamp(22px,4vw,34px);font-weight:900;color:#fff;line-height:1}
+.hero-stat .lbl{font-size:12px;color:rgba(255,255,255,0.65);margin-top:4px}
+
+/* ───────── QUICK ACCESS ───────── */
+.quick-access{background:#fff;padding:0;box-shadow:var(--shadow)}
+.quick-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+.quick-item{display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 12px;cursor:pointer;border-right:1px solid var(--border);transition:all 0.2s;text-decoration:none;color:var(--text2)}
+.quick-item:last-child{border-right:none}
+.quick-item:hover{background:var(--teal-xlight);color:var(--teal)}
+.quick-item:hover .qi-icon{background:var(--teal);color:#fff}
+.qi-icon{width:46px;height:46px;background:var(--teal-xlight);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all 0.2s}
+.qi-label{font-size:13px;font-weight:600;text-align:center;line-height:1.3}
+
+/* ───────── SECTION ───────── */
+.section{padding:56px 20px}
+.section-inner{max-width:1200px;margin:0 auto}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;gap:12px;flex-wrap:wrap}
+.section-title{font-family:'Noto Serif KR',serif;font-size:clamp(18px,3vw,24px);font-weight:700;color:var(--teal-dark)}
+.section-title span{color:var(--teal);display:block;font-size:13px;font-weight:600;font-family:'Noto Sans KR',sans-serif;margin-bottom:4px;letter-spacing:1px}
+.more-link{font-size:13px;color:var(--teal);font-weight:600;text-decoration:none;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.more-link:hover{text-decoration:underline}
+
+/* ───────── NOTICE CARDS ───────── */
+.notice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.notice-card{background:#fff;border-radius:14px;padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.notice-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.notice-tag{display:inline-block;padding:3px 10px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:0.5px;margin-bottom:10px}
+.tag-support{background:var(--green-light);color:var(--green)}
+.tag-event{background:var(--blue-light);color:var(--blue)}
+.tag-news{background:var(--teal-xlight);color:var(--teal)}
+.tag-notice{background:#FFF3E0;color:#E65100}
+.notice-title{font-size:15px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:8px}
+.notice-meta{font-size:12px;color:var(--text3);display:flex;gap:12px}
+
+/* ───────── EVENT CARDS ───────── */
+.event-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}
+.event-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.event-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.event-thumb{height:150px;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;font-size:40px;position:relative;overflow:hidden}
+.event-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.3),transparent)}
+.event-date-badge{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.95);border-radius:8px;padding:6px 10px;text-align:center;font-weight:700;font-size:11px;color:var(--teal-dark);line-height:1.3}
+.event-body{padding:16px}
+.event-title{font-size:15px;font-weight:700;margin-bottom:8px;line-height:1.45}
+.event-info{font-size:12.5px;color:var(--text3);display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.event-info span{display:flex;align-items:center;gap:5px}
+.btn-apply{width:100%;padding:9px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s}
+.btn-apply:hover{background:var(--teal-dark)}
+.btn-apply.disabled{background:var(--text3);cursor:not-allowed}
+
+/* ───────── MEMBER TEASER ───────── */
+.member-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px}
+.member-card{background:#fff;border-radius:12px;padding:18px;text-align:center;box-shadow:var(--shadow);border:1px solid var(--border);transition:all 0.2s}
+.member-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.member-avatar{width:56px;height:56px;border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff}
+.member-name{font-size:14px;font-weight:700;margin-bottom:2px}
+.member-biz{font-size:12px;color:var(--text3)}
+.member-badge{display:inline-block;margin-top:6px;padding:2px 8px;background:var(--teal-xlight);color:var(--teal);border-radius:50px;font-size:11px;font-weight:600}
+
+/* ───────── BANNER SECTION ───────── */
+.cta-banner{background:linear-gradient(135deg,var(--teal-dark),var(--green));border-radius:20px;padding:48px 40px;text-align:center;color:#fff;position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:rgba(255,255,255,0.06);border-radius:50%}
+.cta-banner h2{font-family:'Noto Serif KR',serif;font-size:clamp(18px,3vw,26px);font-weight:700;margin-bottom:12px}
+.cta-banner p{font-size:14px;color:rgba(255,255,255,0.8);margin-bottom:24px}
+.cta-banner .hero-btn.primary{background:#fff;color:var(--teal-dark)}
+
+/* ───────── PAGE HEADER ───────── */
+.page-header{background:linear-gradient(135deg,var(--teal-dark),var(--teal));padding:48px 20px;text-align:center}
+.page-header h2{font-family:'Noto Serif KR',serif;font-size:clamp(22px,4vw,32px);font-weight:700;color:#fff;margin-bottom:8px}
+.page-header p{color:rgba(255,255,255,0.75);font-size:14px}
+
+/* ───────── BREADCRUMB ───────── */
+.breadcrumb{background:#fff;border-bottom:1px solid var(--border);padding:10px 20px;font-size:12.5px;color:var(--text3)}
+.breadcrumb-inner{max-width:1200px;margin:0 auto;display:flex;gap:6px;align-items:center}
+.breadcrumb a{color:var(--text3);text-decoration:none;cursor:pointer}
+.breadcrumb a:hover{color:var(--teal)}
+
+/* ───────── LIST PAGE ───────── */
+.list-wrap{max-width:900px;margin:0 auto;padding:40px 20px}
+.list-item{background:#fff;border-radius:12px;padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;display:flex;gap:14px;align-items:flex-start;transition:all 0.2s}
+.list-item:hover{transform:translateX(3px);box-shadow:var(--shadow-md)}
+.list-num{width:36px;height:36px;border-radius:8px;background:var(--teal-xlight);color:var(--teal);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.list-content{flex:1;min-width:0}
+.list-title{font-size:15px;font-weight:700;margin-bottom:5px;color:var(--text)}
+.list-meta{font-size:12px;color:var(--text3);display:flex;gap:14px;flex-wrap:wrap}
+.list-new{display:inline-block;padding:1px 7px;background:#FFEBEE;color:#C62828;border-radius:50px;font-size:10px;font-weight:700;margin-left:6px}
+
+/* ───────── DETAIL PAGE ───────── */
+.detail-wrap{max-width:800px;margin:0 auto;padding:40px 20px}
+.detail-head{background:#fff;border-radius:14px;padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.detail-tag-row{display:flex;gap:8px;margin-bottom:12px}
+.detail-title{font-size:clamp(18px,3vw,24px);font-weight:900;color:var(--text);line-height:1.4;margin-bottom:12px}
+.detail-meta{font-size:13px;color:var(--text3);display:flex;gap:20px;flex-wrap:wrap}
+.detail-body{background:#fff;border-radius:14px;padding:28px;margin-bottom:20px;box-shadow:var(--shadow);font-size:15px;line-height:1.85;color:var(--text2)}
+.detail-body p{margin-bottom:14px}
+.detail-body h4{font-weight:700;color:var(--teal-dark);margin:20px 0 8px}
+.detail-body ul{padding-left:20px;margin-bottom:14px}
+.detail-body li{margin-bottom:6px}
+
+/* ───────── COMMENTS ───────── */
+.comment-section{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow);margin-bottom:20px}
+.comment-title{font-size:16px;font-weight:700;margin-bottom:18px;color:var(--teal-dark)}
+.comment-form{display:flex;gap:10px;margin-bottom:20px}
+.comment-form textarea{flex:1;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Noto Sans KR',sans-serif;font-size:14px;resize:none;outline:none;transition:border 0.2s}
+.comment-form textarea:focus{border-color:var(--teal)}
+.btn-comment{padding:0 18px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap}
+.comment-item{padding:14px 0;border-bottom:1px solid var(--border)}
+.comment-item:last-child{border-bottom:none}
+.comment-author{font-weight:700;font-size:13px;color:var(--teal-dark)}
+.comment-date{font-size:11px;color:var(--text3);margin-left:8px}
+.comment-text{font-size:14px;margin-top:6px;color:var(--text2)}
+.comment-empty{color:var(--text3);font-size:14px;text-align:center;padding:20px 0}
+
+/* ───────── FORMS ───────── */
+.form-wrap{background:#fff;border-radius:16px;padding:32px;box-shadow:var(--shadow);margin-bottom:20px}
+.form-title{font-size:18px;font-weight:700;color:var(--teal-dark);margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--teal-xlight)}
+.fg{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.fg label{font-size:13px;font-weight:700;color:var(--teal-dark)}
+.fg label .req{color:#C0392B}
+.fg input,.fg select,.fg textarea{padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:'Noto Sans KR',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border 0.2s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(11,110,110,0.08)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--text3)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-msg{padding:12px 16px;border-radius:9px;font-size:13.5px;margin-bottom:14px;display:none}
+.form-msg.success{background:var(--green-light);color:var(--green);border:1px solid #A5D6A7}
+.form-msg.error{background:#FFEBEE;color:#C62828;border:1px solid #FFCDD2}
+.btn-form{width:100%;padding:14px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s}
+.btn-form:hover{background:var(--teal-dark)}
+.btn-outline{background:transparent;color:var(--teal);border:1.5px solid var(--teal);width:100%;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s}
+.btn-outline:hover{background:var(--teal-xlight)}
+
+/* ───────── ABOUT PAGE ───────── */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px}
+.about-box{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow)}
+.about-box h3{font-size:17px;font-weight:700;color:var(--teal-dark);margin-bottom:12px}
+.about-box p{font-size:14px;color:var(--text2);line-height:1.8}
+.about-box ul{padding-left:18px;font-size:14px;color:var(--text2);line-height:2}
+.vision-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
+.vision-card{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:var(--shadow)}
+.vision-icon{font-size:32px;margin-bottom:10px}
+.vision-title{font-size:14px;font-weight:700;color:var(--teal-dark);margin-bottom:6px}
+.vision-desc{font-size:12.5px;color:var(--text3);line-height:1.6}
+.org-chart{background:#fff;border-radius:14px;padding:28px;box-shadow:var(--shadow)}
+.org-chart h3{font-size:17px;font-weight:700;color:var(--teal-dark);margin-bottom:20px}
+.org-top{display:flex;justify-content:center;margin-bottom:16px}
+.org-box{background:var(--teal);color:#fff;border-radius:10px;padding:12px 24px;font-size:13px;font-weight:700;text-align:center}
+.org-box.sm{background:var(--teal-xlight);color:var(--teal-dark)}
+.org-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+.org-connector{width:1px;height:24px;background:var(--border);margin:0 auto}
+
+/* ───────── MODAL ───────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:18px;padding:0;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:slideUp 0.28s ease}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-head{background:var(--teal);padding:20px 24px;border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:space-between}
+.modal-head h3{color:#fff;font-size:16px;font-weight:700}
+.modal-close-btn{background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.modal-close-btn:hover{background:rgba(255,255,255,0.35)}
+.modal-body{padding:24px}
+
+/* ───────── AUTH ───────── */
+.auth-tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.auth-tab{flex:1;padding:11px;text-align:center;font-size:14px;font-weight:700;cursor:pointer;color:var(--text3);transition:all 0.2s;border:none;background:none;font-family:'Noto Sans KR',sans-serif}
+.auth-tab.active{background:var(--teal);color:#fff}
+.auth-panel{display:none}
+.auth-panel.active{display:block}
+.user-bar{display:flex;align-items:center;gap:8px}
+.user-avatar{width:32px;height:32px;background:var(--teal);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.user-name{font-size:13px;font-weight:600;color:var(--text)}
+.btn-logout{font-size:12px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:50px;padding:4px 10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif}
+.btn-logout:hover{color:var(--red);border-color:var(--red)}
+
+/* ───────── SUPPORT PAGE ───────── */
+.support-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.support-card{background:#fff;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+.support-head{padding:16px 18px;background:linear-gradient(135deg,var(--teal-xlight),var(--green-light));border-bottom:1px solid var(--border)}
+.support-head .tag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:50px;background:var(--teal);color:#fff;display:inline-block;margin-bottom:8px}
+.support-head h4{font-size:15px;font-weight:700;color:var(--teal-dark)}
+.support-body{padding:16px 18px}
+.support-body p{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.support-body .info{font-size:12px;color:var(--text3);margin-bottom:4px}
+.support-btns{display:flex;gap:8px}
+.btn-detail{flex:1;padding:9px;background:var(--teal-xlight);color:var(--teal);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s}
+.btn-detail:hover{background:var(--teal);color:#fff}
+.btn-apply-sm{flex:1;padding:9px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s}
+.btn-apply-sm:hover{background:var(--teal-dark)}
+.btn-ext{flex:1;padding:9px;background:var(--amber-light);color:var(--amber);border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-decoration:none;display:inline-block;text-align:center;transition:all 0.2s}
+.btn-ext:hover{background:var(--amber);color:#fff}
+
+/* ───────── GALLERY ───────── */
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.gallery-item{aspect-ratio:1;border-radius:10px;overflow:hidden;cursor:pointer;position:relative;background:linear-gradient(135deg,var(--teal),var(--green));display:flex;align-items:center;justify-content:center;font-size:36px;transition:transform 0.2s}
+.gallery-item:hover{transform:scale(1.03)}
+.gallery-item:nth-child(2n){background:linear-gradient(135deg,var(--blue),var(--teal))}
+.gallery-item:nth-child(3n){background:linear-gradient(135deg,var(--green),#4CAF50)}
+.gallery-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:flex-end;padding:12px;opacity:0;transition:opacity 0.2s}
+.gallery-item:hover .gallery-overlay{opacity:1}
+.gallery-overlay span{color:#fff;font-size:12px;font-weight:600}
+
+/* ───────── SPONSOR PAGE ───────── */
+.sponsor-tiers{display:flex;flex-direction:column;gap:20px}
+.sponsor-tier{background:#fff;border-radius:14px;padding:24px;box-shadow:var(--shadow);border-left:4px solid var(--teal)}
+.sponsor-tier h4{font-size:16px;font-weight:700;color:var(--teal-dark);margin-bottom:6px}
+.sponsor-tier p{font-size:14px;color:var(--text2);margin-bottom:12px}
+.sponsor-benefits{display:flex;flex-wrap:wrap;gap:8px}
+.benefit-tag{padding:4px 12px;background:var(--teal-xlight);color:var(--teal);border-radius:50px;font-size:12px;font-weight:600}
+
+/* ───────── FOOTER ───────── */
+footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px 24px}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;margin-bottom:32px}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:14px;text-decoration:none}
+.footer-logo .fi{width:38px;height:38px;background:rgba(255,255,255,0.15);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;font-weight:900}
+.footer-logo .ft{font-size:15px;font-weight:700;color:#fff;font-family:'Noto Serif KR',serif}
+.footer-desc{font-size:13px;line-height:1.8;margin-bottom:16px}
+.footer-contact{font-size:13px;line-height:2}
+.footer-contact strong{color:#fff}
+.footer-col h5{color:#fff;font-size:13px;font-weight:700;margin-bottom:14px;letter-spacing:0.5px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links a{font-size:13px;color:rgba(255,255,255,0.6);text-decoration:none;cursor:pointer;transition:color 0.2s}
+.footer-links a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:12px}
+.footer-bottom a{color:rgba(255,255,255,0.5);text-decoration:none;margin-left:14px}
+.footer-bottom a:hover{color:#fff}
+
+/* ───────── TOAST ───────── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--teal-dark);color:#fff;padding:12px 22px;border-radius:50px;font-size:13.5px;font-weight:600;z-index:9999;opacity:0;transition:all 0.3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══════════════════════════════════════
+   SIDE WING BANNERS (LEFT & RIGHT)
+═══════════════════════════════════════ */
+.side-wing-banner {
+  position: fixed;
+  top: 250px;
+  width: 130px;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.side-wing-banner.left {
+  left: calc(50% - 600px - 150px); /* 1200px 중앙 정렬 기준 좌측 */
+}
+
+.side-wing-banner.right {
+  right: calc(50% - 600px - 150px); /* 1200px 중앙 정렬 기준 우측 */
+}
+
+.wing-content {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.wing-head {
+  background: var(--teal);
+  color: #fff;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+}
+
+.wing-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.wing-close:hover { opacity: 1; }
+
+.wing-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wing-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 5px;
+  text-decoration: none;
+  color: var(--text2);
+  border-radius: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.wing-item:hover {
+  background: var(--teal-xlight);
+  color: var(--teal);
+}
+
+.wing-icon {
+  font-size: 20px;
+}
+
+.wing-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.wing-btn-top {
+  margin-top: 10px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 화면이 1500px보다 작아지면 배너가 본문을 가릴 수 있으므로 숨김 처리 */
+@media (max-width: 1520px) {
+  .side-wing-banner {
+    display: none;
+  }
+}
+
+/* ═══════════════════════════════════════
+   AD BANNER SYSTEM
+═══════════════════════════════════════ */
+
+/* ── 공통 래퍼 ── */
+.ad-zone{position:relative;overflow:hidden}
+.ad-label{position:absolute;top:4px;left:6px;font-size:9px;font-weight:700;letter-spacing:1px;color:rgba(0,0,0,0.35);text-transform:uppercase;pointer-events:none;z-index:2}
+.ad-zone:hover .ad-edit-btn{opacity:1}
+.ad-edit-btn{position:absolute;top:6px;right:6px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;opacity:0;transition:opacity 0.2s;z-index:3;font-family:'Noto Sans KR',sans-serif}
+.ad-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;text-decoration:none;cursor:pointer;transition:opacity 0.2s}
+.ad-inner:hover{opacity:0.9}
+.ad-inner img{width:100%;height:100%;object-fit:cover;display:block}
+.ad-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:repeating-linear-gradient(45deg,#f0f0f0,#f0f0f0 10px,#f8f8f8 10px,#f8f8f8 20px);border:2px dashed #ccc;border-radius:0;cursor:pointer}
+.ad-placeholder .ap-icon{font-size:28px;opacity:0.5}
+.ad-placeholder .ap-text{font-size:12px;font-weight:700;color:#aaa;letter-spacing:0.5px}
+.ad-placeholder .ap-size{font-size:10px;color:#bbb}
+
+/* ① 헤더 하단 리더보드 (728×90) */
+.ad-header-strip{background:#fff;border-bottom:1px solid var(--border);padding:8px 0}
+.ad-header-strip .ad-zone{max-width:728px;height:90px;margin:0 auto;border-radius:6px;overflow:hidden}
+
+/* ② 홈 섹션간 광고 (전폭 배너, 970×90) */
+.ad-section-strip{background:#F0F5F5;padding:14px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.ad-section-strip .ad-zone{max-width:970px;height:90px;margin:0 auto;border-radius:8px;overflow:hidden}
+
+/* ③ 홈 미드 광고 2컬럼 (300×250 × 2) */
+.ad-mid-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:28px}
+.ad-mid-row .ad-zone{height:250px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+
+/* ④ 서브페이지 사이드 배너 (160×600) */
+.content-with-sidebar{display:grid;grid-template-columns:1fr 170px;gap:20px;max-width:1100px;margin:0 auto;padding:0 20px 40px;align-items:start}
+.ad-sidebar{position:sticky;top:90px}
+.ad-sidebar .ad-zone{width:160px;height:600px;border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+
+/* ⑤ 섹션 내 인라인 배너 (728×90) */
+.ad-inline{padding:0 0 32px}
+.ad-inline .ad-zone{max-width:728px;height:90px;margin:0 auto;border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+
+/* ⑥ 푸터 상단 배너 (970×90) */
+.ad-prefooter{background:var(--bg);padding:16px 20px;border-top:1px solid var(--border)}
+.ad-prefooter .ad-zone{max-width:970px;height:90px;margin:0 auto;border-radius:8px;overflow:hidden}
+
+/* ── 팝업 배너 ── */
+.popup-banner-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.3s ease}
+.popup-banner-overlay.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.popup-banner-box{position:relative;max-width:520px;width:100%;border-radius:16px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.35);animation:popUp 0.35s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes popUp{from{transform:scale(0.8) translateY(40px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.popup-banner-close{position:absolute;top:10px;right:10px;width:32px;height:32px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;font-size:16px;cursor:pointer;z-index:5;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.popup-banner-close:hover{background:rgba(0,0,0,0.8)}
+.popup-banner-img{width:100%;min-height:280px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--teal-dark),var(--green));font-size:60px;position:relative}
+.popup-banner-img img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0}
+.popup-banner-footer{background:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.popup-no-today{font-size:12px;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:6px;user-select:none}
+.popup-no-today input{accent-color:var(--teal);width:14px;height:14px;cursor:pointer}
+.popup-go-btn{padding:8px 20px;background:var(--teal);color:#fff;border:none;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;text-decoration:none;display:inline-block;transition:all 0.2s}
+.popup-go-btn:hover{background:var(--teal-dark)}
+
+/* ── 하단 플로팅 배너 ── */
+.floating-banner{position:fixed;bottom:0;left:0;right:0;z-index:1500;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1)}
+.floating-banner.visible{transform:translateY(0)}
+.floating-inner{max-width:100%;background:#fff;border-top:2px solid var(--teal);box-shadow:0 -4px 24px rgba(0,0,0,0.14);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:72px;gap:12px;position:relative}
+.floating-ad-content{flex:1;display:flex;align-items:center;justify-content:center;height:60px;cursor:pointer;text-decoration:none}
+.floating-ad-placeholder{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,var(--teal-xlight),var(--green-light));border-radius:10px;padding:10px 20px;width:100%;max-width:700px;justify-content:center}
+.floating-ad-placeholder .fa-text{font-size:14px;font-weight:700;color:var(--teal-dark)}
+.floating-ad-placeholder .fa-sub{font-size:12px;color:var(--teal)}
+.floating-close{width:32px;height:32px;background:var(--bg);border:1px solid var(--border);border-radius:50%;cursor:pointer;font-size:14px;color:var(--text3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.floating-close:hover{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* ── 관리자 패널 ── */
+.admin-panel{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:3000;overflow-y:auto;padding:24px 16px}
+.admin-panel.open{display:block}
+.admin-box{background:#fff;max-width:860px;margin:0 auto;border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,0.3)}
+.admin-head{background:linear-gradient(135deg,#1A1A2E,#16213E);padding:20px 28px;display:flex;align-items:center;justify-content:space-between}
+.admin-head h2{color:#fff;font-size:18px;font-weight:700}
+.admin-head .admin-close{background:rgba(255,255,255,0.15);color:#fff;border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center}
+.admin-tabs{display:flex;background:#F8F8F8;border-bottom:2px solid var(--border)}
+.admin-tab{padding:12px 20px;font-size:13px;font-weight:700;color:var(--text3);cursor:pointer;border:none;background:none;font-family:'Noto Sans KR',sans-serif;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+.admin-tab.on{color:var(--teal);border-bottom-color:var(--teal);background:#fff}
+.admin-content{padding:24px 28px}
+.admin-zone-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:14px}
+.admin-zone-card h4{font-size:14px;font-weight:700;color:var(--teal-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.az-toggle{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.az-toggle label{font-size:13px;color:var(--text2);font-weight:600}
+.toggle-sw{appearance:none;width:42px;height:22px;background:#ccc;border-radius:50px;cursor:pointer;position:relative;transition:background 0.2s}
+.toggle-sw:checked{background:var(--teal)}
+.toggle-sw::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left 0.2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle-sw:checked::after{left:23px}
+.az-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.az-field{display:flex;flex-direction:column;gap:4px}
+.az-field label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.az-field input,.az-field select{padding:8px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:border 0.2s}
+.az-field input:focus{border-color:var(--teal)}
+.az-field.full{grid-column:1/-1}
+.admin-save-btn{width:100%;padding:13px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:8px;transition:background 0.2s}
+.admin-save-btn:hover{background:var(--teal-dark)}
+.admin-hint{font-size:12px;color:var(--text3);margin-top:4px;line-height:1.6}
+.admin-trigger{position:fixed;bottom:80px;right:16px;width:44px;height:44px;background:var(--teal-dark);color:#fff;border:none;border-radius:50%;cursor:pointer;font-size:18px;z-index:1400;box-shadow:0 3px 14px rgba(0,0,0,0.25);display:none;align-items:center;justify-content:center;transition:transform 0.2s}
+.admin-trigger:hover{transform:scale(1.1)}
+.admin-trigger.show{display:flex}
+
+/* ── 광고 비활성 시 숨김 ── */
+.ad-zone.hidden{display:none!important}
+
+/* ── 반응형 광고 ── */
+@media(max-width:900px){
+  .content-with-sidebar{grid-template-columns:1fr}
+  .ad-sidebar{display:none}
+  .ad-mid-row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .ad-header-strip .ad-zone{height:60px}
+  .ad-section-strip .ad-zone{height:60px}
+  .ad-inline .ad-zone{height:60px}
+  .ad-prefooter .ad-zone{height:60px}
+  .floating-inner{height:60px}
+  .az-fields{grid-template-columns:1fr}
+}
+
+/* ───────── RESPONSIVE ───────── */
+@media(max-width:900px){
+  nav{display:none}
+  .header-right .btn-login,.header-right .btn-join{display:none}
+  .hamburger{display:flex}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .about-grid{grid-template-columns:1fr}
+  .vision-cards{grid-template-columns:1fr 1fr}
+  .fg-row{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .quick-inner{grid-template-columns:repeat(3,1fr);grid-template-rows:auto auto}
+  .quick-item:nth-child(4),.quick-item:nth-child(5){border-right:none}
+  .quick-item:nth-child(3){border-right:none}
+  .hero{padding:60px 20px}
+  .hero-stats{gap:20px}
+  .footer-top{grid-template-columns:1fr}
+  .footer-col:not(:first-child){display:none}
+  .vision-cards{grid-template-columns:1fr}
+  .org-row{gap:8px}
+  .topbar{display:none}
+}
+
+/* ───────── MY PAGE ───────── */
+.mypage-grid { display: grid; grid-template-columns: 280px 1fr; gap: 24px; }
+.profile-card { background: #fff; border-radius: 16px; padding: 32px; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; height: fit-content; }
+.profile-avatar { width: 80px; height: 80px; background: var(--teal); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 900; margin: 0 auto 16px; }
+.profile-name { font-size: 20px; font-weight: 700; color: var(--teal-dark); margin-bottom: 4px; }
+.profile-biz { font-size: 14px; color: var(--text3); margin-bottom: 20px; }
+.profile-info { text-align: left; border-top: 1px solid var(--border); padding-top: 20px; }
+.pi-item { margin-bottom: 12px; font-size: 13.5px; }
+.pi-label { color: var(--text3); font-weight: 600; margin-bottom: 2px; }
+.pi-value { color: var(--text); font-weight: 700; }
+
+.mypage-content { display: flex; flex-direction: column; gap: 24px; }
+.mp-section { background: #fff; border-radius: 16px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+.mp-title { font-size: 17px; font-weight: 700; color: var(--teal-dark); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--teal-xlight); padding-bottom: 10px; }
+.app-list { display: flex; flex-direction: column; gap: 12px; }
+.app-item { padding: 16px; border: 1px solid var(--border); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s; }
+.app-item:hover { background: var(--teal-xlight); }
+.app-info { display: flex; flex-direction: column; gap: 4px; }
+.app-name { font-weight: 700; font-size: 15px; }
+.app-date { font-size: 12px; color: var(--text3); }
+.app-status { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 50px; }
+.status-ing { background: var(--blue-light); color: var(--blue); }
+.status-done { background: var(--green-light); color: var(--green); }
+
+@media (max-width: 900px) {
+  .mypage-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT WING BANNER -->
+<div class="side-wing-banner left" id="leftWingBanner">
+  <div class="wing-content">
+    <div class="wing-head">빠른 메뉴 <button class="wing-close" onclick="closeWing('left')">✕</button></div>
+    <div class="wing-body">
+      <a class="wing-item" onclick="showPage('support')">
+        <span class="wing-icon">💰</span>
+        <span class="wing-label">지원사업</span>
+      </a>
+      <a class="wing-item" onclick="showPage('join')">
+        <span class="wing-icon">📝</span>
+        <span class="wing-label">회원가입</span>
+      </a>
+      <a class="wing-item" onclick="showPage('inquiry')">
+        <span class="wing-icon">✉️</span>
+        <span class="wing-label">문의하기</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT WING BANNER -->
+<div class="side-wing-banner right" id="rightWingBanner">
+  <div class="wing-content">
+    <div class="wing-head">상담문의 <button class="wing-close" onclick="closeWing('right')">✕</button></div>
+    <div class="wing-body">
+      <div class="wing-item">
+        <span class="wing-icon">📞</span>
+        <span class="wing-label">02-0000-0000</span>
+      </div>
+      <div class="wing-item">
+        <span class="wing-icon">💬</span>
+        <span class="wing-label">카톡상담</span>
+      </div>
+      <button class="wing-btn-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">TOP ▲</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>📍 서울특별시 마포구 소상공인연합회 공식 웹사이트</span>
+    <div class="topbar-links">
+      <a href="tel:02-0000-0000">📞 02-0000-0000</a>
+      <a href="mailto:mapo@kfme.or.kr">✉ mapo@kfme.or.kr</a>
+    </div>
+  </div>
+</div>
+
+<!-- ① 헤더 하단 리더보드 광고 (728×90) -->
+<div class="ad-header-strip" id="adZone-header-strip">
+  <div class="ad-zone" id="adEl-header-strip">
+    <span class="ad-label">광고</span>
+    <button class="ad-edit-btn" onclick="openAdAdmin('header-strip')">✏️ 광고 설정</button>
+    <a class="ad-inner" id="adLink-header-strip" href="#" target="_blank" rel="noopener">
+      <div class="ad-placeholder">
+        <div class="ap-icon">🖼️</div>
+        <div class="ap-text">헤더 광고 배너</div>
+        <div class="ap-size">728 × 90 px · 리더보드</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" onclick="showPage('home')">
+      <div class="logo-icon">마</div>
+      <div class="logo-text">
+        <div class="main">마포구 소상공인연합회</div>
+        <div class="sub">Mapo Small Business Association</div>
+      </div>
+    </a>
+    <nav>
+      <div class="nav-item">
+        <button class="nav-link" onclick="showPage('about')">소개
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dropdown">
+          <a class="drop-link" onclick="showPage('about','vision')">연합회 소개</a>
+          <a class="drop-link" onclick="showPage('about','org')">조직도</a>
+          <a class="drop-link" onclick="showPage('about','history')">연혁</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link" onclick="showPage('notice')">공지
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dropdown">
+          <a class="drop-link" onclick="showPage('notice','all')">전체 공지</a>
+          <a class="drop-link" onclick="showPage('support')">지원사업</a>
+          <a class="drop-link" onclick="showPage('events')">행사·교육</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link" onclick="showPage('activity')">활동정리
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dropdown">
+          <a class="drop-link" onclick="showPage('activity','world')">세계적 행사</a>
+          <a class="drop-link" onclick="showPage('activity','gallery')">사진·영상</a>
+          <a class="drop-link" onclick="showPage('activity','press')">언론보도·뉴스</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button class="nav-link" onclick="showPage('sponsor')">후원 및 제휴
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div class="dropdown">
+          <a class="drop-link" onclick="showPage('sponsor','sponsor')">후원 안내</a>
+          <a class="drop-link" onclick="showPage('sponsor','partner')">제휴 안내</a>
+        </div>
+      </div>
+      <button class="nav-link" onclick="showPage('inquiry')">문의하기</button>
+    </nav>
+    <div class="header-right">
+      <div id="authArea">
+        <button class="btn-login" onclick="openModal('authModal')">로그인</button>
+        <button class="btn-join" onclick="openModal('authModal','join')">회원가입</button>
+      </div>
+    </div>
+    <button class="hamburger" onclick="toggleMobileNav()" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-header">
+    <div class="logo">
+      <div class="logo-icon">마</div>
+      <div class="logo-text"><div class="main">마포구 소상공인연합회</div></div>
+    </div>
+    <button class="close-nav" onclick="toggleMobileNav()">✕</button>
+  </div>
+  <div id="mobileAuthArea">
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button class="btn-outline" style="flex:1" onclick="openModal('authModal');toggleMobileNav()">로그인</button>
+      <button class="btn-form" style="flex:1;padding:11px" onclick="openModal('authModal','join');toggleMobileNav()">회원가입</button>
+    </div>
+  </div>
+  <div class="mobile-menu-item" onclick="showPage('about');toggleMobileNav()">소개 <span>›</span></div>
+  <div class="mobile-menu-item" onclick="showPage('notice');toggleMobileNav()">공지 <span>›</span></div>
+  <div class="mobile-menu-item" onclick="showPage('support');toggleMobileNav()">지원사업 <span>›</span></div>
+  <div class="mobile-menu-item" onclick="showPage('events');toggleMobileNav()">행사·교육 <span>›</span></div>
+  <div class="mobile-menu-item" onclick="showPage('activity');toggleMobileNav()">활동정리 <span>›</span></div>
+  <div class="mobile-menu-item" onclick="showPage('sponsor');toggleMobileNav()">후원 및 제휴 <span>›</span></div>
+  <div class="mobile-menu-item" onclick="showPage('inquiry');toggleMobileNav()">문의하기 <span>›</span></div>
+</div>
+
+<!-- ═══════════ PAGES ═══════════ -->
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">마포구 소상공인연합회 공식 사이트</div>
+      <h1>지역 소상공인의<br><em>성장과 번영을 함께</em></h1>
+      <p>마포구 소상공인연합회는 지역 소상공인의 권익 보호와 경영 지원을 위해 함께합니다. 다양한 지원사업과 교육, 네트워킹 프로그램으로 여러분의 사업을 응원합니다.</p>
+      <div class="hero-btns">
+        <button class="hero-btn primary" onclick="showPage('join')">회원 가입하기</button>
+        <button class="hero-btn secondary" onclick="showPage('support')">지원사업 보기</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="num">2,400+</div><div class="lbl">회원사</div></div>
+        <div class="hero-stat"><div class="num">15년</div><div class="lbl">운영 연혁</div></div>
+        <div class="hero-stat"><div class="num">120+</div><div class="lbl">연간 지원사업</div></div>
+        <div class="hero-stat"><div class="num">98%</div><div class="lbl">회원 만족도</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK ACCESS -->
+  <div class="quick-access">
+    <div class="quick-inner">
+      <a class="quick-item" onclick="showPage('support')"><div class="qi-icon">💰</div><div class="qi-label">지원사업<br>신청</div></a>
+      <a class="quick-item" onclick="showPage('events')"><div class="qi-icon">📅</div><div class="qi-label">행사·교육<br>참가 신청</div></a>
+      <a class="quick-item" onclick="showPage('notice')"><div class="qi-icon">📢</div><div class="qi-label">공지사항<br>확인</div></a>
+      <a class="quick-item" onclick="showPage('inquiry')"><div class="qi-icon">💬</div><div class="qi-label">문의하기</div></a>
+      <a class="quick-item" onclick="showPage('join')"><div class="qi-icon">👥</div><div class="qi-label">회원가입</div></a>
+    </div>
+  </div>
+
+  <!-- LATEST NOTICES -->
+  <div class="section" style="background:#fff">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-title"><span>LATEST NEWS</span>최신 공지·뉴스</div>
+        <a class="more-link" onclick="showPage('notice')">전체보기 →</a>
+      </div>
+      <div class="notice-grid" id="homeNotices"></div>
+    </div>
+  </div>
+
+  <!-- ② 섹션간 광고 스트립 (970×90) -->
+  <div class="ad-section-strip" id="adZone-section-strip">
+    <div class="ad-zone" id="adEl-section-strip">
+      <span class="ad-label">광고</span>
+      <button class="ad-edit-btn" onclick="openAdAdmin('section-strip')">✏️ 광고 설정</button>
+      <a class="ad-inner" id="adLink-section-strip" href="#" target="_blank" rel="noopener">
+        <div class="ad-placeholder">
+          <div class="ap-icon">📢</div>
+          <div class="ap-text">섹션 광고 배너</div>
+          <div class="ap-size">970 × 90 px · 빌보드</div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- EVENTS -->
+  <div class="section">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-title"><span>UPCOMING EVENTS</span>주요 행사·교육</div>
+        <a class="more-link" onclick="showPage('events')">전체보기 →</a>
+      </div>
+      <div class="event-grid" id="homeEvents"></div>
+    </div>
+  </div>
+
+  <!-- ③ 미드 광고 2컬럼 (300×250 × 2) -->
+  <div class="section" style="padding-top:0;padding-bottom:0">
+    <div class="section-inner">
+      <div class="ad-mid-row">
+        <div class="ad-zone" id="adEl-mid-left">
+          <span class="ad-label">광고</span>
+          <button class="ad-edit-btn" onclick="openAdAdmin('mid-left')">✏️ 광고 설정</button>
+          <a class="ad-inner" id="adLink-mid-left" href="#" target="_blank" rel="noopener">
+            <div class="ad-placeholder">
+              <div class="ap-icon">🏪</div>
+              <div class="ap-text">미드 광고 (좌)</div>
+              <div class="ap-size">300 × 250 px · 레크탱글</div>
+            </div>
+          </a>
+        </div>
+        <div class="ad-zone" id="adEl-mid-right">
+          <span class="ad-label">광고</span>
+          <button class="ad-edit-btn" onclick="openAdAdmin('mid-right')">✏️ 광고 설정</button>
+          <a class="ad-inner" id="adLink-mid-right" href="#" target="_blank" rel="noopener">
+            <div class="ad-placeholder">
+              <div class="ap-icon">🏪</div>
+              <div class="ap-text">미드 광고 (우)</div>
+              <div class="ap-size">300 × 250 px · 레크탱글</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPORT CTA -->
+  <div class="section" style="padding-top:0">
+    <div class="section-inner">
+      <div class="cta-banner">
+        <h2>🏛️ 2025년 소상공인 지원사업 안내</h2>
+        <p>정부 및 서울시 지원사업 공고를 실시간으로 확인하고 온라인으로 신청하세요.</p>
+        <button class="hero-btn primary" onclick="showPage('support')">지원사업 바로가기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEMBERS TEASER -->
+  <div class="section" style="background:#fff;padding-top:56px">
+    <div class="section-inner">
+      <div class="section-head">
+        <div class="section-title"><span>OUR MEMBERS</span>회원사 소개</div>
+        <a class="more-link" onclick="showPage('about','members')">전체보기 →</a>
+      </div>
+      <div class="member-grid" id="homeMembersTeaser"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="page-header"><h2>연합회 소개</h2><p>마포구 소상공인연합회를 소개합니다</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 소개</div></div>
+  <div class="section">
+    <div class="section-inner">
+      <div class="vision-cards">
+        <div class="vision-card"><div class="vision-icon">🎯</div><div class="vision-title">미션</div><div class="vision-desc">소상공인의 권익 보호 및 지속 가능한 경영 환경 조성</div></div>
+        <div class="vision-card"><div class="vision-icon">🌱</div><div class="vision-title">비전</div><div class="vision-desc">마포를 대표하는 소상공인 허브 생태계 구축</div></div>
+        <div class="vision-card"><div class="vision-icon">💪</div><div class="vision-title">핵심가치</div><div class="vision-desc">상호협력 · 공정경쟁 · 지역사회 기여</div></div>
+      </div>
+      <div class="about-grid">
+        <div class="about-box">
+          <h3>🏢 연합회 소개</h3>
+          <p>마포구 소상공인연합회는 2009년 설립된 마포구 지역 소상공인의 공식 대표 단체입니다. 2,400여 회원사와 함께 지역 상권 활성화, 경영 지원, 정책 건의 등 다양한 활동을 펼치고 있습니다.</p>
+          <br><p>홍대·합정·상암 등 마포구의 특색 있는 상권을 배경으로 다양한 업종의 소상공인들이 함께 성장하는 플랫폼을 지향합니다.</p>
+        </div>
+        <div class="about-box">
+          <h3>📋 주요 활동</h3>
+          <ul>
+            <li>정부·서울시 지원사업 정보 제공 및 신청 지원</li>
+            <li>경영컨설팅 및 세무·법무 무료 상담</li>
+            <li>소상공인 역량강화 교육·세미나</li>
+            <li>지역 상권 활성화 행사 기획·운영</li>
+            <li>회원사 네트워킹 및 협업 지원</li>
+            <li>소상공인 권익보호 정책 건의</li>
+          </ul>
+        </div>
+      </div>
+      <div class="org-chart">
+        <h3>🗂️ 조직도</h3>
+        <div class="org-top"><div class="org-box">회장</div></div>
+        <div class="org-connector"></div>
+        <div class="org-row">
+          <div class="org-box sm">부회장</div>
+          <div class="org-box sm">사무국장</div>
+          <div class="org-box sm">감사</div>
+        </div>
+        <div class="org-connector"></div>
+        <div class="org-row">
+          <div class="org-box sm" style="font-size:12px">지원사업팀</div>
+          <div class="org-box sm" style="font-size:12px">교육홍보팀</div>
+          <div class="org-box sm" style="font-size:12px">회원관리팀</div>
+          <div class="org-box sm" style="font-size:12px">정책건의팀</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NOTICE -->
+<div id="page-notice" class="page">
+  <div class="page-header"><h2>공지사항</h2><p>연합회 소식과 공지를 확인하세요</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 공지사항</div></div>
+  <!-- ⑤ 인라인 광고 (728×90) -->
+  <div class="ad-inline" style="padding:20px 20px 0" id="adZone-inline-notice">
+    <div class="ad-zone" id="adEl-inline-notice">
+      <span class="ad-label">광고</span>
+      <button class="ad-edit-btn" onclick="openAdAdmin('inline-notice')">✏️ 광고 설정</button>
+      <a class="ad-inner" id="adLink-inline-notice" href="#" target="_blank" rel="noopener">
+        <div class="ad-placeholder">
+          <div class="ap-icon">📋</div>
+          <div class="ap-text">공지사항 상단 광고</div>
+          <div class="ap-size">728 × 90 px</div>
+        </div>
+      </a>
+    </div>
+  </div>
+  <div class="list-wrap" id="noticeList"></div>
+</div>
+
+<!-- NOTICE DETAIL -->
+<div id="page-notice-detail" class="page">
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › <a onclick="showPage('notice')">공지사항</a> › 상세보기</div></div>
+  <div class="content-with-sidebar">
+    <div>
+      <div class="detail-wrap" style="padding:24px 0 0">
+        <div class="detail-head">
+          <div class="detail-tag-row" id="detailTags"></div>
+          <div class="detail-title" id="detailTitle"></div>
+          <div class="detail-meta" id="detailMeta"></div>
+        </div>
+        <div class="detail-body" id="detailBody"></div>
+        <div class="comment-section">
+          <div class="comment-title">💬 댓글 <span id="commentCount">0</span>개</div>
+          <div class="comment-form">
+            <textarea id="commentInput" rows="2" placeholder="로그인 후 댓글을 작성하세요..."></textarea>
+            <button class="btn-comment" onclick="submitComment()">등록</button>
+          </div>
+          <div id="commentList"></div>
+        </div>
+        <div style="text-align:center;margin-top:16px">
+          <button class="btn-outline" style="width:auto;padding:10px 28px" onclick="showPage('notice')">← 목록으로</button>
+        </div>
+      </div>
+    </div>
+    <!-- ④ 사이드바 광고 (160×600) -->
+    <div class="ad-sidebar">
+      <div class="ad-zone" id="adEl-sidebar" style="margin-bottom:16px">
+        <span class="ad-label">광고</span>
+        <button class="ad-edit-btn" onclick="openAdAdmin('sidebar')">✏️ 설정</button>
+        <a class="ad-inner" id="adLink-sidebar" href="#" target="_blank" rel="noopener" style="flex-direction:column">
+          <div class="ad-placeholder" style="border-radius:10px;height:100%">
+            <div class="ap-icon">📌</div>
+            <div class="ap-text" style="text-align:center">사이드<br>광고</div>
+            <div class="ap-size">160×600</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORT -->
+<div id="page-support" class="page">
+  <div class="page-header"><h2>지원사업</h2><p>소상공인을 위한 다양한 지원사업을 안내합니다</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 지원사업</div></div>
+  <div class="section">
+    <div class="section-inner">
+      <div class="support-grid" id="supportGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<div id="page-events" class="page">
+  <div class="page-header"><h2>행사·교육</h2><p>다양한 행사와 교육 프로그램에 참여하세요</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 행사·교육</div></div>
+  <div class="section">
+    <div class="section-inner">
+      <div class="event-grid" id="eventsGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACTIVITY -->
+<div id="page-activity" class="page">
+  <div class="page-header"><h2>활동정리</h2><p>연합회의 다양한 활동을 소개합니다</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 활동정리</div></div>
+  <div class="section">
+    <div class="section-inner">
+      <div class="section-head"><div class="section-title"><span>GALLERY</span>사진·영상</div></div>
+      <div class="gallery-grid">
+        <div class="gallery-item">🏪<div class="gallery-overlay"><span>2024 마포 소상공인 한마당</span></div></div>
+        <div class="gallery-item">🎓<div class="gallery-overlay"><span>경영 역량강화 교육</span></div></div>
+        <div class="gallery-item">🤝<div class="gallery-overlay"><span>회원사 네트워킹 데이</span></div></div>
+        <div class="gallery-item">🌍<div class="gallery-overlay"><span>글로벌 시장 개척단</span></div></div>
+        <div class="gallery-item">📊<div class="gallery-overlay"><span>정책 간담회</span></div></div>
+        <div class="gallery-item">🎉<div class="gallery-overlay"><span>연합회 창립 15주년</span></div></div>
+        <div class="gallery-item">🏆<div class="gallery-overlay"><span>우수 소상공인 시상식</span></div></div>
+        <div class="gallery-item">📸<div class="gallery-overlay"><span>홍대 상권 축제</span></div></div>
+      </div>
+      <div style="margin-top:40px">
+        <div class="section-head"><div class="section-title"><span>PRESS</span>언론보도·뉴스</div></div>
+        <div id="pressList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPONSOR -->
+<div id="page-sponsor" class="page">
+  <div class="page-header"><h2>후원 및 제휴</h2><p>함께 성장하는 파트너십을 제안합니다</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 후원 및 제휴</div></div>
+  <div class="section">
+    <div class="section-inner">
+      <div class="form-wrap" style="margin-bottom:28px">
+        <p style="font-size:15px;color:var(--text2);line-height:1.8">마포구 소상공인연합회와 함께 지역 소상공인의 성장을 지원하는 후원자·제휴사를 모집합니다. 후원과 제휴를 통해 지역사회에 기여하고, 다양한 홍보 혜택을 누리세요.</p>
+      </div>
+      <div class="section-title" style="margin-bottom:18px"><span>SPONSORSHIP</span>후원 등급</div>
+      <div class="sponsor-tiers">
+        <div class="sponsor-tier" style="border-color:#FFD700">
+          <h4>🥇 골드 후원</h4>
+          <p>연 500만원 이상 후원사에게 제공되는 최상위 파트너십</p>
+          <div class="sponsor-benefits">
+            <span class="benefit-tag">로고 메인 노출</span>
+            <span class="benefit-tag">공식 행사 VIP 초청</span>
+            <span class="benefit-tag">회원사 홍보관 운영</span>
+            <span class="benefit-tag">뉴스레터 광고</span>
+          </div>
+        </div>
+        <div class="sponsor-tier" style="border-color:#C0C0C0">
+          <h4>🥈 실버 후원</h4>
+          <p>연 200만원 이상 후원사를 위한 파트너십</p>
+          <div class="sponsor-benefits">
+            <span class="benefit-tag">로고 사이드바 노출</span>
+            <span class="benefit-tag">행사 초청</span>
+            <span class="benefit-tag">홍보자료 배포</span>
+          </div>
+        </div>
+        <div class="sponsor-tier">
+          <h4>🤝 일반 제휴</h4>
+          <p>업무 협약을 통한 상호 협력 파트너십</p>
+          <div class="sponsor-benefits">
+            <span class="benefit-tag">회원 할인 제공</span>
+            <span class="benefit-tag">공동 프로모션</span>
+            <span class="benefit-tag">정보 교류</span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:28px">
+        <div class="form-wrap">
+          <div class="form-title">📩 후원·제휴 문의</div>
+          <div class="fg"><label>기관·업체명 <span class="req">*</span></label><input type="text" id="sp_biz" placeholder="기관 또는 업체명"></div>
+          <div class="fg-row">
+            <div class="fg"><label>담당자명 <span class="req">*</span></label><input type="text" id="sp_name" placeholder="성함"></div>
+            <div class="fg"><label>연락처 <span class="req">*</span></label><input type="tel" id="sp_phone" placeholder="010-0000-0000"></div>
+          </div>
+          <div class="fg"><label>문의 유형</label>
+            <select id="sp_type">
+              <option value="">-- 선택 --</option>
+              <option>골드 후원</option>
+              <option>실버 후원</option>
+              <option>일반 제휴</option>
+            </select>
+          </div>
+          <div class="fg"><label>내용</label><textarea id="sp_content" rows="4" placeholder="후원 또는 제휴 관련 문의 내용을 입력하세요"></textarea></div>
+          <button class="btn-form" onclick="submitSponsorshipInquiry()">문의 접수하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INQUIRY -->
+<div id="page-inquiry" class="page">
+  <div class="page-header"><h2>문의하기</h2><p>궁금하신 사항을 문의해 주세요</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 문의하기</div></div>
+  <div class="list-wrap">
+    <div class="form-wrap">
+      <div class="form-title">✉️ 문의하기</div>
+      <div id="inquiryMsg" class="form-msg"></div>
+      <div class="fg-row">
+        <div class="fg"><label>성함 <span class="req">*</span></label><input type="text" id="inqName" placeholder="홍길동"></div>
+        <div class="fg"><label>연락처 <span class="req">*</span></label><input type="tel" id="inqPhone" placeholder="010-0000-0000"></div>
+      </div>
+      <div class="fg"><label>이메일</label><input type="email" id="inqEmail" placeholder="example@email.com"></div>
+      <div class="fg"><label>문의 유형 <span class="req">*</span></label>
+        <select id="inqType">
+          <option value="">-- 선택해주세요 --</option>
+          <option>회원가입 문의</option>
+          <option>지원사업 문의</option>
+          <option>행사·교육 문의</option>
+          <option>후원·제휴 문의</option>
+          <option>기타 문의</option>
+        </select>
+      </div>
+      <div class="fg"><label>제목 <span class="req">*</span></label><input type="text" id="inqSubject" placeholder="문의 제목을 입력해주세요"></div>
+      <div class="fg"><label>내용 <span class="req">*</span></label><textarea id="inqContent" rows="5" placeholder="문의 내용을 자세히 입력해주세요"></textarea></div>
+      <button class="btn-form" onclick="submitInquiry()">문의 접수하기</button>
+    </div>
+    <div class="form-wrap" style="background:var(--teal-xlight);border:1px solid var(--border)">
+      <div class="form-title" style="border-color:rgba(11,110,110,0.2)">📍 연락처 정보</div>
+      <p style="font-size:14px;color:var(--text2);line-height:2.2">
+        <strong>고유번호:</strong> 622-82-72824 &nbsp;|&nbsp; <strong>대표자:</strong> 이태진<br>
+        <strong>전화:</strong> 02-336-7282<br>
+        <strong>팩스:</strong> 050-4926-0027<br>
+        <strong>이메일:</strong> kfme_mapo@naver.com<br>
+        <strong>주소:</strong> 서울특별시 마포구 홍익로3길 20,지층 4호(서교동)<br>
+        <strong>운영시간:</strong> 평일 09:00 – 18:00 (점심 12:00–13:00)
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- JOIN -->
+<div id="page-join" class="page">
+  <div class="page-header"><h2>회원가입</h2><p>마포구 소상공인연합회 회원이 되어주세요</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 회원가입</div></div>
+  <div class="list-wrap">
+    <div class="form-wrap">
+      <div class="form-title">📝 지역회원 가입신청 (소상공인)</div>
+      <div style="background:var(--teal-xlight);border-radius:10px;padding:16px;margin:10px 0 20px;font-size:13px;color:var(--text2);line-height:1.8;border-left:3px solid var(--teal)">
+        <strong style="color:var(--teal-dark)">계정 정보</strong><br>
+        홈페이지 로그인 및 마이페이지 관리를 위한 정보를 입력하세요.
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>로그인 이메일 <span class="req">*</span></label><input type="email" id="j_login_email" placeholder="example@naver.com" oninput="syncEmail(this.value)"></div>
+        <div class="fg"><label>로그인 비밀번호 <span class="req">*</span></label><input type="password" id="j_login_pw" placeholder="6자 이상 입력"></div>
+      </div>
+      <div class="fg">
+        <label>사업자 구분</label>
+        <div style="display:flex;gap:20px;padding:4px 0;flex-wrap:nowrap">
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;color:var(--text2);white-space:nowrap"><input type="radio" name="biz" value="개인" checked> 개인사업자</label>
+          <label style="display:flex;align-items:center;gap:8px;font-weight:400;color:var(--text2);white-space:nowrap"><input type="radio" name="biz" value="법인"> 법인사업자</label>
+        </div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>이름(한글) <span class="req">*</span></label><input type="text" id="j_name" placeholder="홍길동"></div>
+        <div class="fg"><label>성별 <span class="req">*</span></label>
+          <div style="display:flex;gap:16px;padding:4px 0">
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;color:var(--text2)"><input type="radio" name="gender" value="남"> 남</label>
+            <label style="display:flex;align-items:center;gap:6px;font-weight:400;color:var(--text2)"><input type="radio" name="gender" value="여"> 여</label>
+          </div>
+        </div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>휴대폰 <span class="req">*</span></label><input type="tel" id="j_phone" placeholder="010-0000-0000"></div>
+        <div class="fg"><label>생년월일 <span class="req">*</span></label><input type="text" id="j_birth" placeholder="19800101"></div>
+      </div>
+      <div class="fg"><label>이메일 <span class="req">*</span></label>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="text" id="j_emailid" placeholder="아이디">
+          <span style="color:var(--text3);font-size:18px">@</span>
+          <input type="text" id="j_emaildom" placeholder="도메인 (예: naver.com)">
+        </div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>사업자등록번호 <span class="req">*</span></label><input type="text" id="j_bno" placeholder="000-00-00000"></div>
+        <div class="fg"><label>업태</label><input type="text" placeholder="예: 도·소매업"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>업체명 <span class="req">*</span></label><input type="text" id="j_bname" placeholder="상호명"></div>
+        <div class="fg"><label>종목</label><input type="text" placeholder="예: 음식점"></div>
+      </div>
+      <div class="fg">
+        <label>업체주소 <span class="req">*</span></label>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <input type="text" id="j_zip" placeholder="우편번호" readonly style="width:120px; background:#f8f8f8">
+          <button type="button" class="btn-outline" style="padding:0 15px; height:42px; font-size:13px;" onclick="execDaumPostcode()">주소 찾기</button>
+        </div>
+        <input type="text" id="j_address" placeholder="기본 주소" readonly style="background:#f8f8f8; margin-bottom:8px;">
+        <input type="text" id="j_address_detail" placeholder="상세 주소를 입력하세요">
+      </div>
+      <div style="background:var(--teal-xlight);border-radius:10px;padding:16px;margin:10px 0 16px;font-size:13px;color:var(--text2);line-height:1.8;border-left:3px solid var(--teal)">
+        <strong style="color:var(--teal-dark)">납부정보 (CMS 자동이체)</strong><br>
+        납부방법: CMS 자동이체 · 결제일: 매월 5일<br>
+        ※ 법인통장인 경우 생년월일 대신 사업자등록번호 기재
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>월 납부금액 <span class="req">*</span></label><input type="number" placeholder="금액 (원)"></div>
+        <div class="fg"><label>예금주 <span class="req">*</span></label><input type="text" placeholder="예금주명"></div>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>예금주 생년월일</label><input type="text" placeholder="YYYYMMDD"></div>
+        <div class="fg"><label>은행명 <span class="req">*</span></label>
+          <select id="j_bank" onchange="toggleOtherBank(this.value)">
+            <option value="">-- 선택 --</option>
+            <option>국민은행</option><option>신한은행</option><option>우리은행</option>
+            <option>하나은행</option><option>농협은행</option><option>기업은행</option>
+            <option>카카오뱅크</option><option>케이뱅크</option><option>토스뱅크</option>
+            <option>새마을금고</option><option>우체국</option><option value="기타">기타 (직접입력)</option>
+          </select>
+          <input type="text" id="j_bank_other" placeholder="은행명을 입력하세요" style="display:none; margin-top:8px;">
+        </div>
+      </div>
+      <div class="fg"><label>계좌번호 <span class="req">*</span></label><input type="text" placeholder="- 없이 숫자만"></div>
+      <div style="background:#F8F9FA;border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text)">개인정보 수집 및 이용 동의</strong><br>
+        수집 항목: 성명, 생년월일, 연락처, 이메일, 사업자정보, 계좌정보<br>
+        수집 목적: 회원 가입 및 관리, 회비 자동이체 처리 · 보유 기간: 탈퇴 시까지
+        <div style="display:flex;gap:20px;margin-top:10px">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:700;color:var(--teal)"><input type="radio" name="consent" value="agree"> 동의합니다</label>
+          <label style="display:flex;align-items:center;gap:6px"><input type="radio" name="consent" value="disagree"> 동의하지 않습니다</label>
+        </div>
+      </div>
+      <button class="btn-form" onclick="submitJoin()">가입 신청하기</button>
+      <div style="text-align:center;margin-top:12px;font-size:13px;color:var(--text3)">
+        이메일: <a href="mailto:kfme_mapo@naver.com" style="color:var(--teal)">kfme_mapo@naver.com</a> · 팩스: 050-4926-0027
+      </div>    </div>
+  </div>
+</div>
+
+<!-- MY PAGE -->
+<div id="page-mypage" class="page">
+  <div class="page-header"><h2>마이페이지</h2><p>나의 정보를 확인하고 활동 내역을 관리하세요</p></div>
+  <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 마이페이지</div></div>
+  <div class="section">
+    <div class="section-inner">
+      <div class="mypage-grid">
+        <!-- Sidebar: Profile Info -->
+        <div class="profile-card">
+          <div class="profile-avatar" id="mp-avatar">U</div>
+          <div class="profile-name" id="mp-name">사용자명</div>
+          <div class="profile-biz" id="mp-biz">업체명</div>
+          <div style="margin-bottom:15px"><span id="mp-level-badge" class="app-status status-ing">홈페이지 회원</span></div>
+          <div class="profile-info">
+            <div class="pi-item"><div class="pi-label">CMS 상태</div><div class="pi-value" id="mp-cms-status">-</div></div>
+            <div class="pi-item"><div class="pi-label">이메일</div><div class="pi-value" id="mp-email">-</div></div>
+            <div class="pi-item"><div class="pi-label">연락처</div><div class="pi-value" id="mp-phone">-</div></div>
+            <div class="pi-item"><div class="pi-label">가입일</div><div class="pi-value" id="mp-joinDate">-</div></div>
+          </div>
+          <button class="btn-outline" style="margin-top:20px; width:100%;" onclick="openModal('profileEditModal')">정보 수정</button>
+        </div>
+
+        <!-- Main: Activities -->
+        <div class="mypage-content">
+          <!-- Business Info Section (For Level 2+) -->
+          <div class="mp-section" id="mp-biz-section" style="display:none">
+            <div class="mp-title">🏢 상세 사업자 정보</div>
+            <div id="bizMsg" class="form-msg"></div>
+            <div class="form-wrap" style="box-shadow:none; padding:0; border:none">
+              <div class="fg-row">
+                <div class="fg"><label>사업자 구분</label><input type="text" id="mb-bizType" readonly style="background:#f8f8f8"></div>
+                <div class="fg"><label>사업자등록번호</label><input type="text" id="mb-bno" placeholder="000-00-00000"></div>
+              </div>
+              <div class="fg-row">
+                <div class="fg"><label>상호명</label><input type="text" id="mb-bname" readonly style="background:#f8f8f8"></div>
+                <div class="fg"><label>업태/종목</label><input type="text" id="mb-category" placeholder="도소매/음식점"></div>
+              </div>
+              <div class="fg"><label>사업장 주소</label><input type="text" id="mb-address" placeholder="전체 주소 입력"></div>
+              <div style="background:var(--teal-xlight);border-radius:10px;padding:12px;margin:10px 0;font-size:12px;color:var(--text2)">
+                <strong>결제 정보 (CMS 자동이체 계좌)</strong>
+              </div>
+              <div class="fg-row">
+                <div class="fg">
+                  <label>은행명</label>
+                  <select id="mb-bank" onchange="toggleOtherBank(this.value, 'mb-bank-other')">
+                    <option value="">-- 선택 --</option>
+                    <option>국민은행</option><option>신한은행</option><option>우리은행</option>
+                    <option>하나은행</option><option>농협은행</option><option>기업은행</option>
+                    <option>카카오뱅크</option><option>케이뱅크</option><option>토스뱅크</option>
+                    <option>새마을금고</option><option>우체국</option><option value="기타">기타 (직접입력)</option>
+                  </select>
+                  <input type="text" id="mb-bank-other" placeholder="은행명을 입력하세요" style="display:none; margin-top:8px;">
+                </div>
+                <div class="fg"><label>계좌번호</label><input type="text" id="mb-account" placeholder="계좌번호 (- 없이)"></div>
+              </div>
+              <button class="btn-form" onclick="updateBizInfo()">사업자 정보 업데이트</button>
+            </div>
+          </div>
+
+          <div class="mp-section">
+            <div class="mp-title">💰 지원사업 신청 내역</div>
+            <div class="app-list" id="mp-support-list">
+              <div class="comment-empty">신청한 지원사업이 없습니다.</div>
+            </div>
+          </div>
+          <div class="mp-section">
+            <div class="mp-title">📅 행사·교육 참가 내역</div>
+            <div class="app-list" id="mp-event-list">
+              <div class="comment-empty">참가 신청한 행사가 없습니다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE EDIT MODAL -->
+<div class="modal-overlay" id="profileEditModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>회원 정보 수정</h3>
+      <button class="modal-close-btn" onclick="closeModal('profileEditModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="editMsg" class="form-msg"></div>
+      <div class="fg"><label>이름 <span class="req">*</span></label><input type="text" id="editName" placeholder="홍길동"></div>
+      <div class="fg"><label>업체명 <span class="req">*</span></label><input type="text" id="editBiz" placeholder="상호명"></div>
+      <div class="fg"><label>연락처 <span class="req">*</span></label><input type="tel" id="editPhone" placeholder="010-0000-0000"></div>
+      <div class="fg"><label>비밀번호</label><input type="password" id="editPw" placeholder="변경 시 입력 (6자 이상)"></div>
+      <button class="btn-form" onclick="updateProfile()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MODALS ═══════════ -->
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>회원 로그인 / 가입</h3>
+      <button class="modal-close-btn" onclick="closeModal('authModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">로그인</button>
+        <button class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">회원가입</button>
+      </div>
+      <!-- LOGIN -->
+      <div class="auth-panel active" id="panelLogin">
+        <div style="background:var(--teal-xlight); padding:12px; border-radius:10px; margin-bottom:20px; font-size:12.5px; color:var(--teal-dark); border:1px solid var(--border);">
+          <strong>테스트 계정</strong><br>
+          이메일: test@mapo.or.kr / 비번: 1234
+        </div>
+        <div id="loginMsg" class="form-msg"></div>
+        <div class="fg"><label>아이디(이메일) <span class="req">*</span></label><input type="email" id="loginEmail" placeholder="이메일 주소" onkeyup="if(window.event.keyCode==13)doLogin()"></div>
+        <div class="fg"><label>비밀번호 <span class="req">*</span></label><input type="password" id="loginPw" placeholder="비밀번호" onkeyup="if(window.event.keyCode==13)doLogin()"></div>
+        <button class="btn-form" onclick="doLogin()">로그인</button>
+        <p style="text-align:center;margin-top:12px;font-size:13px;color:var(--text3)">계정이 없으신가요? <a style="color:var(--teal);cursor:pointer;font-weight:700" onclick="switchAuthTab('register')">회원가입</a></p>
+      </div>
+      <!-- REGISTER -->
+      <div class="auth-panel" id="panelRegister">
+        <div id="regMsg" class="form-msg"></div>
+        <div class="fg-row">
+          <div class="fg"><label>이름 <span class="req">*</span></label><input type="text" id="regName" placeholder="홍길동"></div>
+          <div class="fg"><label>업체명 <span class="req">*</span></label><input type="text" id="regBiz" placeholder="상호명"></div>
+        </div>
+        <div class="fg"><label>이메일(아이디) <span class="req">*</span></label><input type="email" id="regEmail" placeholder="이메일 주소"></div>
+        <div class="fg"><label>비밀번호 <span class="req">*</span></label><input type="password" id="regPw" placeholder="비밀번호 (6자 이상)"></div>
+        <div class="fg"><label>연락처 <span class="req">*</span></label><input type="tel" id="regPhone" placeholder="010-0000-0000"></div>
+        <button class="btn-form" onclick="doRegister()">가입하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT APPLY MODAL -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="eventModalTitle">행사 참가 신청</h3>
+      <button class="modal-close-btn" onclick="closeModal('eventModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="eventApplyMsg" class="form-msg"></div>
+      <div class="fg"><label>참가자 성함 <span class="req">*</span></label><input type="text" id="eaName" placeholder="홍길동"></div>
+      <div class="fg"><label>업체명 <span class="req">*</span></label><input type="text" id="eaBiz" placeholder="상호명"></div>
+      <div class="fg"><label>연락처 <span class="req">*</span></label><input type="tel" id="eaPhone" placeholder="010-0000-0000"></div>
+      <div class="fg"><label>이메일</label><input type="email" id="eaEmail" placeholder="example@email.com"></div>
+      <div class="fg"><label>참가 인원</label>
+        <select id="eaCount"><option>1명</option><option>2명</option><option>3명</option><option>4명 이상</option></select>
+      </div>
+      <div class="fg"><label>요청사항</label><textarea id="eaNote" rows="3" placeholder="특이사항이나 요청사항을 입력하세요"></textarea></div>
+      <button class="btn-form" onclick="submitEventApply()">신청 완료</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUPPORT APPLY MODAL -->
+<div class="modal-overlay" id="supportModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="supportModalTitle">지원사업 신청</h3>
+      <button class="modal-close-btn" onclick="closeModal('supportModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="supportApplyMsg" class="form-msg"></div>
+      <div class="fg"><label>신청자 성함 <span class="req">*</span></label><input type="text" id="saName" placeholder="홍길동"></div>
+      <div class="fg-row">
+        <div class="fg"><label>업체명 <span class="req">*</span></label><input type="text" id="saBiz" placeholder="상호명"></div>
+        <div class="fg"><label>사업자등록번호 <span class="req">*</span></label><input type="text" id="saBno" placeholder="000-00-00000"></div>
+      </div>
+      <div class="fg"><label>연락처 <span class="req">*</span></label><input type="tel" id="saPhone" placeholder="010-0000-0000"></div>
+      <div class="fg"><label>이메일 <span class="req">*</span></label><input type="email" id="saEmail" placeholder="example@email.com"></div>
+      <div class="fg"><label>신청 사유</label><textarea id="saReason" rows="4" placeholder="신청 사유 및 기대 효과를 작성해 주세요"></textarea></div>
+      <button class="btn-form" onclick="submitSupportApply()">신청하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ═══ 팝업 배너 ═══ -->
+<div class="popup-banner-overlay" id="popupBanner">
+  <div class="popup-banner-box">
+    <button class="popup-banner-close" onclick="closePopupBanner()">✕</button>
+    <a class="popup-banner-img" id="popupBannerLink" href="#" target="_blank" rel="noopener" style="min-height:280px;display:flex;align-items:center;justify-content:center;position:relative">
+      <div id="popupBannerContent" style="text-align:center;color:#fff;z-index:1;position:relative;padding:24px">
+        <div style="font-size:56px;margin-bottom:12px">📢</div>
+        <div style="font-size:20px;font-weight:900;margin-bottom:6px">팝업 광고 배너</div>
+        <div style="font-size:14px;opacity:0.8">클릭 시 광고 링크로 이동합니다</div>
+      </div>
+    </a>
+    <div class="popup-banner-footer">
+      <label class="popup-no-today">
+        <input type="checkbox" id="popupNoToday"> 오늘 하루 보지 않기
+      </label>
+      <button class="popup-go-btn" onclick="closePopupBanner(true)">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 하단 플로팅 배너 ═══ -->
+<div class="floating-banner" id="floatingBanner">
+  <div class="floating-inner">
+    <a class="floating-ad-content" id="floatingBannerLink" href="#" target="_blank" rel="noopener">
+      <div class="floating-ad-placeholder" id="floatingBannerContent">
+        <div>
+          <div class="fa-text">🏷️ 플로팅 광고 배너 — 마포구 소상공인 지원사업 안내</div>
+          <div class="fa-sub">클릭하여 자세히 보기 →</div>
+        </div>
+      </div>
+    </a>
+    <button class="floating-close" onclick="hideFloatingBanner()">✕</button>
+  </div>
+</div>
+
+<!-- ═══ 관리자 패널 ═══ -->
+<div class="admin-panel" id="adminPanel">
+  <div class="admin-box">
+    <div class="admin-head">
+      <h2>🛠️ 광고 배너 관리자 패널</h2>
+      <button class="admin-close" onclick="closeAdAdmin()">✕</button>
+    </div>
+    <div class="admin-tabs" id="adminTabRow">
+      <button class="admin-tab on"  onclick="switchAdTab(0)">① 헤더</button>
+      <button class="admin-tab"     onclick="switchAdTab(1)">② 섹션</button>
+      <button class="admin-tab"     onclick="switchAdTab(2)">③ 미드(좌)</button>
+      <button class="admin-tab"     onclick="switchAdTab(3)">③ 미드(우)</button>
+      <button class="admin-tab"     onclick="switchAdTab(4)">④ 사이드</button>
+      <button class="admin-tab"     onclick="switchAdTab(5)">⑤ 인라인</button>
+      <button class="admin-tab"     onclick="switchAdTab(6)">⑥ 푸터전</button>
+      <button class="admin-tab"     onclick="switchAdTab(7)">팝업</button>
+      <button class="admin-tab"     onclick="switchAdTab(8)">플로팅</button>
+    </div>
+    <div class="admin-content" id="adminContent"></div>
+  </div>
+</div>
+
+<!-- 관리자 트리거 버튼 -->
+<button class="admin-trigger" id="adminTrigger" onclick="openAdAdmin()" title="광고 관리자 패널">⚙️</button>
+<div class="ad-prefooter" id="adZone-prefooter">
+  <div class="ad-zone" id="adEl-prefooter">
+    <span class="ad-label">광고</span>
+    <button class="ad-edit-btn" onclick="openAdAdmin('prefooter')">✏️ 광고 설정</button>
+    <a class="ad-inner" id="adLink-prefooter" href="#" target="_blank" rel="noopener">
+      <div class="ad-placeholder" style="border-radius:8px">
+        <div class="ap-icon">🎯</div>
+        <div class="ap-text">푸터 상단 광고 배너</div>
+        <div class="ap-size">970 × 90 px</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a class="footer-logo" onclick="showPage('home')">
+          <div class="fi">마</div>
+          <div class="ft">마포구 소상공인연합회</div>
+        </a>
+        <p class="footer-desc">마포구 소상공인의 권익 보호와 지속 가능한 경영 환경 조성을 위해 함께합니다.</p>
+        <div class="footer-contact">
+          <strong>고유번호</strong> 622-82-72824 &nbsp;|&nbsp; <strong>대표자</strong> 이태진<br>
+          <strong>전화</strong> 02-336-7282 &nbsp;|&nbsp; <strong>팩스</strong> 050-4926-0027<br>
+          <strong>이메일</strong> kfme_mapo@naver.com<br>
+          <strong>주소</strong> 서울특별시 마포구 홍익로3길 20,지층 4호(서교동)
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>소개</h5>
+        <ul class="footer-links">
+          <li><a onclick="showPage('about')">연합회 소개</a></li>
+          <li><a onclick="showPage('about','org')">조직도</a></li>
+          <li><a onclick="showPage('about','history')">연혁</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>공지·지원</h5>
+        <ul class="footer-links">
+          <li><a onclick="showPage('notice')">공지사항</a></li>
+          <li><a onclick="showPage('support')">지원사업</a></li>
+          <li><a onclick="showPage('events')">행사·교육</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>참여</h5>
+        <ul class="footer-links">
+          <li><a onclick="showPage('join')">회원가입</a></li>
+          <li><a onclick="showPage('inquiry')">문의하기</a></li>
+          <li><a onclick="showPage('sponsor')">후원·제휴</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 마포구 소상공인연합회. All Rights Reserved.</span>
+      <div>
+        <a>개인정보처리방침</a>
+        <a>이용약관</a>
+        <a>사이트맵</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ═══════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════
+const DATA = {
+  notices: [
+    {id:1,tag:'notice',tagLabel:'공지',title:'2025년 마포구 소상공인연합회 정기총회 개최 안내',date:'2025.06.10',views:312,body:'<p>2025년 마포구 소상공인연합회 정기총회를 아래와 같이 개최합니다.</p><h4>행사 개요</h4><ul><li>일시: 2025년 6월 25일(수) 오후 2시</li><li>장소: 마포구청 대강당</li><li>주요 안건: 2024년 결산 보고, 2025년 사업계획 심의</li></ul><p>회원 여러분의 많은 참석을 부탁드립니다.</p>',isNew:true},
+    {id:2,tag:'support',tagLabel:'지원',title:'소상공인 경영안정자금 2차 신청 공고 (마포구)',date:'2025.06.05',views:891,body:'<p>마포구 소상공인연합회에서는 경영 어려움을 겪고 있는 소상공인을 위한 경영안정자금 2차 신청을 받습니다.</p><h4>지원 내용</h4><ul><li>지원 한도: 업체당 최대 2,000만원</li><li>금리: 연 2.5% (고정)</li><li>상환기간: 5년 (2년 거치 3년 균등분할)</li></ul><h4>신청 자격</h4><ul><li>마포구 소재 소상공인연합회 회원사</li><li>사업자등록 후 6개월 이상 영업 중인 자</li></ul>',isNew:true},
+    {id:3,tag:'event',tagLabel:'행사',title:'2025 마포 소상공인 한마당 축제 참가자 모집',date:'2025.05.28',views:645,body:'<p>마포구 소상공인의 축제 "2025 마포 소상공인 한마당"에 참여하실 회원사를 모집합니다.</p><h4>행사 개요</h4><ul><li>일시: 2025년 7월 12일(토) 10:00~18:00</li><li>장소: 홍대 앞 광장</li><li>참가비: 무료 (연합회 회원)</li></ul>',isNew:false},
+    {id:4,tag:'news',tagLabel:'뉴스',title:'[언론보도] 마포구 소상공인 매출 15% 증가 - 서울경제 보도',date:'2025.05.20',views:423,body:'<p>서울경제신문은 마포구 소상공인의 1분기 평균 매출이 전년 동기 대비 15% 증가했다고 보도했습니다.</p><p>이는 마포구 소상공인연합회의 체계적인 경영 지원과 마포구청의 상권 활성화 정책이 시너지 효과를 낸 결과로 분석됩니다.</p>',isNew:false},
+    {id:5,tag:'support',tagLabel:'지원',title:'온라인 판로개척 지원사업 참가 신청 안내',date:'2025.05.15',views:534,body:'<p>소상공인 온라인 판로개척을 위한 e-커머스 입점 지원사업을 안내합니다.</p><h4>지원 내용</h4><ul><li>온라인 쇼핑몰 입점 컨설팅 및 수수료 지원</li><li>상품 사진 촬영 및 상세 페이지 제작 지원</li><li>SNS 마케팅 교육 및 광고비 지원</li></ul>',isNew:false},
+    {id:6,tag:'event',tagLabel:'행사',title:'소상공인 마케팅·SNS 활용 무료 교육 안내',date:'2025.05.10',views:712,body:'<p>소상공인을 위한 실전 마케팅 및 SNS 활용 무료 교육을 진행합니다.</p><h4>교육 일정</h4><ul><li>1회차: 2025.06.03(화) 14:00~17:00 - SNS 기초 및 인스타그램 활용</li><li>2회차: 2025.06.10(화) 14:00~17:00 - 네이버 플레이스 최적화</li><li>3회차: 2025.06.17(화) 14:00~17:00 - 유튜브 쇼츠 제작 실습</li></ul>',isNew:false},
+  ],
+  events: [
+    {id:1,emoji:'🎓',title:'소상공인 역량강화 경영 교육',date:'2025.06.20',time:'14:00~17:00',location:'마포구청 강당',seats:50,apply:true,color:'#0B6E6E'},
+    {id:2,emoji:'🤝',title:'회원사 네트워킹 데이',date:'2025.06.28',time:'18:00~21:00',location:'홍대 행사장',seats:100,apply:true,color:'#1565C0'},
+    {id:3,emoji:'🏪',title:'2025 마포 소상공인 한마당',date:'2025.07.12',time:'10:00~18:00',location:'홍대 앞 광장',seats:200,apply:true,color:'#2E7D55'},
+    {id:4,emoji:'📊',title:'세무·회계 무료 상담 데이',date:'2025.07.18',time:'10:00~16:00',location:'연합회 사무국',seats:30,apply:true,color:'#6A1B9A'},
+  ],
+  support: [
+    {id:1,tag:'정책자금',title:'소상공인 경영안정자금',desc:'경영 어려움을 겪는 소상공인에게 저금리 경영안정자금을 지원합니다.',period:'2025.06.01 ~ 소진 시까지',target:'마포구 소재 소상공인 회원사',applyType:'online',extLink:null},
+    {id:2,tag:'서울시',title:'서울형 소상공인 육성자금',desc:'서울시에서 지원하는 소상공인 육성자금 사업입니다. 시설 개선 및 운전자금 지원.',period:'2025.05.01 ~ 2025.08.31',target:'서울시 소재 소상공인',applyType:'ext',extLink:'https://seoulsbdc.or.kr'},
+    {id:3,tag:'교육지원',title:'온라인 판로개척 지원사업',desc:'e-커머스 입점, 상세페이지 제작, SNS 마케팅을 종합 지원합니다.',period:'2025.06.15 ~ 2025.09.30',target:'회원사 중 온라인 미입점 업체',applyType:'online',extLink:null},
+    {id:4,tag:'정부지원',title:'소상공인 스마트 기술 보급',desc:'POS 시스템, 주문 앱, 스마트 결제 시스템 도입 비용의 70%를 지원합니다.',period:'상시',target:'소상공인 전체',applyType:'ext',extLink:'https://www.semas.or.kr'},
+    {id:5,tag:'컨설팅',title:'무료 경영컨설팅 서비스',desc:'마케팅·세무·법무·인사노무 전문가의 1:1 무료 컨설팅을 제공합니다.',period:'상시 운영',target:'마포구 소상공인 회원사',applyType:'online',extLink:null},
+    {id:6,tag:'서울시',title:'골목형 상점가 활성화 지원',desc:'골목 상권 내 공동 마케팅, 환경 개선, 특성화 프로그램을 지원합니다.',period:'2025.07.01 ~',target:'골목형 상점가 등록 업체',applyType:'ext',extLink:'https://golmok.seoul.go.kr'},
+  ],
+  members: [
+    {name:'김철수',biz:'홍대 카페 봄날',category:'카페',color:'#0B6E6E',emoji:'☕'},
+    {name:'이영희',biz:'합정 꽃가게',category:'소매',color:'#2E7D55',emoji:'🌸'},
+    {name:'박민준',biz:'상암 IT솔루션',category:'서비스',color:'#1565C0',emoji:'💻'},
+    {name:'최지연',biz:'마포 한식당',category:'음식점',color:'#6A1B9A',emoji:'🍱'},
+    {name:'정우성',biz:'망원 빵집',category:'제과',color:'#E67E22',emoji:'🥖'},
+    {name:'한소희',biz:'연남 소품샵',category:'소매',color:'#C62828',emoji:'🎁'},
+    {name:'오지호',biz:'서교 인테리어',category:'서비스',color:'#00695C',emoji:'🛋'},
+    {name:'류수영',biz:'홍대 헤어샵',category:'미용',color:'#283593',emoji:'✂️'},
+  ],
+  press: [
+    {media:'서울경제',title:'마포구 소상공인 매출 15% 증가…연합회 지원 효과',date:'2025.05.20'},
+    {media:'아이뉴스24',title:'"골목 경제 살린다"… 마포 소상공인연합회 네트워킹 행사 성료',date:'2025.04.15'},
+    {media:'한국경제TV',title:'마포구 소상공인, 온라인 판로개척으로 새 활로 모색',date:'2025.03.28'},
+  ]
+};
+
+// LOCAL STORAGE WRAPPERS
+function getUsers(){try{return JSON.parse(localStorage.getItem('mp_users')||'[]')}catch{return[]}}
+function saveUsers(u){try{localStorage.setItem('mp_users',JSON.stringify(u))}catch{}}
+function getCurrentUser(){try{return JSON.parse(localStorage.getItem('mp_user')||'null')}catch{return null}}
+function setCurrentUser(u){try{localStorage.setItem('mp_user',u?JSON.stringify(u):null)}catch{}}
+function getComments(id){try{return JSON.parse(localStorage.getItem('mp_comments_'+id)||'[]')}catch{return[]}}
+function saveComments(id,c){try{localStorage.setItem('mp_comments_'+id,JSON.stringify(c))}catch{}}
+function getInquiries(){try{return JSON.parse(localStorage.getItem('mp_inquiries')||'[]')}catch{return[]}}
+function saveInquiries(i){try{localStorage.setItem('mp_inquiries',JSON.stringify(i))}catch{}}
+function getEventApps(){try{return JSON.parse(localStorage.getItem('mp_event_apps')||'[]')}catch{return[]}}
+function saveEventApps(a){try{localStorage.setItem('mp_event_apps',JSON.stringify(a))}catch{}}
+function getSupportApps(){try{return JSON.parse(localStorage.getItem('mp_support_apps')||'[]')}catch{return[]}}
+function saveSupportApps(a){try{localStorage.setItem('mp_support_apps',JSON.stringify(a))}catch{}}
+
+// ═══════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════
+let currentUser = getCurrentUser();
+
+function updateAuthUI(){
+  const area = document.getElementById('authArea');
+  const mobileArea = document.getElementById('mobileAuthArea');
+  if(currentUser){
+    const initials = currentUser.name ? currentUser.name[0] : 'U';
+    area.innerHTML = `<div class="user-bar"><div class="user-avatar">${initials}</div><span class="user-name">${currentUser.name}</span><button class="btn-logout" style="margin-right:4px; border-color:var(--teal); color:var(--teal)" onclick="showPage('mypage')">마이페이지</button><button class="btn-logout" onclick="doLogout()">로그아웃</button></div>`;
+    mobileArea.innerHTML = `<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:12px;background:var(--teal-xlight);border-radius:10px"><div class="user-avatar" style="width:36px;height:36px;font-size:15px">${initials}</div><div><div style="font-weight:700;font-size:14px">${currentUser.name}</div><div style="font-size:12px;color:var(--text3)">${currentUser.biz||''}</div></div></div><div style="display:flex;gap:8px;margin-bottom:20px"><button class="btn-outline" style="flex:1" onclick="showPage('mypage');toggleMobileNav()">마이페이지</button><button class="btn-logout" style="flex:1; border-radius:10px" onclick="doLogout();toggleMobileNav()">로그아웃</button></div>`;
+  } else {
+    area.innerHTML = `<button class="btn-login" onclick="openModal('authModal')">로그인</button><button class="btn-join" onclick="openModal('authModal','join')">회원가입</button>`;
+    mobileArea.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:20px"><button class="btn-outline" style="flex:1" onclick="openModal('authModal');toggleMobileNav()">로그인</button><button class="btn-form" style="flex:1;padding:11px" onclick="openModal('authModal','join');toggleMobileNav()">회원가입</button></div>`;
+  }
+}
+
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pw=document.getElementById('loginPw').value;
+  if(!email||!pw){showFormMsg('loginMsg','이메일과 비밀번호를 입력하세요.','error');return;}
+  const users=getUsers();
+  const user=users.find(u=>u.email===email&&u.pw===pw);
+  if(!user){showFormMsg('loginMsg','이메일 또는 비밀번호가 올바르지 않습니다.','error');return;}
+  currentUser=user;setCurrentUser(user);updateAuthUI();updateAdminTrigger();closeModal('authModal');showToast(`${user.name}님, 환영합니다! 🎉`);
+}
+
+function doRegister(){
+  const name=document.getElementById('regName').value.trim();
+  const biz=document.getElementById('regBiz').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pw=document.getElementById('regPw').value;
+  const phone=document.getElementById('regPhone').value.trim();
+  if(!name||!biz||!email||!pw||!phone){showFormMsg('regMsg','모든 필수 항목을 입력하세요.','error');return;}
+  if(pw.length<6){showFormMsg('regMsg','비밀번호는 6자 이상이어야 합니다.','error');return;}
+  const users=getUsers();
+  if(users.find(u=>u.email===email)){showFormMsg('regMsg','이미 사용 중인 이메일입니다.','error');return;}
+  const user={name,biz,email,pw,phone,joinDate:new Date().toLocaleDateString('ko-KR'), level: 1, cmsStatus: 'none'};
+  users.push(user);saveUsers(users);
+  currentUser=user;setCurrentUser(user);updateAuthUI();updateAdminTrigger();closeModal('authModal');showToast(`${name}님, 가입을 환영합니다! 🎉`);
+}
+
+function doLogout(){currentUser=null;setCurrentUser(null);updateAuthUI();updateAdminTrigger();showPage('home');showToast('로그아웃 되었습니다.');}
+
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active',tab==='register');
+  document.getElementById('panelLogin').classList.toggle('active',tab==='login');
+  document.getElementById('panelRegister').classList.toggle('active',tab==='register');
+}
+
+// ═══════════════════════════════════════
+//  PAGE ROUTER
+// ═══════════════════════════════════════
+function showPage(page, sub){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(el){el.classList.add('active');}
+  window.scrollTo(0,0);
+  if(page==='home'){renderHome();}
+  if(page==='notice'){renderNoticeList();}
+  if(page==='support'){renderSupport();}
+  if(page==='events'){renderEvents();}
+  if(page==='activity'){renderActivity();}
+  if(page==='mypage'){renderMyPage();}
+}
+
+function renderMyPage(){
+  if(!currentUser){showPage('home');openModal('authModal');return;}
+  
+  // Profile
+  const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+  const cmsNames = { 'none': '미신청', 'pending': '승인 대기 중', 'approved': '가입 완료' };
+  
+  document.getElementById('mp-avatar').textContent = currentUser.name ? currentUser.name[0] : 'U';
+  document.getElementById('mp-name').textContent = currentUser.name;
+  document.getElementById('mp-biz').textContent = currentUser.biz || '업체 정보 없음';
+  document.getElementById('mp-email').textContent = currentUser.email;
+  document.getElementById('mp-phone').textContent = currentUser.phone || '-';
+  document.getElementById('mp-joinDate').textContent = currentUser.joinDate || '-';
+  
+  const lvlBadge = document.getElementById('mp-level-badge');
+  lvlBadge.textContent = levelNames[currentUser.level || 1];
+  lvlBadge.className = 'app-status ' + (currentUser.level >= 2 ? 'status-done' : 'status-ing');
+  
+  document.getElementById('mp-cms-status').textContent = cmsNames[currentUser.cmsStatus || 'none'];
+
+  // Biz Info (Level 2+)
+  const bizSection = document.getElementById('mp-biz-section');
+  if(currentUser.level >= 2){
+    bizSection.style.display = 'block';
+    const bd = currentUser.cmsData || {};
+    document.getElementById('mb-bizType').value = bd.bizType || '-';
+    document.getElementById('mb-bno').value = bd.bno || '';
+    document.getElementById('mb-bname').value = bd.bname || '';
+    document.getElementById('mb-category').value = bd.category || '';
+    document.getElementById('mb-address').value = bd.address || '';
+
+    // Bank selection logic
+    const bankSelect = document.getElementById('mb-bank');
+    const bankOther = document.getElementById('mb-bank-other');
+    const savedBank = bd.bank || '';
+    const bankOptions = Array.from(bankSelect.options).map(o => o.value);
+    
+    if(savedBank && bankOptions.includes(savedBank)){
+      bankSelect.value = savedBank;
+      bankOther.style.display = 'none';
+      bankOther.value = '';
+    } else if(savedBank) {
+      bankSelect.value = '기타';
+      bankOther.style.display = 'block';
+      bankOther.value = savedBank;
+    } else {
+      bankSelect.value = '';
+      bankOther.style.display = 'none';
+      bankOther.value = '';
+    }
+
+    document.getElementById('mb-account').value = bd.account || '';
+  } else {
+    bizSection.style.display = 'none';
+  }
+
+  // Fill Edit Modal
+  document.getElementById('editName').value = currentUser.name;
+  document.getElementById('editBiz').value = currentUser.biz || '';
+  document.getElementById('editPhone').value = currentUser.phone || '';
+  document.getElementById('editPw').value = '';
+
+  // Support Applications
+  const supportApps = getSupportApps().filter(a => a.email === currentUser.email);
+  const supportList = document.getElementById('mp-support-list');
+  if(supportApps.length > 0){
+    supportList.innerHTML = supportApps.map(a => `
+      <div class="app-item">
+        <div class="app-info">
+          <div class="app-name">${a.supportTitle}</div>
+          <div class="app-date">신청일: ${a.date}</div>
+        </div>
+        <span class="app-status status-ing">${a.status || '접수완료'}</span>
+      </div>
+    `).join('');
+  } else {
+    supportList.innerHTML = '<div class="comment-empty">신청한 지원사업이 없습니다.</div>';
+  }
+
+  // Event Applications
+  const eventApps = getEventApps().filter(a => a.email === currentUser.email);
+  const eventList = document.getElementById('mp-event-list');
+  if(eventApps.length > 0){
+    eventList.innerHTML = eventApps.map(a => `
+      <div class="app-item">
+        <div class="app-info">
+          <div class="app-name">${a.eventTitle}</div>
+          <div class="app-date">신청일: ${a.date} · 인원: ${a.count}</div>
+        </div>
+        <span class="app-status status-done">신청완료</span>
+      </div>
+    `).join('');
+  } else {
+    eventList.innerHTML = '<div class="comment-empty">참가 신청한 행사가 없습니다.</div>';
+  }
+}
+
+function updateBizInfo(){
+  if(!currentUser || currentUser.level < 2) return;
+  const users = getUsers();
+  const idx = users.findIndex(u => u.email === currentUser.email);
+  if(idx > -1){
+    const bd = users[idx].cmsData || {};
+    bd.bno = document.getElementById('mb-bno').value.trim();
+    // bd.bname = document.getElementById('mb-bname').value.trim(); // Readonly, do not update
+    bd.category = document.getElementById('mb-category').value.trim();
+    bd.address = document.getElementById('mb-address').value.trim();
+    
+    let bankName = document.getElementById('mb-bank').value;
+    if(bankName === '기타') {
+      bankName = document.getElementById('mb-bank-other').value.trim() || '기타';
+    }
+    bd.bank = bankName;
+    bd.account = document.getElementById('mb-account').value.trim();
+    
+    users[idx].cmsData = bd;
+    // users[idx].biz = bd.bname; // Synchronized via admin or registration
+    saveUsers(users);
+    currentUser = users[idx];
+    setCurrentUser(currentUser);
+    showToast('사업자 상세 정보가 저장되었습니다.');
+    renderMyPage();
+    updateAuthUI();
+  }
+}
+
+function updateProfile(){
+  const name = document.getElementById('editName').value.trim();
+  const biz = document.getElementById('editBiz').value.trim();
+  const phone = document.getElementById('editPhone').value.trim();
+  const pw = document.getElementById('editPw').value;
+  
+  if(!name || !biz || !phone){
+    showFormMsg('editMsg', '필수 항목을 입력하세요.', 'error');
+    return;
+  }
+
+  const users = getUsers();
+  const idx = users.findIndex(u => u.email === currentUser.email);
+  if(idx > -1){
+    users[idx].name = name;
+    users[idx].biz = biz;
+    users[idx].phone = phone;
+    if(pw && pw.length >= 6) users[idx].pw = pw;
+    
+    saveUsers(users);
+    currentUser = users[idx];
+    setCurrentUser(currentUser);
+    updateAuthUI();
+    renderMyPage();
+    closeModal('profileEditModal');
+    showToast('회원 정보가 수정되었습니다.');
+  }
+}
+
+function showNoticeDetail(id){
+  const item=DATA.notices.find(n=>n.id===id);
+  if(!item)return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-notice-detail').classList.add('active');
+  const tagMap={notice:'tag-notice',support:'tag-support',event:'tag-event',news:'tag-news'};
+  document.getElementById('detailTags').innerHTML=`<span class="notice-tag ${tagMap[item.tag]||'tag-notice'}">${item.tagLabel}</span>`;
+  document.getElementById('detailTitle').textContent=item.title;
+  document.getElementById('detailMeta').innerHTML=`<span>📅 ${item.date}</span><span>👁 ${item.views}회</span>`;
+  document.getElementById('detailBody').innerHTML=item.body;
+  renderComments(id);
+  window.scrollTo(0,0);
+  window._currentNoticeId=id;
+}
+
+// ═══════════════════════════════════════
+//  RENDER FUNCTIONS
+// ═══════════════════════════════════════
+function renderHome(){
+  // notices
+  const tagMap={notice:'tag-notice',support:'tag-support',event:'tag-event',news:'tag-news'};
+  document.getElementById('homeNotices').innerHTML=DATA.notices.slice(0,3).map(n=>`
+    <div class="notice-card" onclick="showNoticeDetail(${n.id})">
+      <span class="notice-tag ${tagMap[n.tag]}">${n.tagLabel}</span>${n.isNew?'<span class="list-new">NEW</span>':''}
+      <div class="notice-title">${n.title}</div>
+      <div class="notice-meta"><span>📅 ${n.date}</span><span>👁 ${n.views}</span></div>
+    </div>`).join('');
+  // events
+  document.getElementById('homeEvents').innerHTML=DATA.events.slice(0,4).map(e=>`
+    <div class="event-card">
+      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color},${e.color}99)">${e.emoji}
+        <div class="event-date-badge">${e.date.split('.').slice(1).join('/')}<br>${e.date.split('.')[0]}</div>
+      </div>
+      <div class="event-body">
+        <div class="event-title">${e.title}</div>
+        <div class="event-info"><span>🕐 ${e.time}</span><span>📍 ${e.location}</span><span>👥 최대 ${e.seats}명</span></div>
+        <button class="btn-apply" onclick="openEventApply(${e.id},'${e.title}')">참가 신청하기</button>
+      </div>
+    </div>`).join('');
+  // members
+  document.getElementById('homeMembersTeaser').innerHTML=DATA.members.slice(0,8).map(m=>`
+    <div class="member-card">
+      <div class="member-avatar" style="background:${m.color}">${m.emoji}</div>
+      <div class="member-name">${m.name}</div>
+      <div class="member-biz">${m.biz}</div>
+      <span class="member-badge">${m.category}</span>
+    </div>`).join('');
+}
+
+function renderNoticeList(){
+  const tagMap={notice:'tag-notice',support:'tag-support',event:'tag-event',news:'tag-news'};
+  document.getElementById('noticeList').innerHTML=DATA.notices.map((n,i)=>`
+    <div class="list-item" onclick="showNoticeDetail(${n.id})">
+      <div class="list-num">${DATA.notices.length-i}</div>
+      <div class="list-content">
+        <div class="list-title">
+          <span class="notice-tag ${tagMap[n.tag]}" style="font-size:10px;padding:2px 8px">${n.tagLabel}</span>
+          ${n.title}${n.isNew?'<span class="list-new">NEW</span>':''}
+        </div>
+        <div class="list-meta"><span>📅 ${n.date}</span><span>👁 ${n.views}회</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderSupport(){
+  document.getElementById('supportGrid').innerHTML=DATA.support.map(s=>`
+    <div class="support-card">
+      <div class="support-head"><span class="tag">${s.tag}</span><h4>${s.title}</h4></div>
+      <div class="support-body">
+        <p>${s.desc}</p>
+        <div class="info">📅 신청기간: ${s.period}</div>
+        <div class="info">👤 신청대상: ${s.target}</div>
+        <div class="support-btns" style="margin-top:12px">
+          ${s.applyType==='online'
+            ?`<button class="btn-apply-sm" onclick="openSupportApply(${s.id},'${s.title}')">온라인 신청</button>`
+            :`<a class="btn-ext" href="${s.extLink}" target="_blank" rel="noopener">공고 바로가기 ↗</a>`}
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function renderEvents(){
+  document.getElementById('eventsGrid').innerHTML=DATA.events.map(e=>`
+    <div class="event-card">
+      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color},${e.color}99)">${e.emoji}
+        <div class="event-date-badge">${e.date.split('.').slice(1).join('/')}<br>${e.date.split('.')[0]}</div>
+      </div>
+      <div class="event-body">
+        <div class="event-title">${e.title}</div>
+        <div class="event-info"><span>🕐 ${e.time}</span><span>📍 ${e.location}</span><span>👥 최대 ${e.seats}명</span></div>
+        <button class="btn-apply" onclick="openEventApply(${e.id},'${e.title}')">참가 신청하기</button>
+      </div>
+    </div>`).join('');
+}
+
+function renderActivity(){
+  document.getElementById('pressList').innerHTML=DATA.press.map(p=>`
+    <div class="list-item">
+      <div class="list-num" style="font-size:10px;width:42px;text-align:center">${p.media}</div>
+      <div class="list-content">
+        <div class="list-title">${p.title}</div>
+        <div class="list-meta"><span>📅 ${p.date}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════
+//  COMMENTS
+// ═══════════════════════════════════════
+function renderComments(noticeId){
+  const comments=getComments(noticeId);
+  document.getElementById('commentCount').textContent=comments.length;
+  const list=document.getElementById('commentList');
+  if(!comments.length){list.innerHTML='<div class="comment-empty">아직 댓글이 없습니다. 첫 댓글을 남겨보세요!</div>';return;}
+  list.innerHTML=comments.map(c=>`
+    <div class="comment-item">
+      <span class="comment-author">👤 ${c.author}</span><span class="comment-date">${c.date}</span>
+      <div class="comment-text">${c.text}</div>
+    </div>`).join('');
+}
+
+function submitComment(){
+  const id=window._currentNoticeId;
+  const input=document.getElementById('commentInput');
+  const text=input.value.trim();
+  if(!text){showToast('댓글 내용을 입력해주세요.');return;}
+  if(!currentUser){openModal('authModal');showToast('로그인 후 댓글을 작성할 수 있습니다.');return;}
+  const comments=getComments(id);
+  comments.push({author:currentUser.name,date:new Date().toLocaleDateString('ko-KR'),text});
+  saveComments(id,comments);
+  input.value=''; // Clear input
+  renderComments(id);
+  showToast('댓글이 등록되었습니다.');
+}
+
+// ═══════════════════════════════════════
+//  INQUIRY
+// ═══════════════════════════════════════
+function getSponsorshipInquiries(){try{return JSON.parse(localStorage.getItem('mp_sp_inquiries')||'[]')}catch{return[]}}
+function saveSponsorshipInquiries(inq){try{localStorage.setItem('mp_sp_inquiries',JSON.stringify(inq))}catch{}}
+
+function submitSponsorshipInquiry(){
+  const biz=document.getElementById('sp_biz').value.trim();
+  const name=document.getElementById('sp_name').value.trim();
+  const phone=document.getElementById('sp_phone').value.trim();
+  const type=document.getElementById('sp_type').value;
+  const content=document.getElementById('sp_content').value.trim();
+  
+  if(!biz||!name||!phone||!type){
+    showToast('필수 항목을 모두 입력해주세요.');
+    return;
+  }
+  
+  const inq=getSponsorshipInquiries();
+  inq.push({
+    biz, name, phone, type, content,
+    date: new Date().toLocaleDateString('ko-KR'),
+    status: '접수'
+  });
+  saveSponsorshipInquiries(inq);
+  
+  // Clear fields
+  ['sp_biz','sp_name','sp_phone','sp_content'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sp_type').value='';
+  
+  showToast('✅ 후원·제휴 문의가 접수되었습니다.');
+}
+
+function submitInquiry(){
+  const name=document.getElementById('inqName').value.trim();
+  const phone=document.getElementById('inqPhone').value.trim();
+  const type=document.getElementById('inqType').value;
+  const subject=document.getElementById('inqSubject').value.trim();
+  const content=document.getElementById('inqContent').value.trim();
+  const msg=document.getElementById('inquiryMsg');
+  if(!name||!phone||!type||!subject||!content){
+    msg.textContent='모든 필수 항목을 입력해주세요.';msg.className='form-msg error';msg.style.display='block';return;
+  }
+  const inquiries=getInquiries();
+  inquiries.push({name,phone,email:document.getElementById('inqEmail').value.trim(),type,subject,content,date:new Date().toLocaleDateString('ko-KR'),status:'접수'});
+  saveInquiries(inquiries);
+  msg.innerHTML='✅ 문의가 정상적으로 접수되었습니다.<br>담당자 확인 후 빠른 시일 내 연락드리겠습니다.';
+  msg.className='form-msg success';msg.style.display='block';
+  // Clear inputs
+  ['inqName','inqPhone','inqEmail','inqSubject','inqContent'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('inqType').value='';
+}
+
+// ═══════════════════════════════════════
+//  EVENT APPLY
+// ═══════════════════════════════════════
+function openEventApply(id, title){
+  document.getElementById('eventModalTitle').textContent='📅 '+title+' - 참가 신청';
+  if(currentUser){
+    document.getElementById('eaName').value=currentUser.name||'';
+    document.getElementById('eaBiz').value=currentUser.biz||'';
+    document.getElementById('eaPhone').value=currentUser.phone||'';
+  }
+  window._currentEventId=id;
+  window._currentEventTitle=title;
+  openModal('eventModal');
+}
+
+function submitEventApply(){
+  const name=document.getElementById('eaName').value.trim();
+  const biz=document.getElementById('eaBiz').value.trim();
+  const phone=document.getElementById('eaPhone').value.trim();
+  const msg=document.getElementById('eventApplyMsg');
+  if(!name||!biz||!phone){msg.textContent='필수 항목을 입력해주세요.';msg.className='form-msg error';msg.style.display='block';return;}
+  const apps=getEventApps();
+  apps.push({eventId:window._currentEventId,eventTitle:window._currentEventTitle,name,biz,phone,email:document.getElementById('eaEmail').value.trim(),count:document.getElementById('eaCount').value,note:document.getElementById('eaNote').value.trim(),date:new Date().toLocaleDateString('ko-KR')});
+  saveEventApps(apps);
+  msg.innerHTML='✅ 참가 신청이 완료되었습니다!<br>신청 확인 문자가 발송됩니다.';msg.className='form-msg success';msg.style.display='block';
+  setTimeout(()=>{
+    closeModal('eventModal');
+    msg.style.display='none';
+    // Clear inputs
+    ['eaName','eaBiz','eaPhone','eaEmail','eaNote'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    document.getElementById('eaCount').value='1명';
+    showToast('행사 참가 신청이 완료되었습니다! 🎉');
+  },2000);
+}
+
+// ═══════════════════════════════════════
+//  SUPPORT APPLY
+// ═══════════════════════════════════════
+function openSupportApply(id, title){
+  document.getElementById('supportModalTitle').textContent='💰 '+title+' - 신청';
+  if(currentUser){
+    document.getElementById('saName').value=currentUser.name||'';
+    document.getElementById('saPhone').value=currentUser.phone||'';
+    document.getElementById('saEmail').value=currentUser.email||'';
+  }
+  window._currentSupportId=id;
+  window._currentSupportTitle=title;
+  openModal('supportModal');
+}
+
+function submitSupportApply(){
+  const name=document.getElementById('saName').value.trim();
+  const biz=document.getElementById('saBiz').value.trim();
+  const bno=document.getElementById('saBno').value.trim();
+  const phone=document.getElementById('saPhone').value.trim();
+  const email=document.getElementById('saEmail').value.trim();
+  const msg=document.getElementById('supportApplyMsg');
+  if(!name||!biz||!bno||!phone||!email){msg.textContent='필수 항목을 모두 입력해주세요.';msg.className='form-msg error';msg.style.display='block';return;}
+  const apps=getSupportApps();
+  apps.push({supportId:window._currentSupportId,supportTitle:window._currentSupportTitle,name,biz,bno,phone,email,reason:document.getElementById('saReason').value.trim(),date:new Date().toLocaleDateString('ko-KR'),status:'접수'});
+  saveSupportApps(apps);
+  msg.innerHTML='✅ 신청이 완료되었습니다.<br>검토 후 연락드리겠습니다.';msg.className='form-msg success';msg.style.display='block';
+  setTimeout(()=>{
+    closeModal('supportModal');
+    msg.style.display='none';
+    // Clear inputs
+    ['saName','saBiz','saBno','saPhone','saEmail','saReason'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    showToast('지원사업 신청이 완료되었습니다! 💰');
+  },2000);
+}
+
+// ═══════════════════════════════════════
+//  JOIN
+// ═══════════════════════════════════════
+function submitJoin(){
+  const name=document.getElementById('j_name').value.trim();
+  const phone=document.getElementById('j_phone').value.trim();
+  const bno=document.getElementById('j_bno').value.trim();
+  const bname=document.getElementById('j_bname').value.trim();
+  
+  const zip=document.getElementById('j_zip').value;
+  const addr1=document.getElementById('j_address').value;
+  const addr2=document.getElementById('j_address_detail').value.trim();
+  const fullAddr = addr1 ? `(${zip}) ${addr1} ${addr2}` : addr2;
+
+  const consent=document.querySelector('input[name="consent"]:checked');
+
+  if(!name||!phone||!bno||!bname){showToast('필수 항목을 모두 입력해주세요.');return;}
+  if(!consent){showToast('개인정보 동의 여부를 선택해주세요.');return;}
+  if(consent.value==='disagree'){showToast('동의하지 않으면 가입이 어렵습니다.');return;}
+
+  const users = getUsers();
+  const email = document.getElementById('j_login_email').value.trim();
+  const pw = document.getElementById('j_login_pw').value;
+
+  if(!currentUser && (!email || !pw)) {
+    showToast('로그인 이메일과 비밀번호를 입력해주세요.');
+    return;
+  }
+
+  let bankName = document.getElementById('j_bank').value;
+  if(bankName === '기타') {
+    bankName = document.getElementById('j_bank_other').value.trim() || '기타';
+  }
+
+  const accountInput = document.querySelector('#page-join input[placeholder="- 없이 숫자만"]');
+  const accountValue = accountInput ? accountInput.value.trim() : '';
+
+  const cmsData = { 
+    name, phone, bno, bname, address: fullAddr,
+    date: new Date().toLocaleDateString('ko-KR'),
+    bizType: document.querySelector('input[name="biz"]:checked').value,
+    birth: document.getElementById('j_birth').value.trim(),
+    bank: bankName,
+    account: accountValue
+  };
+
+  if(currentUser) {
+    const idx = users.findIndex(u => u.email === currentUser.email);
+    if(idx > -1) {
+      users[idx].cmsStatus = 'pending'; // 승인 대기 상태 유지
+      users[idx].cmsData = cmsData;
+      saveUsers(users);
+      currentUser = users[idx];
+      setCurrentUser(currentUser);
+      showToast('CMS 가입 신청이 접수되었습니다! 관리자 승인 후 정회원으로 전환됩니다. ⏳');
+      // Clear fields
+      ['j_name','j_phone','j_bno','j_bname','j_zip','j_address','j_address_detail','j_birth','j_bank_other'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+      if(accountInput) accountInput.value = '';
+      document.getElementById('j_bank').value = '';
+      showPage('mypage');
+    }
+  } else {
+    if(users.find(u => u.email === email)) {
+      showToast('이미 사용 중인 이메일입니다. 로그인 후 신청해주세요.');
+      return;
+    }
+    const newUser = {
+      name, biz: bname, email, pw, phone,
+      joinDate: new Date().toLocaleDateString('ko-KR'),
+      level: 1, // 초기 레벨은 홈페이지 회원
+      cmsStatus: 'pending', // 승인 대기 상태
+      cmsData: cmsData
+    };
+    users.push(newUser);
+    saveUsers(users);
+    
+    // 자동 로그인을 하지 않고 안내 메시지만 표시
+    alert('회원가입 및 정회원 신청이 접수되었습니다.\n관리자 승인 전까지는 홈페이지 회원 권한으로 이용 가능합니다.');
+    // Clear fields
+    ['j_login_email','j_login_pw','j_name','j_phone','j_bno','j_bname','j_zip','j_address','j_address_detail','j_birth','j_bank_other','j_emailid','j_emaildom'].forEach(id=>{const el=document.getElementById(id); if(el) el.value='';});
+    if(accountInput) accountInput.value = '';
+    document.getElementById('j_bank').value = '';
+    showPage('home');
+  }
+}
+
+// ═══════════════════════════════════════
+//  UI HELPERS
+// ═══════════════════════════════════════
+function openModal(id, tab){
+  document.getElementById(id).classList.add('open');
+  if(id==='authModal'&&tab==='join')switchAuthTab('register');
+  else if(id==='authModal')switchAuthTab('login');
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',function(e){if(e.target===this)closeModal(this.id);}));
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+function showFormMsg(id,msg,type){
+  const el=document.getElementById(id);
+  el.textContent=msg;el.className='form-msg '+type;el.style.display='block';
+  setTimeout(()=>el.style.display='none',4000);
+}
+function toggleOtherBank(val, targetId){
+  const el = document.getElementById(targetId || 'j_bank_other');
+  if(val === '기타'){
+    el.style.display = 'block';
+    el.focus();
+  } else {
+    el.style.display = 'none';
+    el.value = '';
+  }
+}
+
+function syncEmail(val){
+  const parts = val.split('@');
+  if(parts.length >= 1) document.getElementById('j_emailid').value = parts[0] || '';
+  if(parts.length >= 2) document.getElementById('j_emaildom').value = parts[1] || '';
+}
+
+function execDaumPostcode() {
+  new daum.Postcode({
+    oncomplete: function(data) {
+      let addr = ''; 
+      if (data.userSelectedType === 'R') addr = data.roadAddress;
+      else addr = data.jibunAddress;
+      document.getElementById('j_zip').value = data.zonecode;
+      document.getElementById('j_address').value = addr;
+      document.getElementById('j_address_detail').focus();
+    }
+  }).open();
+}
+
+function toggleMobileNav(){
+  const nav=document.getElementById('mobileNav');
+  nav.classList.toggle('open');
+  document.body.style.overflow=nav.classList.contains('open')?'hidden':'';
+}
+
+function closeWing(side){
+  document.getElementById(side + 'WingBanner').style.display = 'none';
+}
+
+// ═══════════════════════════════════════
+//  AD BANNER SYSTEM
+// ═══════════════════════════════════════
+const AD_ZONES = [
+  {key:'header-strip',  name:'① 헤더 리더보드',      size:'728×90',  wrap:'adZone-header-strip'},
+  {key:'section-strip', name:'② 섹션간 빌보드',       size:'970×90',  wrap:'adZone-section-strip'},
+  {key:'mid-left',      name:'③ 미드 레크탱글 (좌)',  size:'300×250', wrap:null},
+  {key:'mid-right',     name:'③ 미드 레크탱글 (우)',  size:'300×250', wrap:null},
+  {key:'sidebar',       name:'④ 사이드바 스카이스크래퍼', size:'160×600', wrap:null},
+  {key:'inline-notice', name:'⑤ 공지 인라인',         size:'728×90',  wrap:'adZone-inline-notice'},
+  {key:'prefooter',     name:'⑥ 푸터 전 빌보드',      size:'970×90',  wrap:'adZone-prefooter'},
+  {key:'popup',         name:'팝업 배너',              size:'모달'},
+  {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
+];
+const AD_CFG_KEY='mp_ad_config';
+
+function getAdConfig(){try{return JSON.parse(localStorage.getItem(AD_CFG_KEY)||'{}')}catch{return{}}}
+function saveAdConfig(cfg){try{localStorage.setItem(AD_CFG_KEY,JSON.stringify(cfg))}catch{}}
+
+// ── 개별 광고 영역 렌더 ──
+function renderAdZone(key){
+  const cfg=getAdConfig();
+  const z=cfg[key]||{};
+  const el=document.getElementById('adEl-'+key);
+  const linkEl=document.getElementById('adLink-'+key);
+  const wrapDef=AD_ZONES.find(a=>a.key===key);
+  const wrapEl=wrapDef?.wrap?document.getElementById(wrapDef.wrap):null;
+  if(!el)return;
+
+  if(z.active===false){
+    el.classList.add('hidden');
+    if(wrapEl)wrapEl.style.display='none';
+    return;
+  }
+  el.classList.remove('hidden');
+  if(wrapEl)wrapEl.style.display='';
+
+  if(linkEl){
+    if(z.imgUrl){
+      const placeholder=linkEl.querySelector('.ad-placeholder');
+      if(placeholder){
+        linkEl.innerHTML=`<img src="${z.imgUrl}" alt="${z.altText||'광고'}" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none'">`;
+      }
+    }
+    if(z.linkUrl&&z.linkUrl!=='#') linkEl.href=z.linkUrl;
+  }
+}
+
+function renderAllAdZones(){AD_ZONES.filter(z=>!['popup','floating'].includes(z.key)).forEach(z=>renderAdZone(z.key));}
+
+// ── 팝업 배너 ──
+function initPopupBanner(){
+  const cfg=getAdConfig();
+  const p=cfg['popup']||{};
+  if(p.active===false)return;
+  const noKey='mp_popup_no_'+new Date().toDateString();
+  if(localStorage.getItem(noKey))return;
+  const delay=((p.delay||1)*1000);
+  setTimeout(()=>{
+    const box=document.getElementById('popupBanner');
+    box.classList.add('open');
+    const linkEl=document.getElementById('popupBannerLink');
+    if(p.imgUrl){
+      linkEl.style.minHeight='280px';
+      linkEl.innerHTML=`<img src="${p.imgUrl}" alt="${p.altText||'광고'}" style="width:100%;display:block;border-radius:0">`;
+    } else {
+      const c=document.getElementById('popupBannerContent');
+      c.innerHTML=`<div style="font-size:52px;margin-bottom:10px">${p.emoji||'📢'}</div><div style="font-size:22px;font-weight:900;margin-bottom:6px">${p.title||'팝업 광고 배너'}</div><div style="font-size:14px;opacity:0.8">${p.subtitle||'클릭 시 광고 링크로 이동합니다'}</div>`;
+    }
+    if(p.linkUrl&&p.linkUrl!=='#') linkEl.href=p.linkUrl;
+  },delay);
+}
+
+function closePopupBanner(fromBtn){
+  if(document.getElementById('popupNoToday').checked||fromBtn){
+    try{localStorage.setItem('mp_popup_no_'+new Date().toDateString(),'1')}catch{}
+  }
+  document.getElementById('popupBanner').classList.remove('open');
+}
+document.getElementById('popupBanner').addEventListener('click',function(e){if(e.target===this)closePopupBanner();});
+
+// ── 플로팅 배너 ──
+function initFloatingBanner(){
+  const cfg=getAdConfig();
+  const f=cfg['floating']||{};
+  if(f.active===false)return;
+  setTimeout(()=>{
+    const fb=document.getElementById('floatingBanner');
+    fb.classList.add('visible');
+    const linkEl=document.getElementById('floatingBannerLink');
+    if(f.imgUrl){
+      linkEl.innerHTML=`<img src="${f.imgUrl}" alt="${f.altText||'광고'}" style="height:56px;max-width:100%;object-fit:contain">`;
+    } else if(f.title){
+      document.getElementById('floatingBannerContent').innerHTML=`<div><div class="fa-text">${f.emoji||'🏷️'} ${f.title}</div><div class="fa-sub">${f.subtitle||'클릭하여 자세히 보기 →'}</div></div>`;
+    }
+    if(f.linkUrl&&f.linkUrl!=='#') linkEl.href=f.linkUrl;
+  },(f.delay||2)*1000);
+}
+function hideFloatingBanner(){document.getElementById('floatingBanner').classList.remove('visible');}
+
+// ── 관리자 패널 ──
+let _adTab=0;
+function openAdAdmin(zoneKey){
+  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4));
+  if(!isAdmin){
+    showToast('⛔ 관리자 권한이 필요합니다.');
+    return;
+  }
+  if(zoneKey){
+    const idx=AD_ZONES.findIndex(z=>z.key===zoneKey);
+    if(idx>=0)_adTab=idx;
+  }
+  document.getElementById('adminPanel').classList.add('open');
+  document.body.style.overflow='hidden';
+  updateAdminTabHighlight();
+  renderAdminContent(_adTab);
+}
+function closeAdAdmin(){document.getElementById('adminPanel').classList.remove('open');document.body.style.overflow='';}
+function switchAdTab(i){_adTab=i;updateAdminTabHighlight();renderAdminContent(i);}
+function updateAdminTabHighlight(){
+  document.querySelectorAll('#adminTabRow .admin-tab').forEach((t,i)=>t.classList.toggle('on',i===_adTab));
+}
+
+function renderAdminContent(i){
+  const z=AD_ZONES[i];
+  const cfg=getAdConfig();
+  const c=cfg[z.key]||{};
+  const active=c.active!==false;
+  const isPopup=z.key==='popup';
+  const isFloat=z.key==='floating';
+  const isZone=!isPopup&&!isFloat;
+
+  const zoneFields=`
+    <div class="az-field full"><label>이미지 URL</label>
+      <input type="text" id="az-imgUrl" value="${c.imgUrl||''}" placeholder="https://example.com/banner.jpg">
+    </div>
+    <div class="az-field full"><label>링크 URL (클릭 시 이동)</label>
+      <input type="text" id="az-linkUrl" value="${c.linkUrl||''}" placeholder="https://example.com">
+    </div>
+    <div class="az-field full"><label>대체 텍스트 (alt)</label>
+      <input type="text" id="az-altText" value="${c.altText||''}" placeholder="광고 내용 설명">
+    </div>`;
+
+  const popupFields=`
+    <div class="az-field full"><label>이미지 URL (없으면 텍스트 팝업)</label>
+      <input type="text" id="az-imgUrl" value="${c.imgUrl||''}" placeholder="https://example.com/popup.jpg">
+    </div>
+    <div class="az-field full"><label>링크 URL</label>
+      <input type="text" id="az-linkUrl" value="${c.linkUrl||''}" placeholder="https://example.com">
+    </div>
+    <div class="az-field"><label>아이콘 이모지</label>
+      <input type="text" id="az-emoji" value="${c.emoji||'📢'}" placeholder="📢">
+    </div>
+    <div class="az-field"><label>표시 지연 (초)</label>
+      <input type="number" id="az-delay" value="${c.delay||1}" min="0" max="60">
+    </div>
+    <div class="az-field full"><label>팝업 제목</label>
+      <input type="text" id="az-title" value="${c.title||''}" placeholder="팝업 제목">
+    </div>
+    <div class="az-field full"><label>팝업 부제목</label>
+      <input type="text" id="az-subtitle" value="${c.subtitle||''}" placeholder="팝업 부제목">
+    </div>`;
+
+  const floatFields=`
+    <div class="az-field full"><label>이미지 URL (없으면 텍스트)</label>
+      <input type="text" id="az-imgUrl" value="${c.imgUrl||''}" placeholder="https://example.com/float.jpg">
+    </div>
+    <div class="az-field full"><label>링크 URL</label>
+      <input type="text" id="az-linkUrl" value="${c.linkUrl||''}" placeholder="https://example.com">
+    </div>
+    <div class="az-field"><label>아이콘 이모지</label>
+      <input type="text" id="az-emoji" value="${c.emoji||'🏷️'}" placeholder="🏷️">
+    </div>
+    <div class="az-field"><label>표시 지연 (초)</label>
+      <input type="number" id="az-delay" value="${c.delay||2}" min="0" max="60">
+    </div>
+    <div class="az-field full"><label>광고 문구 (메인)</label>
+      <input type="text" id="az-title" value="${c.title||''}" placeholder="광고 문구를 입력하세요">
+    </div>
+    <div class="az-field full"><label>광고 부문구 (서브)</label>
+      <input type="text" id="az-subtitle" value="${c.subtitle||''}" placeholder="클릭하여 자세히 보기 →">
+    </div>`;
+
+  const hintText = isZone
+    ? `💡 이미지 URL을 비워두면 플레이스홀더가 표시됩니다. 권장 사이즈: <strong>${z.size}px</strong>`
+    : isPopup
+    ? '💡 페이지 접속 후 지정 시간이 지나면 자동 표시됩니다. "오늘 하루 보지 않기" 체크 시 하루 미표시.'
+    : '💡 페이지 로드 후 지정 시간이 지나면 화면 하단에 슬라이드업 표시됩니다.';
+
+  document.getElementById('adminContent').innerHTML=`
+  <div class="admin-zone-card">
+    <h4>
+      <span style="background:var(--teal);color:#fff;border-radius:6px;padding:2px 10px;font-size:12px">${z.size}</span>
+      ${z.name}
+    </h4>
+    <div class="az-toggle">
+      <input type="checkbox" class="toggle-sw" id="az-active" ${active?'checked':''}>
+      <label for="az-active">광고 활성화</label>
+    </div>
+    <div class="az-fields">
+      ${isZone?zoneFields:isPopup?popupFields:floatFields}
+    </div>
+    <p class="admin-hint">${hintText}</p>
+    <button class="admin-save-btn" onclick="saveAdZone('${z.key}')">💾 저장 및 적용</button>
+  </div>
+  <div style="background:#FFF8E1;border:1px solid #FFE082;border-radius:10px;padding:14px 16px;margin-top:4px;font-size:13px;color:#795548;line-height:1.7">
+    <strong>📌 광고 관리자 안내</strong><br>
+    • 이미지 URL: 외부 이미지 직접 링크 또는 서버 업로드 경로 입력<br>
+    • 저장 후 즉시 페이지에 반영됩니다<br>
+    • 팝업/플로팅 변경은 페이지 새로고침 후 확인하세요<br>
+    • 관리자 패널 열기: 이메일에 "admin" 포함 계정으로 로그인
+  </div>`;
+}
+
+function saveAdZone(key){
+  const cfg=getAdConfig();
+  const active=document.getElementById('az-active').checked;
+  const get=id=>(document.getElementById(id)||{value:''}).value||'';
+  cfg[key]={
+    active, imgUrl:get('az-imgUrl'), linkUrl:get('az-linkUrl'),
+    altText:get('az-altText'), title:get('az-title'),
+    subtitle:get('az-subtitle'), emoji:get('az-emoji'),
+    delay:parseFloat(get('az-delay'))||1
+  };
+  saveAdConfig(cfg);
+  if(!['popup','floating'].includes(key)) renderAdZone(key);
+  showToast(`✅ "${AD_ZONES.find(z=>z.key===key)?.name}" 광고가 저장되었습니다.`);
+}
+
+// ── 관리자 트리거 (admin 계정) ──
+function updateAdminTrigger(){
+  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4));
+  const btn=document.getElementById('adminTrigger');
+  if(btn) btn.classList.toggle('show', isAdmin);
+  
+  // 개별 광고 설정 버튼도 관리자에게만 노출
+  document.querySelectorAll('.ad-edit-btn').forEach(el => {
+    el.style.display = isAdmin ? 'block' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+// 샘플 사용자 데이터 생성 (테스트용)
+(function seedSampleUser() {
+  const users = getUsers();
+  const sampleEmail = 'test@mapo.or.kr';
+  if (!users.find(u => u.email === sampleEmail)) {
+    users.push({
+      name: '홍길동(샘플)',
+      biz: '마포 대박상회',
+      email: sampleEmail,
+      pw: '1234',
+      phone: '010-1234-5678',
+      joinDate: new Date().toLocaleDateString('ko-KR')
+    });
+    saveUsers(users);
+  }
+})();
+
+updateAuthUI();
+updateAdminTrigger();
+renderHome();
+renderAllAdZones();
+initPopupBanner();
+initFloatingBanner();
+</script>
+</body>
+</html>

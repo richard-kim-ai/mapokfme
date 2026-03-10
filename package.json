@@ -1,0 +1,20 @@
+{
+  "name": "mapo-association-site",
+  "version": "1.0.0",
+  "description": "마포구 소상공인연합회 홈페이지",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.99.0"
+  }
+}
