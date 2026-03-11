@@ -215,9 +215,95 @@ tr:hover { background: #FBFCFF; }
   main{ padding: 24px; }
   .ad-row{ grid-template-columns: 1fr; }
 }
+/* ───────── MOBILE RESPONSIVE ───────── */
+.mobile-top-bar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  z-index: 1000;
+  padding: 0 20px;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+.hamburger {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: var(--primary);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1100;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 900px) {
+  body { flex-direction: column; padding-top: 60px; }
+  .mobile-top-bar { display: flex; }
+  aside {
+    position: fixed;
+    top: 0; left: -260px; bottom: 0;
+    z-index: 1200;
+    background: #fff;
+    width: 260px;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+  }
+  aside.open { transform: translateX(260px); }
+  .sidebar-overlay.open { display: block; }
+  
+  main { padding: 20px 16px; }
+  .page-head { flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; position: static; }
+  .page-title { font-size: 19px; }
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .stat-card { padding: 16px; }
+  .stat-value { font-size: 22px; }
+  
+  .table-wrap { overflow-x: auto; margin: 0 -16px; padding: 0 16px; }
+  table { min-width: 700px; font-size: 13px; }
+  
+  /* Ad panel optimization */
+  #adminTabRow { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  #adminTabRow button { flex-shrink: 0; padding: 12px 15px; }
+  .ad-card .ad-row { grid-template-columns: 1fr; }
+  
+  /* Modal optimization */
+  #bizModal > div, #regModal > div { margin: 16px; padding: 20px !important; max-height: 90vh; overflow-y: auto; }
+}
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
+
+<div class="mobile-top-bar">
+  <div class="sidebar-head" style="border:none; padding:0; font-size:14px;">마포구 관리자</div>
+  <button class="hamburger" onclick="toggleSidebar()">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <div id="toast">저장되었습니다!</div>
 
@@ -501,6 +587,18 @@ function checkLogin() {
   }
 }
 
+function toggleSidebar(action) {
+  const aside = document.querySelector('aside');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (action === 'forceClose') {
+    aside.classList.remove('open');
+    overlay.classList.remove('open');
+    return;
+  }
+  aside.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
 function switchPage(page) {
   document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
   document.getElementById('page-' + page).classList.remove('hidden');
@@ -512,6 +610,9 @@ function switchPage(page) {
   if(page === 'members') renderMembers();
   if(page === 'inquiries') renderInquiries();
   if(page === 'sponsorships') renderSponsorships();
+  
+  // Mobile: menu close after click
+  if(window.innerWidth <= 900) toggleSidebar('forceClose');
 }
 
 function logout() { location.reload(); }
