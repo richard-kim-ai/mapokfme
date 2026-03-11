@@ -1,69 +1,696 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Page</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Mobile optimization */
-        body {
-            font-family: Arial, sans-serif;
-            padding: 10px;
-        }
-        .menu {
-            display: none;
-            flex-direction: column;
-        }
-        .hamburger {
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            height: 30px;
-        }
-        .bar {
-            height: 4px;
-            width: 30px;
-            background-color: #333;
-        }
-        @media (max-width: 600px) {
-            .menu {
-                display: flex;
-            }
-            .desktop {
-                display: none;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>마포구 소상공인연합회 - 관리자 시스템</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Dashboard (ref image) tone */
+  --primary: #4F6EF7;
+  --primary-dark: #2F3A8A;
+  --bg: #EEF0FF;
+  --text: #1F2430;
+  --border: #E6E8F5;
+  --white: #fff;
+  --muted: #667085;
+  --card-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
+  --card-shadow-sm: 0 6px 18px rgba(17, 24, 39, 0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: radial-gradient(1200px 700px at 20% 10%, #F7F3FF 0%, rgba(247,243,255,0) 55%),
+              radial-gradient(1000px 600px at 90% 20%, #EEF2FF 0%, rgba(238,242,255,0) 55%),
+              var(--bg);
+  color: var(--text);
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ───────── LOGIN ───────── */
+#loginOverlay { position: fixed; inset: 0; background: rgba(20, 24, 50, 0.72); backdrop-filter: blur(10px); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+.login-box { background: #fff; padding: 42px 40px; border-radius: 22px; width: 100%; max-width: 420px; box-shadow: 0 24px 80px rgba(0,0,0,0.25); text-align: center; border: 1px solid rgba(255,255,255,0.35); }
+.login-box h2 { color: #1F2A44; margin-bottom: 20px; font-weight: 900; letter-spacing: 0.5px; }
+.login-input { width: 100%; padding: 13px 14px; margin-bottom: 12px; border: 1.5px solid var(--border); border-radius: 12px; outline: none; background: #FBFCFF; transition: box-shadow 0.15s, border-color 0.15s; }
+.login-input:focus { border-color: rgba(79,110,247,0.55); box-shadow: 0 0 0 4px rgba(79,110,247,0.14); }
+.btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), #6A5CFF); color: #fff; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 12px 28px rgba(79,110,247,0.28); }
+
+/* ───────── SIDEBAR ───────── */
+aside {
+  width: 260px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  transition: 0.3s;
+  border-right: 1px solid var(--border);
+}
+.sidebar-head {
+  padding: 26px 22px;
+  color: #1F2A44;
+  font-weight: 900;
+  font-size: 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-head::before{
+  content: "H";
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), #6A5CFF);
+  box-shadow: 0 10px 24px rgba(79,110,247,0.26);
+}
+nav { flex: 1; padding: 14px 10px; }
+.nav-item {
+  padding: 12px 12px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.15s;
+  font-size: 13.5px;
+  margin: 4px 4px;
+  color: #475467;
+  user-select: none;
+}
+.nav-icon{
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+  color: currentColor;
+  opacity: 0.9;
+}
+.nav-icon svg{
+  width: 18px;
+  height: 18px;
+  display: block;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav-item:hover { background: #F3F6FF; color: #1F2A44; }
+.nav-item.active {
+  background: #EEF2FF;
+  color: #1F2A44;
+  box-shadow: inset 0 0 0 1px rgba(79,110,247,0.20);
+  position: relative;
+}
+.nav-item.active::after{
+  content:"";
+  position:absolute;
+  left:-6px;
+  top:10px;
+  bottom:10px;
+  width:4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--primary), #6A5CFF);
+}
+
+/* ───────── MAIN CONTENT ───────── */
+main { flex: 1; padding: 34px 34px 44px; overflow-y: auto; }
+.page-head { position: sticky; top: 0; padding: 6px 0 18px; background: transparent; z-index: 10; }
+.page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; }
+.page-title { font-size: 22px; font-weight: 900; color: #1F2A44; letter-spacing: -0.2px; }
+
+/* ───────── DASHBOARD CARDS ───────── */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+.stat-card { background: rgba(255,255,255,0.92); padding: 22px; border-radius: 18px; box-shadow: var(--card-shadow-sm); border: 1px solid var(--border); }
+.stat-label { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; font-weight: 700; }
+.stat-value { font-size: 28px; font-weight: 900; color: #1F2A44; }
+
+/* ───────── AD MANAGEMENT ───────── */
+.ad-card { background: rgba(255,255,255,0.92); border-radius: 18px; padding: 20px; border: 1px solid var(--border); margin-bottom: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--card-shadow-sm); }
+.ad-card h4 { font-size: 14.5px; color: #1F2A44; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 2px; }
+.ad-row { display: grid; grid-template-columns: 100px 1fr 1fr; gap: 12px; align-items: center; }
+.ad-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.ad-input { padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 13px; background:#FBFCFF; outline:none; transition: box-shadow 0.15s, border-color 0.15s; }
+.ad-input:focus { border-color: rgba(79,110,247,0.55); box-shadow: 0 0 0 4px rgba(79,110,247,0.14); }
+.ad-preview { width: 100%; height: 60px; background: #f8f8f8; border: 1px dashed #ccc; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #999; margin-top: 8px; overflow: hidden; }
+.ad-preview img { width: 100%; height: 100%; object-fit: cover; }
+.btn-save { padding: 12px 18px; background: linear-gradient(135deg, var(--primary), #6A5CFF); color: #fff; border: none; border-radius: 12px; cursor: pointer; font-weight: 800; margin-top: 10px; box-shadow: 0 12px 26px rgba(79,110,247,0.22); }
+.btn-save:hover { filter: brightness(0.98); transform: translateY(-1px); }
+
+/* Ads manager panel (tabs) */
+.ads-panel{
+  background: rgba(255,255,255,0.92);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+}
+.ads-tabs{
+  display:flex;
+  align-items:center;
+  gap: 6px;
+  padding: 10px;
+  background: #F7F8FF;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.ads-tabs::-webkit-scrollbar{ height: 6px; }
+.ads-tabs::-webkit-scrollbar-track{ background: transparent; }
+.ads-tabs::-webkit-scrollbar-thumb{ background: rgba(79,110,247,0.25); border-radius: 999px; }
+.ads-tab{
+  appearance:none;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #475467;
+  font-weight: 900;
+  font-size: 12.5px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor:pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.05s;
+}
+.ads-tab:hover{ background:#EEF2FF; color:#1F2A44; }
+.ads-tab.active{
+  background: #EEF2FF;
+  border-color: rgba(79,110,247,0.22);
+  color:#1F2A44;
+  box-shadow: 0 10px 22px rgba(79,110,247,0.12);
+}
+.ads-tab:active{ transform: translateY(1px); }
+.ads-content{ padding: 24px; }
+
+/* ───────── TABLE ───────── */
+.table-wrap { background: rgba(255,255,255,0.92); border-radius: 18px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { background: #F7F8FF; padding: 14px; text-align: left; font-weight: 900; color: #667085; border-bottom: 1px solid var(--border); }
+td { padding: 14px; border-bottom: 1px solid var(--border); }
+tr:hover { background: #FBFCFF; }
+.status-tag { padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+.status-new { background: #E8F5ED; color: #2E7D55; }
+.level-1 { background: #F1F3F5; color: #495057; }
+.level-2 { background: #E7F5FF; color: #1971C2; }
+.level-3 { background: #FFF4E6; color: #D9480F; }
+.level-4 { background: #FFF0F6; color: #C2255E; }
+
+/* ───────── COMMON ───────── */
+.hidden { display: none !important; }
+#toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(31,42,68,0.92); color: #fff; padding: 12px 18px; border-radius: 999px; z-index: 3000; display: none; box-shadow: 0 18px 50px rgba(0,0,0,0.22); }
+
+/* Responsive */
+@media (max-width: 900px){
+  aside{ width: 210px; }
+  main{ padding: 24px; }
+  .ad-row{ grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-    <div class="hamburger" onclick="toggleMenu()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+
+<div id="toast">저장되었습니다!</div>
+
+<!-- LOGIN -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <h2>ADMIN LOGIN</h2>
+    <div style="background:var(--bg); padding:10px; border-radius:8px; margin-bottom:20px; font-size:12px; color:var(--primary-dark);">
+      <strong>테스트 계정</strong><br>
+      ID: admin / PW: 1234
     </div>
-    <nav class="menu" id="menu">
-        <ul>
-            <li><a href="#dashboard">Dashboard</a></li>
-            <li><a href="#settings">Settings</a></li>
-            <li><a href="#profile">Profile</a></li>
-        </ul>
-    </nav>
-    <div class="desktop">
-        <nav>
-            <ul>
-                <li><a href="#dashboard">Dashboard</a></li>
-                <li><a href="#settings">Settings</a></li>
-                <li><a href="#profile">Profile</a></li>
-            </ul>
-        </nav>
+    <input type="text" id="adminId" class="login-input" placeholder="관리자 아이디" onkeyup="if(window.event.keyCode==13)checkLogin()">
+    <input type="password" id="adminPw" class="login-input" placeholder="비밀번호" onkeyup="if(window.event.keyCode==13)checkLogin()">
+    <button class="btn-login" onclick="checkLogin()">관리 시스템 접속</button>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="sidebar-head">마포구 관리자</div>
+  <nav id="sidebarNav">
+    <div class="nav-item active" onclick="switchPage('dash')">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 4h7v9H4z"/><path d="M13 4h7v5h-7z"/><path d="M13 11h7v9h-7z"/><path d="M4 15h7v5H4z"/></svg>
+      </span>
+      대시보드
     </div>
-    <script>
-        function toggleMenu() {
-            var menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        }
-    </script>
+    <div class="nav-item" onclick="switchPage('ads')">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4z"/><path d="M8 10h.01"/><path d="M4 14l4-4 4 4 4-3 4 3"/></svg>
+      </span>
+      광고/배너 관리
+    </div>
+    <div class="nav-item" onclick="switchPage('members')">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M22 21v-2a3 3 0 0 0-2.3-2.9"/><path d="M16.7 3.1a4 4 0 0 1 0 7.8"/></svg>
+      </span>
+      회원사 관리
+    </div>
+    <div class="nav-item" onclick="switchPage('inquiries')">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 7l8 6 8-6"/></svg>
+      </span>
+      일반 문의
+    </div>
+    <div class="nav-item" onclick="switchPage('sponsorships')">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M7 11l2 2 4-4"/><path d="M17 11l2 2 4-4" opacity="0"/><path d="M3 12a9 9 0 1 0 18 0 9 9 0 1 0-18 0"/></svg>
+      </span>
+      후원·제휴 문의
+    </div>
+    <div class="nav-item" onclick="logout()">
+      <span class="nav-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M10 17l-1 4h10l-1-4"/><path d="M12 3v10"/><path d="M8 7l4-4 4 4"/><path d="M5 21h14"/></svg>
+      </span>
+      로그아웃
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main>
+  <!-- DASHBOARD -->
+  <section id="page-dash">
+    <div class="page-head">
+      <div class="page-title">운영 현황 대시보드</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">총 회원수</div><div class="stat-value" id="stat-members">2,410</div></div>
+      <div class="stat-card"><div class="stat-label">새로운 문의</div><div class="stat-value" id="stat-inquiries">12</div></div>
+      <div class="stat-card"><div class="stat-label">진행중 지원사업</div><div class="stat-value">8</div></div>
+      <div class="stat-card"><div class="stat-label">오늘 방문자</div><div class="stat-value">1,245</div></div>
+    </div>
+  </section>
+
+  <!-- ADS -->
+  <section id="page-ads" class="hidden">
+    <div class="page-head">
+      <div class="page-title">홈페이지 광고/배너 관리</div>
+    </div>
+    
+    <div class="ads-panel">
+      <div class="ads-tabs" id="adminTabRow">
+        <button class="ads-tab active" onclick="switchAdTab(0)" type="button">① 헤더</button>
+        <button class="ads-tab" onclick="switchAdTab(1)" type="button">② 섹션</button>
+        <button class="ads-tab" onclick="switchAdTab(2)" type="button">③ 미드(좌)</button>
+        <button class="ads-tab" onclick="switchAdTab(3)" type="button">③ 미드(우)</button>
+        <button class="ads-tab" onclick="switchAdTab(4)" type="button">사이드바</button>
+        <button class="ads-tab" onclick="switchAdTab(5)" type="button">공지인라인</button>
+        <button class="ads-tab" onclick="switchAdTab(6)" type="button">푸터전</button>
+        <button class="ads-tab" onclick="switchAdTab(7)" type="button">팝업</button>
+        <button class="ads-tab" onclick="switchAdTab(8)" type="button">플로팅</button>
+      </div>
+      <div id="adminAdContent" class="ads-content">
+        <!-- JS로 동적 생성 -->
+      </div>
+    </div>
+  </section>
+
+  <!-- MEMBERS -->
+  <section id="page-members" class="hidden">
+    <div class="page-head">
+      <div class="page-title">회원사 관리 및 승인</div>
+      <button class="btn-save" style="background:var(--primary)" onclick="openRegModal()">➕ 신규 회원사 등록</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>가입일</th><th>업체명/이메일</th><th>성명/연락처</th><th>상태/등급</th><th>관리 액션</th></tr></thead>
+        <tbody id="memberTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- INQUIRIES -->
+
+  <section id="page-inquiries" class="hidden">
+    <div class="page-head">
+      <div class="page-title">일반 문의사항 목록</div>
+      <button class="btn-save" style="background:#C62828" onclick="deleteSelectedInquiries()">선택 항목 삭제</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:40px"><input type="checkbox" id="checkAllInq" onclick="toggleAllCheck('checkAllInq', 'inq-check')"></th><th>접수일</th><th>유형</th><th>이름/연락처</th><th>제목/내용</th><th>상태/관리</th></tr></thead>
+        <tbody id="inquiryTable"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SPONSORSHIPS -->
+  <section id="page-sponsorships" class="hidden">
+    <div class="page-head">
+      <div class="page-title">후원 및 제휴 문의 목록</div>
+      <button class="btn-save" style="background:#C62828" onclick="deleteSelectedSponsorships()">선택 항목 삭제</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:40px"><input type="checkbox" id="checkAllSp" onclick="toggleAllCheck('checkAllSp', 'sp-check')"></th><th>접수일</th><th>기관/업체명</th><th>담당자/연락처</th><th>문의유형</th><th>내용</th><th>상태/관리</th></tr></thead>
+        <tbody id="sponsorshipTable"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</main>
+
+<!-- BIZ DETAIL MODAL -->
+<div id="bizModal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2500; display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:32px; border-radius:16px; width:100%; max-width:600px; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+      <h3 style="color:var(--primary); font-size:20px;">사업자 상세 정보 관리</h3>
+      <button onclick="document.getElementById('bizModal').classList.add('hidden')" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <input type="hidden" id="biz_user_idx">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+      <div><label style="font-size:12px; color:#888;">상호명</label><input type="text" id="bm_bname" class="ad-input" style="width:100%"></div>
+      <div><label style="font-size:12px; color:#888;">사업자번호</label><input type="text" id="bm_bno" class="ad-input" style="width:100%"></div>
+      <div><label style="font-size:12px; color:#888;">업태/종목</label><input type="text" id="bm_category" class="ad-input" style="width:100%"></div>
+      <div>
+        <label style="font-size:12px; color:#888;">사업자구분</label>
+        <select id="bm_bizType" class="ad-input" style="width:100%">
+          <option value="개인">개인사업자</option>
+          <option value="법인">법인사업자</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-bottom:16px;"><label style="font-size:12px; color:#888;">사업장 주소</label><input type="text" id="bm_address" class="ad-input" style="width:100%"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div><label style="font-size:12px; color:#888;">은행명</label><input type="text" id="bm_bank" class="ad-input" style="width:100%"></div>
+      <div><label style="font-size:12px; color:#888;">계좌번호</label><input type="text" id="bm_account" class="ad-input" style="width:100%"></div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-save" style="flex:1" onclick="saveBizDetail()">정보 저장하기</button>
+      <button class="btn-save" style="flex:1; background:#888;" onclick="document.getElementById('bizModal').classList.add('hidden')">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- MEMBER REGISTRATION MODAL -->
+<div id="regModal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:2500; display:flex; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:32px; border-radius:16px; width:100%; max-width:500px; box-shadow:0 20px 60px rgba(0,0,0,0.2);">
+    <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+      <h3 style="color:var(--primary); font-size:20px;">신규 회원사 직접 등록</h3>
+      <button onclick="closeRegModal()" style="background:none; border:none; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <div style="display:grid; gap:12px; margin-bottom:20px;">
+      <div><label style="font-size:12px; color:#888;">대표자 성함</label><input type="text" id="rm_name" class="ad-input" style="width:100%" placeholder="성함 입력"></div>
+      <div><label style="font-size:12px; color:#888;">업체명(상호)</label><input type="text" id="rm_biz" class="ad-input" style="width:100%" placeholder="업체명 입력"></div>
+      <div><label style="font-size:12px; color:#888;">이메일(아이디)</label><input type="email" id="rm_email" class="ad-input" style="width:100%" placeholder="example@naver.com"></div>
+      <div><label style="font-size:12px; color:#888;">비밀번호</label><input type="password" id="rm_pw" class="ad-input" style="width:100%" placeholder="초기 비밀번호"></div>
+      <div><label style="font-size:12px; color:#888;">연락처</label><input type="tel" id="rm_phone" class="ad-input" style="width:100%" placeholder="010-0000-0000"></div>
+      <div>
+        <label style="font-size:12px; color:#888;">회원 등급</label>
+        <select id="rm_level" class="ad-input" style="width:100%">
+          <option value="1">홈페이지 회원</option>
+          <option value="2" selected>정회원</option>
+          <option value="3">운영자</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-save" style="flex:1" onclick="registerNewMember()">등록 완료</button>
+      <button class="btn-save" style="flex:1; background:#888;" onclick="closeRegModal()">취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+function openRegModal() {
+  const modal = document.getElementById('regModal');
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function closeRegModal() {
+  const modal = document.getElementById('regModal');
+  modal.classList.add('hidden');
+  modal.style.display = 'none';
+  // Clear inputs
+  ['rm_name','rm_biz','rm_email','rm_pw','rm_phone'].forEach(id => document.getElementById(id).value = '');
+}
+
+function registerNewMember() {
+  const name = document.getElementById('rm_name').value.trim();
+  const biz = document.getElementById('rm_biz').value.trim();
+  const email = document.getElementById('rm_email').value.trim();
+  const pw = document.getElementById('rm_pw').value;
+  const phone = document.getElementById('rm_phone').value.trim();
+  const level = parseInt(document.getElementById('rm_level').value);
+
+  if(!name || !biz || !email || !pw || !phone) {
+    alert('모든 정보를 입력해주세요.');
+    return;
+  }
+
+  let members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  if(members.find(m => m.email === email)) {
+    alert('이미 존재하는 이메일입니다.');
+    return;
+  }
+
+  const newUser = {
+    name, biz, email, pw, phone, level,
+    joinDate: new Date().toLocaleDateString('ko-KR'),
+    cmsStatus: level >= 2 ? 'approved' : 'none'
+  };
+
+  members.push(newUser);
+  localStorage.setItem('mp_users', JSON.stringify(members));
+  showToast(`${biz} 회원사가 등록되었습니다.`);
+  closeRegModal();
+  renderMembers();
+}
+
+// ═══════════════════════════════════════
+//  CONFIG & DATA
+// ═══════════════════════════════════════
+const AD_CFG_KEY = 'mp_ad_config';
+const AD_ZONES = [
+  {key:'header-strip',  name:'① 헤더 리더보드',      size:'728×90'},
+  {key:'section-strip', name:'② 섹션간 빌보드',       size:'970×90'},
+  {key:'mid-left',      name:'③ 미드 레크탱글 (좌)',  size:'300×250'},
+  {key:'mid-right',     name:'③ 미드 레크탱글 (우)',  size:'300×250'},
+  {key:'sidebar',       name:'④ 사이드바 스카이스크래퍼', size:'160×600'},
+  {key:'inline-notice', name:'⑤ 공지 인라인',         size:'728×90'},
+  {key:'prefooter',     name:'⑥ 푸터 전 빌보드',      size:'970×90'},
+  {key:'popup',         name:'팝업 배너',              size:'모달'},
+  {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
+];
+
+// ═══════════════════════════════════════
+//  AUTH & NAVIGATION
+// ═══════════════════════════════════════
+function checkLogin() {
+  const id = document.getElementById('adminId').value;
+  const pw = document.getElementById('adminPw').value;
+  if(id === 'admin' && pw === '1234') { // 실제 서비스 시 보안 강화 필요
+    document.getElementById('loginOverlay').style.display = 'none';
+    init();
+  } else {
+    alert('아이디 또는 비밀번호가 틀립니다.');
+  }
+}
+
+function switchPage(page) {
+  document.querySelectorAll('main section').forEach(s => s.classList.add('hidden'));
+  document.getElementById('page-' + page).classList.remove('hidden');
+  
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  
+  if(page === 'ads') renderAds();
+  if(page === 'members') renderMembers();
+  if(page === 'inquiries') renderInquiries();
+  if(page === 'sponsorships') renderSponsorships();
+}
+
+function logout() { location.reload(); }
+
+// ═══════════════════════════════════════
+//  AD MANAGEMENT (CORE)
+// ═══════════════════════════════════════
+function getAdConfig() {
+  return JSON.parse(localStorage.getItem(AD_CFG_KEY) || '{}');
+}
+
+function renderSponsorships() {
+  const sponsorships = JSON.parse(localStorage.getItem('mp_sp_inquiries') || '[]');
+  document.getElementById('sponsorshipTable').innerHTML = sponsorships.map((s, idx) => {
+    const status = s.status || '접수';
+    let statusClass = 'level-1'; 
+    if(status === '확인') statusClass = 'level-2';
+    if(status === '보류') statusClass = 'level-3';
+    if(status === '답변') statusClass = 'status-new';
+
+    return `
+    <tr>
+      <td><input type="checkbox" class="sp-check" value="${idx}"></td>
+      <td>${s.date}</td>
+      <td><div style="font-weight:700">${s.biz}</div></td>
+      <td>
+        <div>${s.name}</div>
+        <div style="font-size:12px;color:#888">${s.phone}</div>
+      </td>
+      <td><span class="status-tag level-2">${s.type}</span></td>
+      <td style="max-width:300px; font-size:12px; line-height:1.4">${s.content}</td>
+      <td>
+        <div style="margin-bottom:6px"><span class="status-tag ${statusClass}">${status}</span></div>
+        <div style="display:flex; gap:4px">
+          <select style="padding:4px; font-size:11px; border:1px solid #ddd; border-radius:4px; flex:1" onchange="updateSponsorshipStatus(${idx}, this.value)">
+            <option value="접수" ${status==='접수'?'selected':''}>접수</option>
+            <option value="확인" ${status==='확인'?'selected':''}>확인</option>
+            <option value="보류" ${status==='보류'?'selected':''}>보류</option>
+            <option value="답변" ${status==='답변'?'selected':''}>답변</option>
+          </select>
+          <button class="btn-save" style="background:#e57373; margin:0; padding:4px 8px; font-size:11px" onclick="deleteSponsorship(${idx})">삭제</button>
+        </div>
+      </td>
+    </tr>
+  `}).join('') || '<tr><td colspan="7" style="text-align:center;padding:40px;">후원 및 제휴 문의 내역이 없습니다.</td></tr>';
+  const chk = document.getElementById('checkAllSp');
+  if(chk) chk.checked = false;
+}
+
+function updateSponsorshipStatus(idx, newStatus) {
+  const sponsorships = JSON.parse(localStorage.getItem('mp_sp_inquiries') || '[]');
+  if(sponsorships[idx]) {
+    sponsorships[idx].status = newStatus;
+    localStorage.setItem('mp_sp_inquiries', JSON.stringify(sponsorships));
+    renderSponsorships();
+    showToast(`상태가 [${newStatus}]으로 변경되었습니다.`);
+  }
+}
+
+function deleteSponsorship(idx) {
+  if(!confirm('정말 이 문의를 삭제하시겠습니까?')) return;
+  let sponsorships = JSON.parse(localStorage.getItem('mp_sp_inquiries') || '[]');
+  sponsorships.splice(idx, 1);
+  localStorage.setItem('mp_sp_inquiries', JSON.stringify(sponsorships));
+  renderSponsorships();
+  showToast('삭제되었습니다.');
+}
+
+function deleteSelectedSponsorships() {
+  const checks = document.querySelectorAll('.sp-check:checked');
+  if(checks.length === 0) { alert('삭제할 항목을 선택해주세요.'); return; }
+  if(!confirm(`선택한 ${checks.length}개의 항목을 삭제하시겠습니까?`)) return;
+  
+  let sponsorships = JSON.parse(localStorage.getItem('mp_sp_inquiries') || '[]');
+  const indicesToDelete = Array.from(checks).map(c => parseInt(c.value)).sort((a,b) => b-a);
+  
+  indicesToDelete.forEach(idx => {
+    sponsorships.splice(idx, 1);
+  });
+  
+  localStorage.setItem('mp_sp_inquiries', JSON.stringify(sponsorships));
+  renderSponsorships();
+  showToast('선택한 항목이 삭제되었습니다.');
+}
+
+function toggleAllCheck(masterId, childClass) {
+  const isChecked = document.getElementById(masterId).checked;
+  document.querySelectorAll('.' + childClass).forEach(c => c.checked = isChecked);
+}
+
+function renderInquiries() {
+  const inquiries = JSON.parse(localStorage.getItem('mp_inquiries') || '[]');
+  document.getElementById('inquiryTable').innerHTML = inquiries.map((i, idx) => {
+    const status = i.status || '접수';
+    let statusClass = 'level-1';
+    if(status === '확인') statusClass = 'level-2';
+    if(status === '보류') statusClass = 'level-3';
+    if(status === '답변') statusClass = 'status-new';
+
+    return `
+    <tr>
+      <td><input type="checkbox" class="inq-check" value="${idx}"></td>
+      <td>${i.date}</td>
+      <td><span class="status-tag level-1">${i.type}</span></td>
+      <td>
+        <div style="font-weight:700">${i.name}</div>
+        <div style="font-size:12px;color:#888">${i.phone}</div>
+        <div style="font-size:11px;color:#999">${i.email || ''}</div>
+      </td>
+      <td style="max-width:400px">
+        <div style="font-weight:700; margin-bottom:4px">${i.subject}</div>
+        <div style="font-size:12px; color:#666; background:#f9f9f9; padding:8px; border-radius:6px; white-space:pre-wrap; line-height:1.4">${i.content}</div>
+      </td>
+      <td>
+        <div style="margin-bottom:6px"><span class="status-tag ${statusClass}">${status}</span></div>
+        <div style="display:flex; gap:4px">
+          <select style="padding:4px; font-size:11px; border:1px solid #ddd; border-radius:4px; flex:1" onchange="updateInquiryStatus(${idx}, this.value)">
+            <option value="접수" ${status==='접수'?'selected':''}>접수</option>
+            <option value="확인" ${status==='확인'?'selected':''}>확인</option>
+            <option value="보류" ${status==='보류'?'selected':''}>보류</option>
+            <option value="답변" ${status==='답변'?'selected':''}>답변</option>
+          </select>
+          <button class="btn-save" style="background:#e57373; margin:0; padding:4px 8px; font-size:11px" onclick="deleteInquiry(${idx})">삭제</button>
+        </div>
+      </td>
+    </tr>
+  `}).join('') || '<tr><td colspan="6" style="text-align:center;padding:40px;">문의 내역이 없습니다.</td></tr>';
+  document.getElementById('stat-inquiries').textContent = inquiries.length;
+  const chk = document.getElementById('checkAllInq');
+  if(chk) chk.checked = false;
+}
+
+function updateInquiryStatus(idx, newStatus) {
+  const inquiries = JSON.parse(localStorage.getItem('mp_inquiries') || '[]');
+  if(inquiries[idx]) {
+    inquiries[idx].status = newStatus;
+    localStorage.setItem('mp_inquiries', JSON.stringify(inquiries));
+    renderInquiries();
+    showToast(`상태가 [${newStatus}]으로 변경되었습니다.`);
+  }
+}
+
+function deleteInquiry(idx) {
+  if(!confirm('정말 이 문의를 삭제하시겠습니까?')) return;
+  let inquiries = JSON.parse(localStorage.getItem('mp_inquiries') || '[]');
+  inquiries.splice(idx, 1);
+  localStorage.setItem('mp_inquiries', JSON.stringify(inquiries));
+  renderInquiries();
+  showToast('삭제되었습니다.');
+}
+
+function deleteSelectedInquiries() {
+  const checks = document.querySelectorAll('.inq-check:checked');
+  if(checks.length === 0) { alert('삭제할 항목을 선택해주세요.'); return; }
+  if(!confirm(`선택한 ${checks.length}개의 항목을 삭제하시겠습니까?`)) return;
+  
+  let inquiries = JSON.parse(localStorage.getItem('mp_inquiries') || '[]');
+  const indicesToDelete = Array.from(checks).map(c => parseInt(c.value)).sort((a,b) => b-a);
+  
+  indicesToDelete.forEach(idx => {
+    inquiries.splice(idx, 1);
+  });
+  
+  localStorage.setItem('mp_inquiries', JSON.stringify(inquiries));
+  renderInquiries();
+  showToast('선택한 항목이 삭제되었습니다.');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 2000);
+}
+
+function init() {
+  renderMembers();
+  renderInquiries();
+  renderSponsorships();
+}
+</script>
 </body>
 </html>
