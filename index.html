@@ -1690,9 +1690,16 @@ function isEmailKeywordAdmin(user){
   return String(user.email || '').toLowerCase().includes(keyword);
 }
 
+function isAdminLevelUser(user){
+  return getUserLevel(user) >= 3 || isEmailKeywordAdmin(user);
+}
+
 function canWriteType(type){
   const rule = WRITE_PERMISSION_RULES[type];
   if(!rule) return false;
+  if(!currentUser) return false;
+  // 운영자/시스템관리자는 콘텐츠 작성 기능을 항상 사용할 수 있도록 우선 허용
+  if(isAdminLevelUser(currentUser)) return true;
   return hasFeaturePermission(rule.featureKey);
 }
 
