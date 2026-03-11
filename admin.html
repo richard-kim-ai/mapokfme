@@ -1358,7 +1358,7 @@ function renderDashboard() {
     }
   }
 
-  const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+  const levelNames = getLevelNames();
   const recentMembers = members.slice(-5).reverse();
   const recentMemberList = document.getElementById('dash-recent-members');
   if(recentMemberList) {
@@ -1438,7 +1438,8 @@ function renderDashboard() {
 
 function renderMembers() {
   const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
-  const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+  const levelNames = getLevelNames();
+  const levelOptionsHtml = [1, 2, 3, 4].map(level => `<option value="${level}">${escapeHtml(levelNames[level] || `레벨 ${level}`)}</option>`).join('');
   
   document.getElementById('memberTable').innerHTML = members.map((m, idx) => {
     const level = m.level || 1;
@@ -1464,14 +1465,11 @@ function renderMembers() {
         </td>
         <td>
           <div style="display:flex; gap:6px; align-items:center;">
-            ${(level === 1 && cmsStatus === 'pending') ? `<button class="btn-save" style="margin:0; padding:4px 8px; font-size:11px" onclick="changeLevel(${idx}, 2, 'approved')">승인(정회원)</button>` : ''}
+            ${(level === 1 && cmsStatus === 'pending') ? `<button class="btn-save" style="margin:0; padding:4px 8px; font-size:11px" onclick="changeLevel(${idx}, 2, 'approved')">승인(${escapeHtml(levelNames[2] || '레벨 2')})</button>` : ''}
             ${(level >= 2) ? `<button class="btn-save" style="margin:0; padding:4px 8px; font-size:11px; background:#1565C0" onclick="openBizModal(${idx})">사업자상세</button>` : ''}
             <select style="padding:4px; font-size:11px; border:1px solid #ddd; border-radius:4px" onchange="changeLevel(${idx}, this.value)">
               <option value="">등급 변경</option>
-              <option value="1">홈페이지 회원</option>
-              <option value="2">정회원</option>
-              <option value="3">운영자</option>
-              <option value="4">시스템관리자</option>
+              ${levelOptionsHtml}
             </select>
             <button class="btn-save" style="background:#e57373; margin:0; padding:4px 8px; font-size:11px" onclick="deleteMember(${idx})">삭제</button>
           </div>
@@ -1726,6 +1724,7 @@ function showToast(msg) {
 }
 
 function init() {
+  renderSystemSettings();
   renderMembers();
   renderInquiries();
   renderSponsorships();
