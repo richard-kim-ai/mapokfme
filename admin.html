@@ -839,6 +839,63 @@ function registerNewMember() {
 }
 
 // ═══════════════════════════════════════
+//  SUPABASE UPLOAD
+// ═══════════════════════════════════════
+// .env 파일의 값을 여기에 직접 입력하거나 Vercel 환경변수를 사용하세요.
+const SB_URL = ''; // VITE_SUPABASE_URL
+const SB_KEY = ''; // VITE_SUPABASE_ANON_KEY
+
+let supabaseClient = null;
+if (SB_URL && SB_KEY) {
+  supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+}
+
+async function uploadAdImage() {
+  if (!supabaseClient) {
+    alert('Supabase 설정(URL, Key)이 필요합니다. 관리자에게 문의하세요.');
+    return;
+  }
+
+  const fileInput = document.getElementById('az-file');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('업로드할 파일을 선택해주세요.');
+    return;
+  }
+
+  const btn = event.currentTarget;
+  const originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '⏳ 업로드 중...';
+
+  try {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `banners/${fileName}`;
+
+    const { data, error } = await supabaseClient.storage
+      .from('banners') // Supabase에 'banners' 버킷이 있어야 하며 public 권한이어야 합니다.
+      .upload(filePath, file);
+
+    if (error) throw error;
+
+    const { data: { publicUrl } } = supabaseClient.storage
+      .from('banners')
+      .getPublicUrl(filePath);
+
+    document.getElementById('az-imgUrl').value = publicUrl;
+    updateAdPreview();
+    showToast('✅ 이미지가 서버에 업로드되었습니다.');
+  } catch (error) {
+    console.error('Upload error:', error);
+    alert('업로드 실패: ' + error.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+// ═══════════════════════════════════════
 //  CONFIG & DATA
 // ═══════════════════════════════════════
 const AD_CFG_KEY = 'mp_ad_config';
