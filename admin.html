@@ -58,8 +58,7 @@ aside {
   font-weight: 900;
   font-size: 17px;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: center; gap: 12px;
   border-bottom: 1px solid var(--border);
 }
 .sidebar-head::before{
@@ -74,7 +73,12 @@ aside {
   color: #fff;
   background: linear-gradient(135deg, var(--primary), var(--accent));
 }
-nav { flex: 1; padding: 20px 12px; }
+nav {
+  flex: 1;
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+}
 .nav-item {
   padding: 12px 16px;
   border-radius: 12px;
@@ -87,6 +91,9 @@ nav { flex: 1; padding: 20px 12px; }
   margin-bottom: 4px;
   color: var(--muted);
   font-weight: 600;
+}
+.nav-item-logout{
+  margin-top: auto;
 }
 .nav-icon {
   width: 18px;
@@ -160,13 +167,50 @@ tr:hover { background: #fcfdfd; }
 .stat-label { font-size: 13px; color: var(--muted); margin-bottom: 10px; font-weight: 700; }
 .stat-value { font-size: 32px; font-weight: 900; color: var(--primary-dark); }
 
-/* ───────── ADS PANEL ───────── */
-.ads-panel { background: #fff; border-radius: 20px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid var(--border); }
-.ads-tabs { display: flex; padding: 8px; background: #F8FAFA; border-bottom: 1px solid var(--border); overflow-x: auto; gap: 4px; }
-.ads-tab { padding: 10px 18px; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: var(--muted); border: none; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s; }
-.ads-tab:hover { background: #fff; color: var(--primary); }
-.ads-tab.active { background: #fff; color: var(--primary); box-shadow: var(--card-shadow-sm); }
-.ads-content { padding: 32px; }
+/* ───────── ADS PANEL ENHANCEMENT ───────── */
+.ads-panel { background: #fff; border-radius: 24px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid var(--border); margin-top: 10px; }
+.ads-tabs { display: flex; padding: 12px; background: #F8FAFA; border-bottom: 1px solid var(--border); overflow-x: auto; gap: 8px; scrollbar-width: none; }
+.ads-tabs::-webkit-scrollbar { display: none; }
+.ads-tab { 
+  padding: 12px 24px; border-radius: 14px; font-size: 14px; font-weight: 700; color: var(--muted); 
+  border: none; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+  display: flex; align-items: center; gap: 8px;
+}
+.ads-tab:hover { background: rgba(11, 110, 110, 0.05); color: var(--primary); }
+.ads-tab.active { background: var(--primary); color: #fff; box-shadow: 0 8px 16px rgba(11, 110, 110, 0.2); transform: translateY(-1px); }
+
+.ads-content { padding: 40px; animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.ad-config-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: start; }
+.ad-form-section { background: #Fcfdfd; padding: 32px; border-radius: 20px; border: 1px solid var(--border); }
+.ad-preview-section { position: sticky; top: 20px; }
+.preview-frame { 
+  background: #f0f2f2; border-radius: 20px; border: 2px dashed var(--border); 
+  padding: 20px; min-height: 360px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+}
+.preview-label { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; align-self: flex-start; }
+.preview-img-container { 
+  width: 100%; height: 100%; border-radius: 12px; overflow: hidden; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1); background: #fff; display: flex; align-items: center; justify-content: center;
+}
+.preview-img-container img { max-width: 100%; max-height: 400px; object-fit: contain; transition: transform 0.3s; }
+.preview-placeholder { color: #cbd5e0; text-align: center; }
+.preview-placeholder i { font-size: 48px; display: block; margin-bottom: 12px; opacity: 0.5; }
+
+/* Form Elements */
+.ad-field-group { margin-bottom: 24px; }
+.ad-field-group:last-child { margin-bottom: 0; }
+.ad-input-styled { 
+  padding: 14px 16px; width: 100%; border: 1.5px solid var(--border); border-radius: 14px; 
+  font-size: 14px; transition: all 0.2s; background: #fff;
+}
+.ad-input-styled:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(11, 110, 110, 0.08); outline: none; }
+.toggle-wrapper { 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 16px 20px; background: #fff; border-radius: 14px; border: 1.5px solid var(--border); margin-bottom: 24px;
+}
 
 /* ───────── TAGS ───────── */
 .status-tag { padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 800; display: inline-block; }
@@ -290,7 +334,7 @@ tr:hover { background: #fcfdfd; }
       </span>
       후원·제휴 문의
     </div>
-    <div class="nav-item" onclick="logout()">
+    <div class="nav-item nav-item-logout" onclick="logout()">
       <span class="nav-icon" aria-hidden="true">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="M16 17l5-5-5-5"></path><path d="M21 12H9"></path></svg>
       </span>
@@ -584,50 +628,89 @@ function renderAdminAdContent(i) {
   let fields = '';
   if (isZone) {
     fields = `
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">이미지 URL</label><input type="text" id="az-imgUrl" class="ad-input" value="${c.imgUrl||''}" style="width:100%" placeholder="https://example.com/banner.jpg" onchange="updateAdPreview()"></div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">링크 URL (클릭 시 이동)</label><input type="text" id="az-linkUrl" class="ad-input" value="${c.linkUrl||''}" style="width:100%" placeholder="https://example.com"></div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">대체 텍스트 (alt)</label><input type="text" id="az-altText" class="ad-input" value="${c.altText||''}" style="width:100%" placeholder="광고 내용 설명"></div>
-    `;
-  } else if (isPopup) {
-    fields = `
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">이미지 URL (없으면 텍스트 팝업)</label><input type="text" id="az-imgUrl" class="ad-input" value="${c.imgUrl||''}" style="width:100%" onchange="updateAdPreview()"></div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">링크 URL</label><input type="text" id="az-linkUrl" class="ad-input" value="${c.linkUrl||''}" style="width:100%"></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">아이콘 이모지</label><input type="text" id="az-emoji" class="ad-input" value="${c.emoji||'📢'}" style="width:100%"></div>
-        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">표시 지연 (초)</label><input type="number" id="az-delay" class="ad-input" value="${c.delay||1}" style="width:100%"></div>
+      <div class="ad-field-group">
+        <label>배너 이미지</label>
+        <input type="text" id="az-imgUrl" class="ad-input-styled" value="${c.imgUrl||''}" placeholder="https://example.com/banner.jpg" onchange="updateAdPreview()">
+        <p style="font-size:11px; color:var(--muted); margin-top:6px;">권장 사이즈: ${z.size}</p>
       </div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">팝업 제목</label><input type="text" id="az-title" class="ad-input" value="${c.title||''}" style="width:100%"></div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">팝업 부제목</label><input type="text" id="az-subtitle" class="ad-input" value="${c.subtitle||''}" style="width:100%"></div>
+      <div class="ad-field-group">
+        <label>연결 링크</label>
+        <input type="text" id="az-linkUrl" class="ad-input-styled" value="${c.linkUrl||''}" placeholder="https://example.com">
+      </div>
+      <div class="ad-field-group">
+        <label>대체 텍스트 (ALT)</label>
+        <input type="text" id="az-altText" class="ad-input-styled" value="${c.altText||''}" placeholder="광고 내용을 설명해주세요">
+      </div>
     `;
   } else {
+    // Popup or Floating
     fields = `
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">이미지 URL (없으면 텍스트)</label><input type="text" id="az-imgUrl" class="ad-input" value="${c.imgUrl||''}" style="width:100%" onchange="updateAdPreview()"></div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">링크 URL</label><input type="text" id="az-linkUrl" class="ad-input" value="${c.linkUrl||''}" style="width:100%"></div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">아이콘 이모지</label><input type="text" id="az-emoji" class="ad-input" value="${c.emoji||'🏷️'}" style="width:100%"></div>
-        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">표시 지연 (초)</label><input type="number" id="az-delay" class="ad-input" value="${c.delay||2}" style="width:100%"></div>
+      <div class="ad-field-group">
+        <label>배너 이미지 (선택)</label>
+        <input type="text" id="az-imgUrl" class="ad-input-styled" value="${c.imgUrl||''}" placeholder="이미지가 없으면 텍스트만 노출됩니다" onchange="updateAdPreview()">
       </div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">광고 문구 (메인)</label><input type="text" id="az-title" class="ad-input" value="${c.title||''}" style="width:100%"></div>
-      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">광고 부문구 (서브)</label><input type="text" id="az-subtitle" class="ad-input" value="${c.subtitle||''}" style="width:100%"></div>
+      <div class="ad-field-group">
+        <label>연결 링크</label>
+        <input type="text" id="az-linkUrl" class="ad-input-styled" value="${c.linkUrl||''}" placeholder="https://example.com">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;" class="ad-field-group">
+        <div><label>아이콘 (Emoji)</label><input type="text" id="az-emoji" class="ad-input-styled" value="${c.emoji||(isPopup?'📢':'🏷️')}"></div>
+        <div><label>표시 지연 (초)</label><input type="number" id="az-delay" class="ad-input-styled" value="${c.delay||(isPopup?1:2)}"></div>
+      </div>
+      <div class="ad-field-group">
+        <label>메인 제목</label>
+        <input type="text" id="az-title" class="ad-input-styled" value="${c.title||''}" placeholder="메인 문구를 입력하세요">
+      </div>
+      <div class="ad-field-group">
+        <label>서브 설명</label>
+        <input type="text" id="az-subtitle" class="ad-input-styled" value="${c.subtitle||''}" placeholder="추가 설명을 입력하세요">
+      </div>
     `;
   }
 
   document.getElementById('adminAdContent').innerHTML = `
-    <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
-      <h4 style="font-size:18px; color:var(--primary); font-weight:700;">${z.name} <small style="font-size:12px; color:#888; font-weight:400; margin-left:8px;">권장사이즈: ${z.size}</small></h4>
-      <label style="display:flex; align-items:center; gap:8px; font-weight:700; cursor:pointer;">
-        <input type="checkbox" id="az-active" ${active?'checked':''} style="width:18px; height:18px; accent-color:var(--primary);"> 광고 활성화
-      </label>
-    </div>
-    <div style="display:grid; grid-template-columns:1fr 300px; gap:32px;">
-      <div>
+    <div class="ad-config-grid">
+      <div class="ad-form-section">
+        <div style="margin-bottom:32px;">
+          <h4 style="font-size:20px; color:var(--primary-dark); font-weight:900; margin-bottom:4px;">${z.name} 설정</h4>
+          <p style="font-size:13px; color:var(--muted);">${z.size} 규격의 배너 설정을 관리합니다.</p>
+        </div>
+
+        <div class="toggle-wrapper">
+          <span style="font-weight:700; color:var(--primary-dark); font-size:14px;">광고 활성화 상태</span>
+          <input type="checkbox" id="az-active" ${active?'checked':''} style="width:40px; height:20px; cursor:pointer; accent-color:var(--primary);">
+        </div>
+
         ${fields}
-        <button class="btn-save" style="width:100%; margin-top:10px;" onclick="saveAdZone('${z.key}')">💾 현재 설정 저장 및 적용</button>
+
+        <button class="btn-save" style="width:100%; height:52px; justify-content:center; border-radius:14px; margin-top:16px; font-size:15px;" onclick="saveAdZone('${z.key}')">
+          <svg style="width:18px; height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+          현재 설정 저장 및 홈페이지 적용
+        </button>
       </div>
-      <div>
-        <label style="display:block; font-size:12px; color:#888; margin-bottom:8px;">실시간 미리보기</label>
-        <div id="ad-preview-box" style="border:1px solid #ddd; border-radius:12px; overflow:hidden; background:#f0f0f0; min-height:200px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px;">
-          ${c.imgUrl ? `<img src="${c.imgUrl}" style="max-width:100%; max-height:400px; object-fit:contain;">` : '<span style="color:#aaa;">이미지 없음</span>'}
+
+      <div class="ad-preview-section">
+        <div class="preview-frame">
+          <span class="preview-label">Live Preview</span>
+          <div id="ad-preview-box" class="preview-img-container">
+            ${c.imgUrl ? `<img src="${c.imgUrl}">` : `
+              <div class="preview-placeholder">
+                <i style="font-style:normal; font-size:40px; display:block; margin-bottom:10px;">🖼️</i>
+                <span style="font-size:13px; font-weight:600; color:#cbd5e0;">이미지 URL을 입력하면<br>미리보기가 표시됩니다</span>
+              </div>
+            `}
+          </div>
+          <div style="margin-top:20px; padding:16px; background:#fff; border-radius:14px; width:100%; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#2E7D55;"></span>
+              <span style="font-size:12px; font-weight:800; color:var(--primary-dark);">시스템 가이드</span>
+            </div>
+            <p style="font-size:12px; color:var(--muted); line-height:1.6;">
+              • 외부 이미지 호스팅 또는 직접 링크를 사용하세요.<br>
+              • 저장 시 홈페이지에 실시간으로 반영됩니다.<br>
+              • 비활성화 시 해당 영역이 홈페이지에서 숨겨집니다.
+            </p>
+          </div>
         </div>
       </div>
     </div>
