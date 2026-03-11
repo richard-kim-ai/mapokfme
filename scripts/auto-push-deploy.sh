@@ -9,7 +9,7 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 REMOTE="${AUTO_SYNC_REMOTE:-origin}"
 BRANCH="${AUTO_SYNC_BRANCH:-main}"
 VERCEL_BIN="${VERCEL_BIN:-/Users/richard/.npm-global/bin/vercel}"
-LOCK_DIR="/tmp/${USER}-mapokfme-auto-push-deploy.lock"
+LOCK_DIR="/tmp/${USER:-unknown}-mapokfme-auto-push-deploy.lock"
 LOG_FILE="$PROJECT_DIR/logs/auto-push-deploy.log"
 
 mkdir -p "$PROJECT_DIR/logs"

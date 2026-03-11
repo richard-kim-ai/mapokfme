@@ -1,0 +1,10 @@
+#!/bin/zsh
+set -euo pipefail
+
+PROJECT_DIR="$(git rev-parse --show-toplevel)"
+if [ "${SKIP_AUTO_DEPLOY:-0}" = "1" ]; then
+  exit 0
+fi
+
+"/bin/zsh" "$PROJECT_DIR/scripts/push-and-deploy.sh" "$PROJECT_DIR" || true
+
