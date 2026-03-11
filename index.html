@@ -2105,7 +2105,7 @@ function renderHome(){
     <div class="notice-card" onclick="showNoticeDetail(${n.id})">
       <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}">${sanitizeText(n.tagLabel||'공지')}</span>${n.isNew?'<span class="list-new">NEW</span>':''}
       <div class="notice-title">${sanitizeText(n.title||'')}</div>
-      <div class="notice-meta"><span>📅 ${sanitizeText(n.date||'-')}</span><span>👁 ${Number(n.views||0)}</span></div>
+      <div class="notice-meta"><span>📅 ${sanitizeText(n.date||'-')}</span><span>👁 ${Number(n.views ?? n.view ?? 0)}</span></div>
     </div>`).join('');
   // events
   document.getElementById('homeEvents').innerHTML=DATA.events.slice(0,4).map(e=>`
@@ -2139,7 +2139,7 @@ function renderNoticeList(){
           <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}" style="font-size:10px;padding:2px 8px">${sanitizeText(n.tagLabel||'공지')}</span>
           ${sanitizeText(n.title||'')}${n.isNew?'<span class="list-new">NEW</span>':''}
         </div>
-        <div class="list-meta"><span>📅 ${sanitizeText(n.date||'-')}</span><span>👁 ${Number(n.views||0)}회</span></div>
+        <div class="list-meta"><span>📅 ${sanitizeText(n.date||'-')}</span><span>👁 ${Number(n.views ?? n.view ?? 0)}회</span></div>
       </div>
     </div>`).join('');
 }
