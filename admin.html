@@ -618,6 +618,125 @@ function switchPage(page) {
 function logout() { location.reload(); }
 
 // ═══════════════════════════════════════
+//  DATA RENDER
+// ═══════════════════════════════════════
+function renderMembers() {
+  const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+  
+  document.getElementById('memberTable').innerHTML = members.map((m, idx) => {
+    const level = m.level || 1;
+    const cmsStatus = m.cmsStatus || 'none';
+    let cmsBadge = '';
+    if(cmsStatus === 'pending') cmsBadge = '<span class="status-tag" style="background:#FFF9DB;color:#F08C00">CMS 신청중</span>';
+    else if(cmsStatus === 'approved') cmsBadge = '<span class="status-tag" style="background:#E3FAFC;color:#0C8599">CMS 승인됨</span>';
+
+    return `
+      <tr>
+        <td>${m.joinDate || '-'}</td>
+        <td>
+          <div style="font-weight:700">${m.biz || '-'}</div>
+          <div style="font-size:12px;color:#888">${m.email}</div>
+        </td>
+        <td>
+          <div>${m.name}</div>
+          <div style="font-size:12px;color:#888">${m.phone}</div>
+        </td>
+        <td>
+          <div style="margin-bottom:4px"><span class="status-tag level-${level}">${levelNames[level]}</span></div>
+          ${cmsBadge}
+        </td>
+        <td>
+          <div style="display:flex; gap:6px; align-items:center;">
+            ${(level === 1 && cmsStatus === 'pending') ? `<button class="btn-save" style="margin:0; padding:4px 8px; font-size:11px" onclick="changeLevel(${idx}, 2, 'approved')">승인(정회원)</button>` : ''}
+            ${(level >= 2) ? `<button class="btn-save" style="margin:0; padding:4px 8px; font-size:11px; background:#1565C0" onclick="openBizModal(${idx})">사업자상세</button>` : ''}
+            <select style="padding:4px; font-size:11px; border:1px solid #ddd; border-radius:4px" onchange="changeLevel(${idx}, this.value)">
+              <option value="">등급 변경</option>
+              <option value="1">홈페이지 회원</option>
+              <option value="2">정회원</option>
+              <option value="3">운영자</option>
+              <option value="4">시스템관리자</option>
+            </select>
+            <button class="btn-save" style="background:#e57373; margin:0; padding:4px 8px; font-size:11px" onclick="deleteMember(${idx})">삭제</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('') || '<tr><td colspan="5" style="text-align:center;padding:40px;">회원이 없습니다.</td></tr>';
+  
+  document.getElementById('stat-members').textContent = members.length + 2410;
+}
+
+function deleteMember(idx) {
+  if(!confirm('정말 이 회원을 삭제하시겠습니까? 로그인 정보가 모두 사라집니다.')) return;
+  let members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  members.splice(idx, 1);
+  localStorage.setItem('mp_users', JSON.stringify(members));
+  renderMembers();
+  showToast('회원 정보가 삭제되었습니다.');
+}
+
+function openBizModal(idx) {
+  const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  const u = members[idx];
+  if(!u) return;
+  const bd = u.cmsData || {};
+  
+  document.getElementById('biz_user_idx').value = idx;
+  document.getElementById('bm_bname').value = bd.bname || u.biz || '';
+  document.getElementById('bm_bno').value = bd.bno || '';
+  document.getElementById('bm_category').value = bd.category || '';
+  document.getElementById('bm_bizType').value = bd.bizType || '개인';
+  document.getElementById('bm_address').value = bd.address || '';
+  document.getElementById('bm_bank').value = bd.bank || '';
+  document.getElementById('bm_account').value = bd.account || '';
+  
+  const modal = document.getElementById('bizModal');
+  modal.classList.remove('hidden');
+  modal.style.display = 'flex';
+}
+
+function saveBizDetail() {
+  const idx = document.getElementById('biz_user_idx').value;
+  const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  if(!members[idx]) return;
+  
+  const bd = members[idx].cmsData || {};
+  bd.bname = document.getElementById('bm_bname').value.trim();
+  bd.bno = document.getElementById('bm_bno').value.trim();
+  bd.category = document.getElementById('bm_category').value.trim();
+  bd.bizType = document.getElementById('bm_bizType').value;
+  bd.address = document.getElementById('bm_address').value.trim();
+  bd.bank = document.getElementById('bm_bank').value.trim();
+  bd.account = document.getElementById('bm_account').value.trim();
+  
+  members[idx].cmsData = bd;
+  members[idx].biz = bd.bname;
+  
+  localStorage.setItem('mp_users', JSON.stringify(members));
+  showToast('사업자 상세 정보가 저장되었습니다.');
+  document.getElementById('bizModal').classList.add('hidden');
+  document.getElementById('bizModal').style.display = 'none';
+  renderMembers();
+}
+
+function changeLevel(idx, newLevel, newCmsStatus) {
+  if(!newLevel) return;
+  const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  if(!members[idx]) return;
+  
+  members[idx].level = parseInt(newLevel);
+  if(newCmsStatus) members[idx].cmsStatus = newCmsStatus;
+  else if(parseInt(newLevel) === 2) members[idx].cmsStatus = 'approved';
+  
+  localStorage.setItem('mp_users', JSON.stringify(members));
+  showToast('회원 등급이 변경되었습니다.');
+  renderMembers();
+}
+
+function logout() { location.reload(); }
+
+// ═══════════════════════════════════════
 //  AD MANAGEMENT (CORE)
 // ═══════════════════════════════════════
 function getAdConfig() {
