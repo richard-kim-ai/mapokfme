@@ -848,12 +848,12 @@ function registerNewMember() {
   create policy "Allow Uploads" on storage.objects for insert with check ( bucket_id = 'banners' );
 */
 // 2. 아래에 실제 프로젝트 URL과 Anon Key를 입력하세요.
-const SB_URL = 'https://YOUR_PROJECT_ID.supabase.co'; 
-const SB_KEY = 'YOUR_ANON_KEY';
+const SB_URL = 'https://llfcgsevkrwryczznvwd.supabase.co'; 
+const SB_KEY = 'JhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsZmNnc2V2a3J3cnljenpudndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDA1NTUsImV4cCI6MjA4ODcxNjU1NX0.Ba3bs5cgEv5bEHLx8NSfGE5rUGWep9vJOPx6UZe6MZo';
 
 let supabaseClient = null;
-if (SB_URL && !SB_URL.includes('YOUR_PROJECT_ID')) {
-  supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+if (SB_URL && !SB_URL.includes('https://llfcgsevkrwryczznvwd.supabase.co'; ')) {
+  supabaseClient = supabase.createClient(https://llfcgsevkrwryczznvwd.supabase.co/, JhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsZmNnc2V2a3J3cnljenpudndkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNDA1NTUsImV4cCI6MjA4ODcxNjU1NX0.Ba3bs5cgEv5bEHLx8NSfGE5rUGWep9vJOPx6UZe6MZo);
 }
 
 async function uploadAdImage() {
