@@ -387,10 +387,10 @@ tr:hover { background: #FBFCFF; }
     
     <div class="ads-panel">
       <div class="ads-tabs" id="adminTabRow">
-        <button class="ads-tab active" onclick="switchAdTab(0)" type="button">① 헤더</button>
-        <button class="ads-tab" onclick="switchAdTab(1)" type="button">② 섹션</button>
-        <button class="ads-tab" onclick="switchAdTab(2)" type="button">③ 미드(좌)</button>
-        <button class="ads-tab" onclick="switchAdTab(3)" type="button">③ 미드(우)</button>
+        <button class="ads-tab active" onclick="switchAdTab(0)" type="button">헤더</button>
+        <button class="ads-tab" onclick="switchAdTab(1)" type="button">섹션</button>
+        <button class="ads-tab" onclick="switchAdTab(2)" type="button">미드(좌)</button>
+        <button class="ads-tab" onclick="switchAdTab(3)" type="button">미드(우)</button>
         <button class="ads-tab" onclick="switchAdTab(4)" type="button">사이드바</button>
         <button class="ads-tab" onclick="switchAdTab(5)" type="button">공지인라인</button>
         <button class="ads-tab" onclick="switchAdTab(6)" type="button">푸터전</button>
@@ -562,13 +562,13 @@ function registerNewMember() {
 // ═══════════════════════════════════════
 const AD_CFG_KEY = 'mp_ad_config';
 const AD_ZONES = [
-  {key:'header-strip',  name:'① 헤더 리더보드',      size:'728×90'},
-  {key:'section-strip', name:'② 섹션간 빌보드',       size:'970×90'},
-  {key:'mid-left',      name:'③ 미드 레크탱글 (좌)',  size:'300×250'},
-  {key:'mid-right',     name:'③ 미드 레크탱글 (우)',  size:'300×250'},
-  {key:'sidebar',       name:'④ 사이드바 스카이스크래퍼', size:'160×600'},
-  {key:'inline-notice', name:'⑤ 공지 인라인',         size:'728×90'},
-  {key:'prefooter',     name:'⑥ 푸터 전 빌보드',      size:'970×90'},
+  {key:'header-strip',  name:'헤더 리더보드',      size:'728×90'},
+  {key:'section-strip', name:'섹션간 빌보드',       size:'970×90'},
+  {key:'mid-left',      name:'미드 레크탱글 (좌)',  size:'300×250'},
+  {key:'mid-right',     name:'미드 레크탱글 (우)',  size:'300×250'},
+  {key:'sidebar',       name:'사이드바 스카이스크래퍼', size:'160×600'},
+  {key:'inline-notice', name:'공지 인라인',         size:'728×90'},
+  {key:'prefooter',     name:'푸터 전 빌보드',      size:'970×90'},
   {key:'popup',         name:'팝업 배너',              size:'모달'},
   {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
 ];
@@ -616,6 +616,112 @@ function switchPage(page) {
 }
 
 function logout() { location.reload(); }
+
+// ═══════════════════════════════════════
+//  AD MANAGEMENT
+// ═══════════════════════════════════════
+function renderAds() {
+  switchAdTab(0);
+}
+
+let _adTab = 0;
+function switchAdTab(i) {
+  _adTab = i;
+  document.querySelectorAll('#adminTabRow button').forEach((btn, idx) => {
+    btn.classList.toggle('active', idx === i);
+  });
+  renderAdminAdContent(i);
+}
+
+function renderAdminAdContent(i) {
+  const z = AD_ZONES[i];
+  const cfg = JSON.parse(localStorage.getItem(AD_CFG_KEY) || '{}');
+  const c = cfg[z.key] || {};
+  const active = c.active !== false;
+  const isPopup = z.key === 'popup';
+  const isFloat = z.key === 'floating';
+  const isZone = !isPopup && !isFloat;
+
+  let fields = '';
+  if (isZone) {
+    fields = `
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">이미지 URL</label><input type="text" id="az-imgUrl" class="ad-input" value="${c.imgUrl||''}" style="width:100%" placeholder="https://example.com/banner.jpg" onchange="updateAdPreview()"></div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">링크 URL (클릭 시 이동)</label><input type="text" id="az-linkUrl" class="ad-input" value="${c.linkUrl||''}" style="width:100%" placeholder="https://example.com"></div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">대체 텍스트 (alt)</label><input type="text" id="az-altText" class="ad-input" value="${c.altText||''}" style="width:100%" placeholder="광고 내용 설명"></div>
+    `;
+  } else if (isPopup) {
+    fields = `
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">이미지 URL (없으면 텍스트 팝업)</label><input type="text" id="az-imgUrl" class="ad-input" value="${c.imgUrl||''}" style="width:100%" onchange="updateAdPreview()"></div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">링크 URL</label><input type="text" id="az-linkUrl" class="ad-input" value="${c.linkUrl||''}" style="width:100%"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">아이콘 이모지</label><input type="text" id="az-emoji" class="ad-input" value="${c.emoji||'📢'}" style="width:100%"></div>
+        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">표시 지연 (초)</label><input type="number" id="az-delay" class="ad-input" value="${c.delay||1}" style="width:100%"></div>
+      </div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">팝업 제목</label><input type="text" id="az-title" class="ad-input" value="${c.title||''}" style="width:100%"></div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">팝업 부제목</label><input type="text" id="az-subtitle" class="ad-input" value="${c.subtitle||''}" style="width:100%"></div>
+    `;
+  } else {
+    fields = `
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">이미지 URL (없으면 텍스트)</label><input type="text" id="az-imgUrl" class="ad-input" value="${c.imgUrl||''}" style="width:100%" onchange="updateAdPreview()"></div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">링크 URL</label><input type="text" id="az-linkUrl" class="ad-input" value="${c.linkUrl||''}" style="width:100%"></div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">아이콘 이모지</label><input type="text" id="az-emoji" class="ad-input" value="${c.emoji||'🏷️'}" style="width:100%"></div>
+        <div><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">표시 지연 (초)</label><input type="number" id="az-delay" class="ad-input" value="${c.delay||2}" style="width:100%"></div>
+      </div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">광고 문구 (메인)</label><input type="text" id="az-title" class="ad-input" value="${c.title||''}" style="width:100%"></div>
+      <div style="margin-bottom:16px;"><label style="display:block; font-size:12px; color:#888; margin-bottom:4px;">광고 부문구 (서브)</label><input type="text" id="az-subtitle" class="ad-input" value="${c.subtitle||''}" style="width:100%"></div>
+    `;
+  }
+
+  document.getElementById('adminAdContent').innerHTML = `
+    <div style="margin-bottom:20px; display:flex; align-items:center; justify-content:space-between;">
+      <h4 style="font-size:18px; color:var(--primary); font-weight:700;">${z.name} <small style="font-size:12px; color:#888; font-weight:400; margin-left:8px;">권장사이즈: ${z.size}</small></h4>
+      <label style="display:flex; align-items:center; gap:8px; font-weight:700; cursor:pointer;">
+        <input type="checkbox" id="az-active" ${active?'checked':''} style="width:18px; height:18px; accent-color:var(--primary);"> 광고 활성화
+      </label>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 300px; gap:32px;">
+      <div>
+        ${fields}
+        <button class="btn-save" style="width:100%; margin-top:10px;" onclick="saveAdZone('${z.key}')">💾 현재 설정 저장 및 적용</button>
+      </div>
+      <div>
+        <label style="display:block; font-size:12px; color:#888; margin-bottom:8px;">실시간 미리보기</label>
+        <div id="ad-preview-box" style="border:1px solid #ddd; border-radius:12px; overflow:hidden; background:#f0f0f0; min-height:200px; display:flex; align-items:center; justify-content:center; text-align:center; padding:10px;">
+          ${c.imgUrl ? `<img src="${c.imgUrl}" style="max-width:100%; max-height:400px; object-fit:contain;">` : '<span style="color:#aaa;">이미지 없음</span>'}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateAdPreview() {
+  const url = document.getElementById('az-imgUrl').value;
+  const box = document.getElementById('ad-preview-box');
+  if(url) box.innerHTML = `<img src="${url}" style="max-width:100%; max-height:400px; object-fit:contain;">`;
+  else box.innerHTML = '<span style="color:#aaa;">이미지 없음</span>';
+}
+
+function saveAdZone(key) {
+  const cfg = JSON.parse(localStorage.getItem(AD_CFG_KEY) || '{}');
+  const active = document.getElementById('az-active').checked;
+  const get = id => (document.getElementById(id) || { value: '' }).value || '';
+  
+  cfg[key] = {
+    active,
+    imgUrl: get('az-imgUrl'),
+    linkUrl: get('az-linkUrl'),
+    altText: get('az-altText'),
+    title: get('az-title'),
+    subtitle: get('az-subtitle'),
+    emoji: get('az-emoji'),
+    delay: parseFloat(get('az-delay')) || 1
+  };
+  
+  localStorage.setItem(AD_CFG_KEY, JSON.stringify(cfg));
+  showToast(`✅ "${AD_ZONES.find(z=>z.key===key)?.name}" 설정이 저장되었습니다.`);
+  renderAdminAdContent(_adTab);
+}
 
 // ═══════════════════════════════════════
 //  DATA RENDER

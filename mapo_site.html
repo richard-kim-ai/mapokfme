@@ -331,10 +331,10 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       <button class="admin-close" onclick="closeAdAdmin()">✕</button>
     </div>
     <div class="admin-tabs" id="adminTabRow">
-      <button class="admin-tab on"  onclick="switchAdTab(0)">① 헤더</button>
-      <button class="admin-tab"     onclick="switchAdTab(1)">② 섹션</button>
-      <button class="admin-tab"     onclick="switchAdTab(2)">③ 미드(좌)</button>
-      <button class="admin-tab"     onclick="switchAdTab(3)">③ 미드(우)</button>
+      <button class="admin-tab on"  onclick="switchAdTab(0)">헤더</button>
+      <button class="admin-tab"     onclick="switchAdTab(1)">섹션</button>
+      <button class="admin-tab"     onclick="switchAdTab(2)">미드(좌)</button>
+      <button class="admin-tab"     onclick="switchAdTab(3)">미드(우)</button>
       <button class="admin-tab"     onclick="switchAdTab(7)">팝업</button>
       <button class="admin-tab"     onclick="switchAdTab(8)">플로팅</button>
     </div>
@@ -389,10 +389,10 @@ function updateAuthUI(){
 function doLogout(){currentUser=null;setCurrentUser(null);updateAuthUI();updateAdminTrigger();location.reload();}
 
 const AD_ZONES = [
-  {key:'header-strip',  name:'① 헤더 리더보드',      size:'728×90'},
-  {key:'section-strip', name:'② 섹션간 빌보드',       size:'970×90'},
-  {key:'mid-left',      name:'③ 미드 레크탱글 (좌)',  size:'300×250'},
-  {key:'mid-right',     name:'③ 미드 레크탱글 (우)',  size:'300×250'},
+  {key:'header-strip',  name:'헤더 리더보드',      size:'728×90'},
+  {key:'section-strip', name:'섹션간 빌보드',       size:'970×90'},
+  {key:'mid-left',      name:'미드 레크탱글 (좌)',  size:'300×250'},
+  {key:'mid-right',     name:'미드 레크탱글 (우)',  size:'300×250'},
   {key:'popup',         name:'팝업 배너',              size:'모달'},
   {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
 ];

@@ -809,7 +809,10 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
     <div class="section-inner">
       <div class="section-head">
         <div class="section-title"><span>LATEST NEWS</span>최신 공지·뉴스</div>
-        <a class="more-link" onclick="showPage('notice')">전체보기 →</a>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('notice')">📝 글쓰기</button>
+          <a class="more-link" onclick="showPage('notice')">전체보기 →</a>
+        </div>
       </div>
       <div class="notice-grid" id="homeNotices"></div>
     </div>
@@ -835,7 +838,10 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
     <div class="section-inner">
       <div class="section-head">
         <div class="section-title"><span>UPCOMING EVENTS</span>주요 행사·교육</div>
-        <a class="more-link" onclick="showPage('events')">전체보기 →</a>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('events')">📅 행사등록</button>
+          <a class="more-link" onclick="showPage('events')">전체보기 →</a>
+        </div>
       </div>
       <div class="event-grid" id="homeEvents"></div>
     </div>
@@ -1035,7 +1041,10 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
   <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 활동정리</div></div>
   <div class="section">
     <div class="section-inner">
-      <div class="section-head"><div class="section-title"><span>GALLERY</span>사진·영상</div></div>
+      <div class="section-head">
+        <div class="section-title"><span>GALLERY</span>사진·영상</div>
+        <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('gallery')">📸 사진등록</button>
+      </div>
       <div class="gallery-grid">
         <div class="gallery-item">🏪<div class="gallery-overlay"><span>2024 마포 소상공인 한마당</span></div></div>
         <div class="gallery-item">🎓<div class="gallery-overlay"><span>경영 역량강화 교육</span></div></div>
@@ -1047,7 +1056,10 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
         <div class="gallery-item">📸<div class="gallery-overlay"><span>홍대 상권 축제</span></div></div>
       </div>
       <div style="margin-top:40px">
-        <div class="section-head"><div class="section-title"><span>PRESS</span>언론보도·뉴스</div></div>
+        <div class="section-head">
+          <div class="section-title"><span>PRESS</span>언론보도·뉴스</div>
+          <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('press')">📰 보도자료등록</button>
+        </div>
         <div id="pressList"></div>
       </div>
     </div>
@@ -1483,13 +1495,13 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       <button class="admin-close" onclick="closeAdAdmin()">✕</button>
     </div>
     <div class="admin-tabs" id="adminTabRow">
-      <button class="admin-tab on"  onclick="switchAdTab(0)">① 헤더</button>
-      <button class="admin-tab"     onclick="switchAdTab(1)">② 섹션</button>
-      <button class="admin-tab"     onclick="switchAdTab(2)">③ 미드(좌)</button>
-      <button class="admin-tab"     onclick="switchAdTab(3)">③ 미드(우)</button>
-      <button class="admin-tab"     onclick="switchAdTab(4)">④ 사이드</button>
-      <button class="admin-tab"     onclick="switchAdTab(5)">⑤ 인라인</button>
-      <button class="admin-tab"     onclick="switchAdTab(6)">⑥ 푸터전</button>
+      <button class="admin-tab on"  onclick="switchAdTab(0)">헤더</button>
+      <button class="admin-tab"     onclick="switchAdTab(1)">섹션</button>
+      <button class="admin-tab"     onclick="switchAdTab(2)">미드(좌)</button>
+      <button class="admin-tab"     onclick="switchAdTab(3)">미드(우)</button>
+      <button class="admin-tab"     onclick="switchAdTab(4)">사이드</button>
+      <button class="admin-tab"     onclick="switchAdTab(5)">인라인</button>
+      <button class="admin-tab"     onclick="switchAdTab(6)">푸터전</button>
       <button class="admin-tab"     onclick="switchAdTab(7)">팝업</button>
       <button class="admin-tab"     onclick="switchAdTab(8)">플로팅</button>
     </div>
@@ -1566,7 +1578,77 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
   </div>
 </footer>
 
+<!-- WRITE MODAL -->
+<div class="modal-overlay" id="writeModal">
+  <div class="modal-box" style="max-width:600px">
+    <div class="modal-head">
+      <h3 id="writeModalTitle">새 글 작성</h3>
+      <button class="modal-close" onclick="closeModal('writeModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="writeMsg" class="form-msg"></div>
+      <div class="fg"><label>제목 <span class="req">*</span></label><input type="text" id="wmTitle" placeholder="제목을 입력하세요"></div>
+      <div class="fg-row">
+        <div class="fg"><label>작성자</label><input type="text" id="wmAuthor" readonly></div>
+        <div class="fg"><label>날짜</label><input type="text" id="wmDate" readonly></div>
+      </div>
+      <div class="fg"><label>내용 <span class="req">*</span></label><textarea id="wmContent" rows="10" placeholder="내용을 입력하세요"></textarea></div>
+      <button class="btn-form" onclick="submitWrite()">등록하기</button>
+    </div>
+  </div>
+</div>
+
 <script>
+let _writeType = 'notice';
+
+function openWriteModal(type){
+  const titles = {notice:'공지사항 작성', events:'행사·교육 등록', gallery:'활동 사진 등록', press:'보도자료 등록'};
+  _writeType = type;
+  document.getElementById('writeModalTitle').textContent = titles[type] || '새 글 작성';
+  document.getElementById('wmAuthor').value = currentUser ? currentUser.name : '관리자';
+  document.getElementById('wmDate').value = new Date().toLocaleDateString('ko-KR');
+  document.getElementById('wmTitle').value = '';
+  document.getElementById('wmContent').value = '';
+  document.getElementById('writeMsg').style.display = 'none';
+  openModal('writeModal');
+}
+
+function submitWrite(){
+  const title = document.getElementById('wmTitle').value.trim();
+  const content = document.getElementById('wmContent').value.trim();
+  const msg = document.getElementById('writeMsg');
+  
+  if(!title || !content){
+    msg.textContent = '제목과 내용을 모두 입력해주세요.';
+    msg.className = 'form-msg error';
+    msg.style.display = 'block';
+    return;
+  }
+
+  const newItem = {
+    id: Date.now(),
+    title,
+    content,
+    author: document.getElementById('wmAuthor').value,
+    date: document.getElementById('wmDate').value,
+    tag: _writeType === 'notice' ? '공지' : (_writeType === 'events' ? '행사' : '뉴스'),
+    view: 0
+  };
+
+  // Logic to save to DATA object or localStorage depending on implementation
+  if(_writeType === 'notice') DATA.notices.unshift(newItem);
+  else if(_writeType === 'events') DATA.events.unshift(newItem);
+  else if(_writeType === 'press') DATA.press.unshift(newItem);
+  else if(_writeType === 'gallery') { /* handle gallery */ }
+
+  // Refresh UI
+  if(_writeType === 'notice') { renderHome(); renderNotices(); }
+  else if(_writeType === 'events') { renderHome(); renderEvents(); }
+  else if(_writeType === 'press') { renderPress(); }
+
+  showToast('✅ 등록되었습니다.');
+  closeModal('writeModal');
+}
 // ═══════════════════════════════════════
 //  DATA
 // ═══════════════════════════════════════
@@ -2257,13 +2339,13 @@ function closeWing(side){
 //  AD BANNER SYSTEM
 // ═══════════════════════════════════════
 const AD_ZONES = [
-  {key:'header-strip',  name:'① 헤더 리더보드',      size:'728×90',  wrap:'adZone-header-strip'},
-  {key:'section-strip', name:'② 섹션간 빌보드',       size:'970×90',  wrap:'adZone-section-strip'},
-  {key:'mid-left',      name:'③ 미드 레크탱글 (좌)',  size:'300×250', wrap:null},
-  {key:'mid-right',     name:'③ 미드 레크탱글 (우)',  size:'300×250', wrap:null},
-  {key:'sidebar',       name:'④ 사이드바 스카이스크래퍼', size:'160×600', wrap:null},
-  {key:'inline-notice', name:'⑤ 공지 인라인',         size:'728×90',  wrap:'adZone-inline-notice'},
-  {key:'prefooter',     name:'⑥ 푸터 전 빌보드',      size:'970×90',  wrap:'adZone-prefooter'},
+  {key:'header-strip',  name:'헤더 리더보드',      size:'728×90',  wrap:'adZone-header-strip'},
+  {key:'section-strip', name:'섹션간 빌보드',       size:'970×90',  wrap:'adZone-section-strip'},
+  {key:'mid-left',      name:'미드 레크탱글 (좌)',  size:'300×250', wrap:null},
+  {key:'mid-right',     name:'미드 레크탱글 (우)',  size:'300×250', wrap:null},
+  {key:'sidebar',       name:'사이드바 스카이스크래퍼', size:'160×600', wrap:null},
+  {key:'inline-notice', name:'공지 인라인',         size:'728×90',  wrap:'adZone-inline-notice'},
+  {key:'prefooter',     name:'푸터 전 빌보드',      size:'970×90',  wrap:'adZone-prefooter'},
   {key:'popup',         name:'팝업 배너',              size:'모달'},
   {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
 ];
@@ -2484,16 +2566,15 @@ function saveAdZone(key){
 
 // ── 관리자 트리거 (admin 계정) ──
 function updateAdminTrigger(){
-  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4));
+  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4 || currentUser.level === 3));
   const btn=document.getElementById('adminTrigger');
   if(btn) btn.classList.toggle('show', isAdmin);
-  
-  // 개별 광고 설정 버튼도 관리자에게만 노출
-  document.querySelectorAll('.ad-edit-btn').forEach(el => {
+
+  // 개별 광고 설정 버튼 및 글쓰기 버튼 관리자에게만 노출
+  document.querySelectorAll('.ad-edit-btn, .admin-write-btn').forEach(el => {
     el.style.display = isAdmin ? 'block' : 'none';
   });
 }
-
 // ═══════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════
