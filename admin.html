@@ -1146,6 +1146,109 @@ function toggleAllAds(isActive) {
 }
 
 // ═══════════════════════════════════════
+//  SYSTEM SETTINGS
+// ═══════════════════════════════════════
+function renderRegLevelOptions() {
+  const select = document.getElementById('rm_level');
+  if(!select) return;
+  const currentValue = String(select.value || '2');
+  const levelNames = getLevelNames();
+  select.innerHTML = [1, 2, 3, 4].map(level => `
+    <option value="${level}">${escapeHtml(levelNames[level] || `레벨 ${level}`)}</option>
+  `).join('');
+  select.value = ['1', '2', '3', '4'].includes(currentValue) ? currentValue : '2';
+}
+
+function updateSettingsMatrixHeaders() {
+  for(let level = 1; level <= 4; level++) {
+    const input = document.getElementById(`setting-level-name-${level}`);
+    const th = document.getElementById(`settings-level-header-${level}`);
+    if(!th) continue;
+    const label = String(input?.value || '').trim() || `레벨 ${level}`;
+    th.textContent = label;
+  }
+}
+
+function renderSystemSettings() {
+  const settings = getSystemSettings();
+  const matrixBody = document.getElementById('settingsPermissionMatrix');
+  if(!matrixBody) return;
+
+  for(let level = 1; level <= 4; level++) {
+    const input = document.getElementById(`setting-level-name-${level}`);
+    if(input) input.value = settings.levelNames[level] || '';
+  }
+
+  const keywordInput = document.getElementById('setting-admin-email-keyword');
+  if(keywordInput) keywordInput.value = settings.adminEmailKeyword || '';
+  updateSettingsMatrixHeaders();
+
+  matrixBody.innerHTML = SETTINGS_FEATURES.map(feature => {
+    const allowedLevels = settings.permissionMatrix[feature.key] || [];
+    const checks = [1, 2, 3, 4].map(level => `
+      <td style="text-align:center;">
+        <label class="settings-check-wrap">
+          <input class="settings-check" type="checkbox" data-feature="${feature.key}" data-level="${level}" ${allowedLevels.includes(level) ? 'checked' : ''}>
+        </label>
+      </td>
+    `).join('');
+
+    return `
+      <tr>
+        <td>
+          <div class="settings-feature-name">${escapeHtml(feature.label)}</div>
+          <div class="settings-feature-desc">${escapeHtml(feature.desc)}</div>
+        </td>
+        ${checks}
+      </tr>
+    `;
+  }).join('');
+
+  renderRegLevelOptions();
+}
+
+function collectSystemSettingsFromPage() {
+  const defaults = cloneDefaultSystemSettings();
+  const levelNames = {};
+  for(let level = 1; level <= 4; level++) {
+    const input = document.getElementById(`setting-level-name-${level}`);
+    const fallback = defaults.levelNames[level];
+    const value = String(input?.value || '').trim();
+    levelNames[level] = value || fallback;
+  }
+
+  const adminEmailKeyword = String(document.getElementById('setting-admin-email-keyword')?.value || '').trim() || defaults.adminEmailKeyword;
+  const permissionMatrix = {};
+  SETTINGS_FEATURES.forEach(feature => {
+    const allowedLevels = [1, 2, 3, 4].filter(level => {
+      const checkbox = document.querySelector(`input[data-feature="${feature.key}"][data-level="${level}"]`);
+      return !!checkbox?.checked;
+    });
+    permissionMatrix[feature.key] = allowedLevels.length ? allowedLevels : [4];
+  });
+
+  return { levelNames, adminEmailKeyword, permissionMatrix };
+}
+
+function saveSystemSettingsFromPage() {
+  const settings = collectSystemSettingsFromPage();
+  saveSystemSettings(settings);
+  renderSystemSettings();
+  renderMembers();
+  renderDashboard();
+  showToast('시스템 설정이 저장되었습니다. 홈페이지 권한이 즉시 반영됩니다.');
+}
+
+function resetSystemSettings() {
+  if(!confirm('시스템 설정을 기본값으로 되돌리시겠습니까?')) return;
+  saveSystemSettings(cloneDefaultSystemSettings());
+  renderSystemSettings();
+  renderMembers();
+  renderDashboard();
+  showToast('기본 시스템 설정으로 복원되었습니다.');
+}
+
+// ═══════════════════════════════════════
 //  DATA RENDER
 // ═══════════════════════════════════════
 function escapeHtml(value) {
