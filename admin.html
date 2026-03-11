@@ -787,7 +787,12 @@ function renderAdminAdContent(i) {
   if (isZone) {
     fields = `
       <div class="ad-field-group">
-        <label>배너 이미지</label>
+        <label>배너 이미지 업로드</label>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <input type="file" id="az-file" class="ad-input-styled" style="padding:10px; line-height:1; flex:1;" accept="image/*">
+          <button class="btn-save" style="margin:0; height:46px; white-space:nowrap;" onclick="uploadAdImage()">📤 업로드</button>
+        </div>
+        <label>이미지 URL</label>
         <input type="text" id="az-imgUrl" class="ad-input-styled" value="${c.imgUrl||''}" placeholder="https://example.com/banner.jpg" onchange="updateAdPreview()">
         <p style="font-size:11px; color:var(--muted); margin-top:6px;">권장 사이즈: ${z.size}</p>
       </div>
@@ -804,7 +809,12 @@ function renderAdminAdContent(i) {
     // Popup or Floating
     fields = `
       <div class="ad-field-group">
-        <label>배너 이미지 (선택)</label>
+        <label>배너 이미지 업로드</label>
+        <div style="display:flex; gap:10px; margin-bottom:10px;">
+          <input type="file" id="az-file" class="ad-input-styled" style="padding:10px; line-height:1; flex:1;" accept="image/*">
+          <button class="btn-save" style="margin:0; height:46px; white-space:nowrap;" onclick="uploadAdImage()">📤 업로드</button>
+        </div>
+        <label>배너 이미지 URL (선택)</label>
         <input type="text" id="az-imgUrl" class="ad-input-styled" value="${c.imgUrl||''}" placeholder="이미지가 없으면 텍스트만 노출됩니다" onchange="updateAdPreview()">
       </div>
       <div class="ad-field-group">
