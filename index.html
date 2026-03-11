@@ -812,7 +812,7 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       <div class="section-head">
         <div class="section-title"><span>LATEST NEWS</span>최신 공지·뉴스</div>
         <div style="display:flex; gap:10px; align-items:center;">
-          <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('notice')">📝 글쓰기</button>
+          <button class="btn-form content-write-btn" data-write-type="notice" style="width:auto; padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('notice')">📝 글쓰기</button>
           <a class="more-link" onclick="showPage('notice')">전체보기 →</a>
         </div>
       </div>
@@ -841,7 +841,7 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       <div class="section-head">
         <div class="section-title"><span>UPCOMING EVENTS</span>주요 행사·교육</div>
         <div style="display:flex; gap:10px; align-items:center;">
-          <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('events')">📅 행사등록</button>
+          <button class="btn-form content-write-btn" data-write-type="events" style="width:auto; padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('events')">📅 행사등록</button>
           <a class="more-link" onclick="showPage('events')">전체보기 →</a>
         </div>
       </div>
@@ -1045,22 +1045,13 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
     <div class="section-inner">
       <div class="section-head">
         <div class="section-title"><span>GALLERY</span>사진·영상</div>
-        <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('gallery')">📸 사진등록</button>
+        <button class="btn-form content-write-btn" data-write-type="gallery" style="width:auto; padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('gallery')">📸 사진등록</button>
       </div>
-      <div class="gallery-grid">
-        <div class="gallery-item">🏪<div class="gallery-overlay"><span>2024 마포 소상공인 한마당</span></div></div>
-        <div class="gallery-item">🎓<div class="gallery-overlay"><span>경영 역량강화 교육</span></div></div>
-        <div class="gallery-item">🤝<div class="gallery-overlay"><span>회원사 네트워킹 데이</span></div></div>
-        <div class="gallery-item">🌍<div class="gallery-overlay"><span>글로벌 시장 개척단</span></div></div>
-        <div class="gallery-item">📊<div class="gallery-overlay"><span>정책 간담회</span></div></div>
-        <div class="gallery-item">🎉<div class="gallery-overlay"><span>연합회 창립 15주년</span></div></div>
-        <div class="gallery-item">🏆<div class="gallery-overlay"><span>우수 소상공인 시상식</span></div></div>
-        <div class="gallery-item">📸<div class="gallery-overlay"><span>홍대 상권 축제</span></div></div>
-      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
       <div style="margin-top:40px">
         <div class="section-head">
           <div class="section-title"><span>PRESS</span>언론보도·뉴스</div>
-          <button class="btn-form admin-write-btn" style="padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('press')">📰 보도자료등록</button>
+          <button class="btn-form content-write-btn" data-write-type="press" style="width:auto; padding:6px 14px; font-size:12px; display:none;" onclick="openWriteModal('press')">📰 보도자료등록</button>
         </div>
         <div id="pressList"></div>
       </div>
@@ -1602,12 +1593,77 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
 
 <script>
 let _writeType = 'notice';
+const LEVEL_NAME_MAP = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+const WRITE_PERMISSION_RULES = {
+  notice: { minLevel: 3, label: '공지사항 글쓰기' },
+  events: { minLevel: 2, label: '행사·교육 등록' },
+  gallery: { minLevel: 2, label: '활동 사진 등록' },
+  press: { minLevel: 3, label: '보도자료 등록' }
+};
+
+function getUserLevel(){
+  if(!currentUser) return 0;
+  const level = Number(currentUser.level);
+  return Number.isFinite(level) && level > 0 ? level : 1;
+}
+
+function canWriteType(type){
+  const rule = WRITE_PERMISSION_RULES[type] || { minLevel: 4 };
+  return getUserLevel() >= rule.minLevel;
+}
+
+function getWriteDeniedMessage(type){
+  const rule = WRITE_PERMISSION_RULES[type] || { minLevel: 4, label: '콘텐츠 작성' };
+  const needed = LEVEL_NAME_MAP[rule.minLevel] || `${rule.minLevel}레벨`;
+  if(!currentUser){
+    return `로그인 후 ${rule.label}이 가능합니다.`;
+  }
+  const current = LEVEL_NAME_MAP[getUserLevel()] || `${getUserLevel()}레벨`;
+  return `${rule.label} 권한이 없습니다. (${current} → ${needed} 이상 필요)`;
+}
+
+function updateContentWriteButtons(){
+  document.querySelectorAll('.content-write-btn').forEach(btn => {
+    const type = btn.dataset.writeType || '';
+    const allowed = canWriteType(type);
+    btn.style.display = allowed ? 'inline-flex' : 'none';
+  });
+}
+
+function sanitizeText(text){
+  return String(text || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function textToHtml(text){
+  return sanitizeText(text).replace(/\n/g, '<br>');
+}
+
+function normalizeDateText(dateText){
+  const raw = String(dateText || '').replace(/\s+/g, '');
+  const normalized = raw.replace(/[/-]/g, '.').replace(/\.+$/,'');
+  return normalized || new Date().toLocaleDateString('ko-KR').replace(/\s+/g,'').replace(/\.+$/,'');
+}
 
 function openWriteModal(type){
+  if(!currentUser){
+    openModal('authModal');
+    showToast(getWriteDeniedMessage(type));
+    return;
+  }
+  if(!canWriteType(type)){
+    showToast(getWriteDeniedMessage(type));
+    return;
+  }
+
   const titles = {notice:'공지사항 작성', events:'행사·교육 등록', gallery:'활동 사진 등록', press:'보도자료 등록'};
   _writeType = type;
   document.getElementById('writeModalTitle').textContent = titles[type] || '새 글 작성';
-  document.getElementById('wmAuthor').value = currentUser ? currentUser.name : '관리자';
+  document.getElementById('wmAuthor').value = currentUser ? currentUser.name : '작성자';
   document.getElementById('wmDate').value = new Date().toLocaleDateString('ko-KR');
   document.getElementById('wmTitle').value = '';
   document.getElementById('wmContent').value = '';
@@ -1616,8 +1672,21 @@ function openWriteModal(type){
 }
 
 function submitWrite(){
+  if(!currentUser){
+    closeModal('writeModal');
+    openModal('authModal');
+    showToast('로그인 후 작성할 수 있습니다.');
+    return;
+  }
+  if(!canWriteType(_writeType)){
+    showToast(getWriteDeniedMessage(_writeType));
+    return;
+  }
+
   const title = document.getElementById('wmTitle').value.trim();
   const content = document.getElementById('wmContent').value.trim();
+  const author = (document.getElementById('wmAuthor').value || currentUser.name || '작성자').trim();
+  const date = normalizeDateText(document.getElementById('wmDate').value);
   const msg = document.getElementById('writeMsg');
   
   if(!title || !content){
@@ -1627,26 +1696,55 @@ function submitWrite(){
     return;
   }
 
-  const newItem = {
-    id: Date.now(),
-    title,
-    content,
-    author: document.getElementById('wmAuthor').value,
-    date: document.getElementById('wmDate').value,
-    tag: _writeType === 'notice' ? '공지' : (_writeType === 'events' ? '행사' : '뉴스'),
-    view: 0
-  };
+  if(_writeType === 'notice') {
+    DATA.notices.unshift({
+      id: Date.now(),
+      tag: 'notice',
+      tagLabel: '공지',
+      title: sanitizeText(title),
+      date,
+      views: 0,
+      body: textToHtml(content),
+      isNew: true,
+      author: sanitizeText(author)
+    });
+    renderHome();
+    renderNoticeList();
+  } else if(_writeType === 'events') {
+    DATA.events.unshift({
+      id: Date.now(),
+      emoji: '📅',
+      title: sanitizeText(title),
+      date,
+      time: '시간 추후 공지',
+      location: `작성자: ${sanitizeText(author)}`,
+      seats: 50,
+      apply: true,
+      color: '#0B6E6E',
+      note: textToHtml(content)
+    });
+    renderHome();
+    renderEvents();
+  } else if(_writeType === 'press') {
+    DATA.press.unshift({
+      media: sanitizeText(author),
+      title: sanitizeText(title),
+      date,
+      body: textToHtml(content)
+    });
+    renderActivity();
+  } else if(_writeType === 'gallery') {
+    DATA.gallery.unshift({
+      id: Date.now(),
+      emoji: '📸',
+      title: sanitizeText(title),
+      caption: textToHtml(content),
+      date
+    });
+    renderActivity();
+  }
 
-  // Logic to save to DATA object or localStorage depending on implementation
-  if(_writeType === 'notice') DATA.notices.unshift(newItem);
-  else if(_writeType === 'events') DATA.events.unshift(newItem);
-  else if(_writeType === 'press') DATA.press.unshift(newItem);
-  else if(_writeType === 'gallery') { /* handle gallery */ }
-
-  // Refresh UI
-  if(_writeType === 'notice') { renderHome(); renderNotices(); }
-  else if(_writeType === 'events') { renderHome(); renderEvents(); }
-  else if(_writeType === 'press') { renderPress(); }
+  persistSiteContent();
 
   showToast('✅ 등록되었습니다.');
   closeModal('writeModal');
