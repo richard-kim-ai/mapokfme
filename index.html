@@ -2308,6 +2308,13 @@ function toggleOtherBank(val, targetId){
   }
 }
 
+function syncHolderBirth(val){
+  const holder = document.getElementById('j_holder_birth');
+  if(holder){
+    holder.value = val.trim();
+  }
+}
+
 function syncEmail(val){
   const parts = val.split('@');
   if(parts.length >= 1) document.getElementById('j_emailid').value = parts[0] || '';
