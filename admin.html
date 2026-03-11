@@ -663,6 +663,70 @@ tr:hover { background: #fcfdfd; }
       </table>
     </div>
   </section>
+
+  <!-- SYSTEM SETTINGS -->
+  <section id="page-settings" class="hidden">
+    <div class="page-head">
+      <div class="page-title">시스템 설정 · 회원 레벨 권한 매트릭스</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-save" style="background:#6B7280; margin:0;" onclick="resetSystemSettings()">기본값 복원</button>
+        <button class="btn-save" style="margin:0;" onclick="saveSystemSettingsFromPage()">설정 저장</button>
+      </div>
+    </div>
+
+    <div class="settings-layout">
+      <article class="settings-card">
+        <div class="settings-card-title">회원 레벨 명칭</div>
+        <p class="settings-card-desc">홈페이지와 관리자 화면에 표시되는 회원 등급 이름입니다.</p>
+        <div class="settings-grid">
+          <div class="settings-field">
+            <label for="setting-level-name-1">레벨 1</label>
+            <input class="settings-input" id="setting-level-name-1" type="text" oninput="updateSettingsMatrixHeaders()">
+          </div>
+          <div class="settings-field">
+            <label for="setting-level-name-2">레벨 2</label>
+            <input class="settings-input" id="setting-level-name-2" type="text" oninput="updateSettingsMatrixHeaders()">
+          </div>
+          <div class="settings-field">
+            <label for="setting-level-name-3">레벨 3</label>
+            <input class="settings-input" id="setting-level-name-3" type="text" oninput="updateSettingsMatrixHeaders()">
+          </div>
+          <div class="settings-field">
+            <label for="setting-level-name-4">레벨 4</label>
+            <input class="settings-input" id="setting-level-name-4" type="text" oninput="updateSettingsMatrixHeaders()">
+          </div>
+        </div>
+      </article>
+
+      <article class="settings-card">
+        <div class="settings-card-title">기본 시스템 옵션</div>
+        <p class="settings-card-desc">아래 값은 홈페이지에서 관리자 화면 접근 권한 판단에 사용됩니다.</p>
+        <div class="settings-field" style="max-width:360px;">
+          <label for="setting-admin-email-keyword">관리자 이메일 키워드</label>
+          <input class="settings-input" id="setting-admin-email-keyword" type="text" placeholder="예: admin">
+        </div>
+      </article>
+
+      <article class="settings-card">
+        <div class="settings-card-title">회원 레벨 권한 매트릭스</div>
+        <p class="settings-card-desc">기능별로 어떤 회원 레벨이 실행 가능한지 선택하세요. 체크를 모두 해제하면 레벨 4만 허용됩니다.</p>
+        <div class="table-wrap settings-matrix-wrap">
+          <table class="settings-matrix">
+            <thead>
+              <tr>
+                <th style="width:36%">기능</th>
+                <th id="settings-level-header-1" style="text-align:center">레벨 1</th>
+                <th id="settings-level-header-2" style="text-align:center">레벨 2</th>
+                <th id="settings-level-header-3" style="text-align:center">레벨 3</th>
+                <th id="settings-level-header-4" style="text-align:center">레벨 4</th>
+              </tr>
+            </thead>
+            <tbody id="settingsPermissionMatrix"></tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  </section>
 </main>
 
 <!-- BIZ DETAIL MODAL -->
