@@ -1189,23 +1189,23 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       </div>
       <div class="fg">
         <label>사업자 구분</label>
-        <div style="display:flex;gap:20px;padding:4px 0;flex-wrap:nowrap">
-          <label style="display:flex;align-items:center;gap:8px;font-weight:400;color:var(--text2);white-space:nowrap"><input type="radio" name="biz" value="개인" checked> 개인사업자</label>
-          <label style="display:flex;align-items:center;gap:8px;font-weight:400;color:var(--text2);white-space:nowrap"><input type="radio" name="biz" value="법인"> 법인사업자</label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="biz" value="개인" checked> 개인사업자</label>
+          <label class="radio-item"><input type="radio" name="biz" value="법인"> 법인사업자</label>
         </div>
       </div>
       <div class="fg-row">
         <div class="fg"><label>이름(한글) <span class="req">*</span></label><input type="text" id="j_name" placeholder="홍길동"></div>
         <div class="fg"><label>성별 <span class="req">*</span></label>
-          <div style="display:flex;gap:16px;padding:4px 0">
-            <label style="display:flex;align-items:center;gap:6px;font-weight:400;color:var(--text2)"><input type="radio" name="gender" value="남"> 남</label>
-            <label style="display:flex;align-items:center;gap:6px;font-weight:400;color:var(--text2)"><input type="radio" name="gender" value="여"> 여</label>
+          <div class="radio-group">
+            <label class="radio-item"><input type="radio" name="gender" value="남"> 남</label>
+            <label class="radio-item"><input type="radio" name="gender" value="여"> 여</label>
           </div>
         </div>
       </div>
       <div class="fg-row">
         <div class="fg"><label>휴대폰 <span class="req">*</span></label><input type="tel" id="j_phone" placeholder="010-0000-0000"></div>
-        <div class="fg"><label>생년월일 <span class="req">*</span></label><input type="text" id="j_birth" placeholder="19800101"></div>
+        <div class="fg"><label>생년월일 <span class="req">*</span></label><input type="text" id="j_birth" placeholder="19800101" oninput="syncHolderBirth(this.value)"></div>
       </div>
       <div class="fg"><label>이메일 <span class="req">*</span></label>
         <div style="display:flex;align-items:center;gap:8px">
@@ -1241,7 +1241,7 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
         <div class="fg"><label>예금주 <span class="req">*</span></label><input type="text" placeholder="예금주명"></div>
       </div>
       <div class="fg-row">
-        <div class="fg"><label>예금주 생년월일</label><input type="text" placeholder="YYYYMMDD"></div>
+        <div class="fg"><label>예금주 생년월일</label><input type="text" id="j_holder_birth" placeholder="YYYYMMDD"></div>
         <div class="fg"><label>은행명 <span class="req">*</span></label>
           <select id="j_bank" onchange="toggleOtherBank(this.value)">
             <option value="">-- 선택 --</option>
