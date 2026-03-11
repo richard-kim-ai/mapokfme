@@ -2099,20 +2099,20 @@ function renderHome(){
   const tagMap={notice:'tag-notice',support:'tag-support',event:'tag-event',news:'tag-news'};
   document.getElementById('homeNotices').innerHTML=DATA.notices.slice(0,3).map(n=>`
     <div class="notice-card" onclick="showNoticeDetail(${n.id})">
-      <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}">${n.tagLabel||'공지'}</span>${n.isNew?'<span class="list-new">NEW</span>':''}
-      <div class="notice-title">${n.title}</div>
-      <div class="notice-meta"><span>📅 ${n.date||'-'}</span><span>👁 ${n.views||0}</span></div>
+      <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}">${sanitizeText(n.tagLabel||'공지')}</span>${n.isNew?'<span class="list-new">NEW</span>':''}
+      <div class="notice-title">${sanitizeText(n.title||'')}</div>
+      <div class="notice-meta"><span>📅 ${sanitizeText(n.date||'-')}</span><span>👁 ${Number(n.views||0)}</span></div>
     </div>`).join('');
   // events
   document.getElementById('homeEvents').innerHTML=DATA.events.slice(0,4).map(e=>`
     <div class="event-card">
-      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color||'#0B6E6E'},${(e.color||'#0B6E6E')}99)">${e.emoji||'📅'}
+      <div class="event-thumb" style="background:linear-gradient(135deg,${sanitizeText(e.color||'#0B6E6E')},${sanitizeText((e.color||'#0B6E6E'))}99)">${sanitizeText(e.emoji||'📅')}
         <div class="event-date-badge">${getEventBadge(e.date)}</div>
       </div>
       <div class="event-body">
-        <div class="event-title">${e.title}</div>
-        <div class="event-info"><span>🕐 ${e.time||'시간 추후 공지'}</span><span>📍 ${e.location||'장소 추후 공지'}</span><span>👥 최대 ${e.seats||50}명</span></div>
-        <button class="btn-apply" onclick="openEventApply(${e.id},'${e.title}')">참가 신청하기</button>
+        <div class="event-title">${sanitizeText(e.title||'')}</div>
+        <div class="event-info"><span>🕐 ${sanitizeText(e.time||'시간 추후 공지')}</span><span>📍 ${sanitizeText(e.location||'장소 추후 공지')}</span><span>👥 최대 ${Number(e.seats||50)}명</span></div>
+        <button class="btn-apply" onclick="openEventApply(${Number(e.id)||0},'${escapeForInlineJs(e.title||'')}')">참가 신청하기</button>
       </div>
     </div>`).join('');
   // members
@@ -2132,10 +2132,10 @@ function renderNoticeList(){
       <div class="list-num">${DATA.notices.length-i}</div>
       <div class="list-content">
         <div class="list-title">
-          <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}" style="font-size:10px;padding:2px 8px">${n.tagLabel||'공지'}</span>
-          ${n.title}${n.isNew?'<span class="list-new">NEW</span>':''}
+          <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}" style="font-size:10px;padding:2px 8px">${sanitizeText(n.tagLabel||'공지')}</span>
+          ${sanitizeText(n.title||'')}${n.isNew?'<span class="list-new">NEW</span>':''}
         </div>
-        <div class="list-meta"><span>📅 ${n.date||'-'}</span><span>👁 ${n.views||0}회</span></div>
+        <div class="list-meta"><span>📅 ${sanitizeText(n.date||'-')}</span><span>👁 ${Number(n.views||0)}회</span></div>
       </div>
     </div>`).join('');
 }
@@ -2160,13 +2160,13 @@ function renderSupport(){
 function renderEvents(){
   document.getElementById('eventsGrid').innerHTML=DATA.events.map(e=>`
     <div class="event-card">
-      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color||'#0B6E6E'},${(e.color||'#0B6E6E')}99)">${e.emoji||'📅'}
+      <div class="event-thumb" style="background:linear-gradient(135deg,${sanitizeText(e.color||'#0B6E6E')},${sanitizeText((e.color||'#0B6E6E'))}99)">${sanitizeText(e.emoji||'📅')}
         <div class="event-date-badge">${getEventBadge(e.date)}</div>
       </div>
       <div class="event-body">
-        <div class="event-title">${e.title}</div>
-        <div class="event-info"><span>🕐 ${e.time||'시간 추후 공지'}</span><span>📍 ${e.location||'장소 추후 공지'}</span><span>👥 최대 ${e.seats||50}명</span></div>
-        <button class="btn-apply" onclick="openEventApply(${e.id},'${e.title}')">참가 신청하기</button>
+        <div class="event-title">${sanitizeText(e.title||'')}</div>
+        <div class="event-info"><span>🕐 ${sanitizeText(e.time||'시간 추후 공지')}</span><span>📍 ${sanitizeText(e.location||'장소 추후 공지')}</span><span>👥 최대 ${Number(e.seats||50)}명</span></div>
+        <button class="btn-apply" onclick="openEventApply(${Number(e.id)||0},'${escapeForInlineJs(e.title||'')}')">참가 신청하기</button>
       </div>
     </div>`).join('');
 }
@@ -2176,15 +2176,15 @@ function renderActivity(){
   const galleryGrid = document.getElementById('galleryGrid');
   if(galleryGrid){
     galleryGrid.innerHTML = gallery.map(g=>`
-      <div class="gallery-item">${g.emoji||'📸'}<div class="gallery-overlay"><span>${g.title||'활동 사진'}</span></div></div>
+      <div class="gallery-item">${sanitizeText(g.emoji||'📸')}<div class="gallery-overlay"><span>${sanitizeText(g.title||'활동 사진')}</span></div></div>
     `).join('') || '<div class="comment-empty" style="grid-column:1/-1;background:#fff;border:1px dashed var(--border);border-radius:10px">등록된 활동 사진이 없습니다.</div>';
   }
   document.getElementById('pressList').innerHTML=DATA.press.map(p=>`
     <div class="list-item">
-      <div class="list-num" style="font-size:10px;width:42px;text-align:center">${p.media}</div>
+      <div class="list-num" style="font-size:10px;width:42px;text-align:center">${sanitizeText(p.media||'-')}</div>
       <div class="list-content">
-        <div class="list-title">${p.title}</div>
-        <div class="list-meta"><span>📅 ${p.date}</span></div>
+        <div class="list-title">${sanitizeText(p.title||'')}</div>
+        <div class="list-meta"><span>📅 ${sanitizeText(p.date||'-')}</span></div>
       </div>
     </div>`).join('');
 }
