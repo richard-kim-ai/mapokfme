@@ -2079,24 +2079,32 @@ function showNoticeDetail(id){
 // ═══════════════════════════════════════
 //  RENDER FUNCTIONS
 // ═══════════════════════════════════════
+function getEventBadge(dateText){
+  const parts = normalizeDateText(dateText).split('.').filter(Boolean);
+  if(parts.length >= 3){
+    return `${parts[1]}/${parts[2]}<br>${parts[0]}`;
+  }
+  return '일정<br>미정';
+}
+
 function renderHome(){
   // notices
   const tagMap={notice:'tag-notice',support:'tag-support',event:'tag-event',news:'tag-news'};
   document.getElementById('homeNotices').innerHTML=DATA.notices.slice(0,3).map(n=>`
     <div class="notice-card" onclick="showNoticeDetail(${n.id})">
-      <span class="notice-tag ${tagMap[n.tag]}">${n.tagLabel}</span>${n.isNew?'<span class="list-new">NEW</span>':''}
+      <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}">${n.tagLabel||'공지'}</span>${n.isNew?'<span class="list-new">NEW</span>':''}
       <div class="notice-title">${n.title}</div>
-      <div class="notice-meta"><span>📅 ${n.date}</span><span>👁 ${n.views}</span></div>
+      <div class="notice-meta"><span>📅 ${n.date||'-'}</span><span>👁 ${n.views||0}</span></div>
     </div>`).join('');
   // events
   document.getElementById('homeEvents').innerHTML=DATA.events.slice(0,4).map(e=>`
     <div class="event-card">
-      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color},${e.color}99)">${e.emoji}
-        <div class="event-date-badge">${e.date.split('.').slice(1).join('/')}<br>${e.date.split('.')[0]}</div>
+      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color||'#0B6E6E'},${(e.color||'#0B6E6E')}99)">${e.emoji||'📅'}
+        <div class="event-date-badge">${getEventBadge(e.date)}</div>
       </div>
       <div class="event-body">
         <div class="event-title">${e.title}</div>
-        <div class="event-info"><span>🕐 ${e.time}</span><span>📍 ${e.location}</span><span>👥 최대 ${e.seats}명</span></div>
+        <div class="event-info"><span>🕐 ${e.time||'시간 추후 공지'}</span><span>📍 ${e.location||'장소 추후 공지'}</span><span>👥 최대 ${e.seats||50}명</span></div>
         <button class="btn-apply" onclick="openEventApply(${e.id},'${e.title}')">참가 신청하기</button>
       </div>
     </div>`).join('');
@@ -2117,10 +2125,10 @@ function renderNoticeList(){
       <div class="list-num">${DATA.notices.length-i}</div>
       <div class="list-content">
         <div class="list-title">
-          <span class="notice-tag ${tagMap[n.tag]}" style="font-size:10px;padding:2px 8px">${n.tagLabel}</span>
+          <span class="notice-tag ${tagMap[n.tag]||'tag-notice'}" style="font-size:10px;padding:2px 8px">${n.tagLabel||'공지'}</span>
           ${n.title}${n.isNew?'<span class="list-new">NEW</span>':''}
         </div>
-        <div class="list-meta"><span>📅 ${n.date}</span><span>👁 ${n.views}회</span></div>
+        <div class="list-meta"><span>📅 ${n.date||'-'}</span><span>👁 ${n.views||0}회</span></div>
       </div>
     </div>`).join('');
 }
@@ -2145,18 +2153,25 @@ function renderSupport(){
 function renderEvents(){
   document.getElementById('eventsGrid').innerHTML=DATA.events.map(e=>`
     <div class="event-card">
-      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color},${e.color}99)">${e.emoji}
-        <div class="event-date-badge">${e.date.split('.').slice(1).join('/')}<br>${e.date.split('.')[0]}</div>
+      <div class="event-thumb" style="background:linear-gradient(135deg,${e.color||'#0B6E6E'},${(e.color||'#0B6E6E')}99)">${e.emoji||'📅'}
+        <div class="event-date-badge">${getEventBadge(e.date)}</div>
       </div>
       <div class="event-body">
         <div class="event-title">${e.title}</div>
-        <div class="event-info"><span>🕐 ${e.time}</span><span>📍 ${e.location}</span><span>👥 최대 ${e.seats}명</span></div>
+        <div class="event-info"><span>🕐 ${e.time||'시간 추후 공지'}</span><span>📍 ${e.location||'장소 추후 공지'}</span><span>👥 최대 ${e.seats||50}명</span></div>
         <button class="btn-apply" onclick="openEventApply(${e.id},'${e.title}')">참가 신청하기</button>
       </div>
     </div>`).join('');
 }
 
 function renderActivity(){
+  const gallery = Array.isArray(DATA.gallery) ? DATA.gallery : [];
+  const galleryGrid = document.getElementById('galleryGrid');
+  if(galleryGrid){
+    galleryGrid.innerHTML = gallery.map(g=>`
+      <div class="gallery-item">${g.emoji||'📸'}<div class="gallery-overlay"><span>${g.title||'활동 사진'}</span></div></div>
+    `).join('') || '<div class="comment-empty" style="grid-column:1/-1;background:#fff;border:1px dashed var(--border);border-radius:10px">등록된 활동 사진이 없습니다.</div>';
+  }
   document.getElementById('pressList').innerHTML=DATA.press.map(p=>`
     <div class="list-item">
       <div class="list-num" style="font-size:10px;width:42px;text-align:center">${p.media}</div>
@@ -2709,10 +2724,13 @@ function updateAdminTrigger(){
   const btn=document.getElementById('adminTrigger');
   if(btn) btn.classList.toggle('show', isAdmin);
 
-  // 개별 광고 설정 버튼 및 글쓰기 버튼 관리자에게만 노출
-  document.querySelectorAll('.ad-edit-btn, .admin-write-btn').forEach(el => {
+  // 광고 설정 버튼은 관리자만 노출
+  document.querySelectorAll('.ad-edit-btn').forEach(el => {
     el.style.display = isAdmin ? 'block' : 'none';
   });
+
+  // 콘텐츠 작성 버튼은 로그인 사용자 레벨에 따라 노출
+  updateContentWriteButtons();
 }
 // ═══════════════════════════════════════
 //  INIT
