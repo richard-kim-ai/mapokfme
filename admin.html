@@ -921,6 +921,191 @@ function toggleAllAds(isActive) {
 // ═══════════════════════════════════════
 //  DATA RENDER
 // ═══════════════════════════════════════
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function formatNum(value) {
+  return Number(value || 0).toLocaleString('ko-KR');
+}
+
+function getStatusTagClass(status) {
+  if(status === '확인') return 'level-2';
+  if(status === '보류') return 'level-3';
+  if(status === '답변') return 'status-new';
+  return 'level-1';
+}
+
+function parseDateToTimestamp(dateText) {
+  if(!dateText) return 0;
+  const raw = String(dateText).trim();
+  if(!raw) return 0;
+
+  const direct = Date.parse(raw);
+  if(!Number.isNaN(direct)) return direct;
+
+  const m = raw.match(/(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);
+  if(!m) return 0;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime();
+}
+
+function isToday(dateText) {
+  const ts = parseDateToTimestamp(dateText);
+  if(!ts) return false;
+  const d = new Date(ts);
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear()
+    && d.getMonth() === now.getMonth()
+    && d.getDate() === now.getDate();
+}
+
+function renderDashboard() {
+  const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
+  const inquiries = JSON.parse(localStorage.getItem('mp_inquiries') || '[]');
+  const sponsorships = JSON.parse(localStorage.getItem('mp_sp_inquiries') || '[]');
+
+  const statMembers = document.getElementById('stat-members');
+  if(statMembers) statMembers.textContent = formatNum(members.length + 2410);
+  const statInquiries = document.getElementById('stat-inquiries');
+  if(statInquiries) statInquiries.textContent = formatNum(inquiries.length);
+
+  const pendingMembers = members.filter(m => (m.cmsStatus || 'none') === 'pending').length;
+  const pendingInquiries = inquiries.filter(i => (i.status || '접수') !== '답변').length;
+  const pendingSponsorships = sponsorships.filter(s => (s.status || '접수') !== '답변').length;
+  const todayInquiries = inquiries.filter(i => isToday(i.date)).length + sponsorships.filter(s => isToday(s.date)).length;
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = formatNum(value);
+  };
+  setText('dash-pending-members', pendingMembers);
+  setText('dash-pending-inquiries', pendingInquiries);
+  setText('dash-pending-sponsorships', pendingSponsorships);
+  setText('dash-today-inquiries', todayInquiries);
+
+  const alerts = [];
+  if(pendingMembers > 0) {
+    alerts.push({
+      title: `회원 승인 대기 ${formatNum(pendingMembers)}건`,
+      meta: '회원사 관리 메뉴에서 승인/등급 처리가 필요합니다.'
+    });
+  }
+  if(pendingInquiries > 0) {
+    alerts.push({
+      title: `일반 문의 미답변 ${formatNum(pendingInquiries)}건`,
+      meta: '문의 상태를 답변 완료로 갱신해 주세요.'
+    });
+  }
+  if(pendingSponsorships > 0) {
+    alerts.push({
+      title: `후원·제휴 미답변 ${formatNum(pendingSponsorships)}건`,
+      meta: '후원·제휴 문의 목록의 진행 상태 확인이 필요합니다.'
+    });
+  }
+  if(todayInquiries > 0) {
+    alerts.push({
+      title: `오늘 신규 문의 ${formatNum(todayInquiries)}건`,
+      meta: '최근 문의 접수 목록에서 최신 건을 우선 확인하세요.'
+    });
+  }
+
+  const alertList = document.getElementById('dash-alert-list');
+  if(alertList) {
+    if(alerts.length === 0) {
+      alertList.innerHTML = '<li class="dash-empty">지금 확인이 필요한 항목이 없습니다.</li>';
+    } else {
+      alertList.innerHTML = alerts.map(item => `
+        <li class="dash-alert-item">
+          <div class="dash-name">${escapeHtml(item.title)}</div>
+          <div class="dash-meta">${escapeHtml(item.meta)}</div>
+        </li>
+      `).join('');
+    }
+  }
+
+  const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+  const recentMembers = members.slice(-5).reverse();
+  const recentMemberList = document.getElementById('dash-recent-members');
+  if(recentMemberList) {
+    if(recentMembers.length === 0) {
+      recentMemberList.innerHTML = '<li class="dash-empty">최근 등록된 회원이 없습니다.</li>';
+    } else {
+      recentMemberList.innerHTML = recentMembers.map(m => {
+        const level = Number(m.level) || 1;
+        return `
+          <li class="dash-list-item">
+            <div class="dash-row">
+              <div>
+                <div class="dash-name">${escapeHtml(m.biz || m.name || '-')}</div>
+                <div class="dash-meta">${escapeHtml(m.name || '-')} · ${escapeHtml(m.joinDate || '가입일 미기록')}</div>
+              </div>
+              <span class="status-tag level-${level}">${escapeHtml(levelNames[level] || '홈페이지 회원')}</span>
+            </div>
+          </li>
+        `;
+      }).join('');
+    }
+  }
+
+  const mergedInquiries = [];
+  inquiries.forEach((i, idx) => {
+    mergedInquiries.push({
+      seq: idx,
+      source: 'general',
+      sourceLabel: '일반',
+      title: i.subject || i.type || '문의',
+      name: i.name || '-',
+      date: i.date || '',
+      status: i.status || '접수'
+    });
+  });
+  sponsorships.forEach((s, idx) => {
+    mergedInquiries.push({
+      seq: inquiries.length + idx,
+      source: 'sponsor',
+      sourceLabel: '후원/제휴',
+      title: s.type || '문의',
+      name: s.biz || s.name || '-',
+      date: s.date || '',
+      status: s.status || '접수'
+    });
+  });
+  mergedInquiries.sort((a, b) => {
+    const ta = parseDateToTimestamp(a.date);
+    const tb = parseDateToTimestamp(b.date);
+    if(ta !== tb) return tb - ta;
+    return b.seq - a.seq;
+  });
+
+  const recentInquiryList = document.getElementById('dash-recent-inquiries');
+  if(recentInquiryList) {
+    const topInquiries = mergedInquiries.slice(0, 6);
+    if(topInquiries.length === 0) {
+      recentInquiryList.innerHTML = '<li class="dash-empty">최근 접수된 문의가 없습니다.</li>';
+    } else {
+      recentInquiryList.innerHTML = topInquiries.map(item => `
+        <li class="dash-list-item">
+          <div class="dash-row">
+            <div>
+              <div class="dash-name">${escapeHtml(item.title)}</div>
+              <div class="dash-meta">${escapeHtml(item.name)} · ${escapeHtml(item.date || '접수일 미기록')}</div>
+            </div>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;">
+              <span class="dash-source-tag ${item.source}">${escapeHtml(item.sourceLabel)}</span>
+              <span class="status-tag ${getStatusTagClass(item.status)}">${escapeHtml(item.status)}</span>
+            </div>
+          </div>
+        </li>
+      `).join('');
+    }
+  }
+}
+
 function renderMembers() {
   const members = JSON.parse(localStorage.getItem('mp_users') || '[]');
   const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
@@ -966,6 +1151,7 @@ function renderMembers() {
   }).join('') || '<tr><td colspan="5" style="text-align:center;padding:40px;">회원이 없습니다.</td></tr>';
   
   document.getElementById('stat-members').textContent = members.length + 2410;
+  renderDashboard();
 }
 
 function deleteMember(idx) {
@@ -1080,6 +1266,7 @@ function renderSponsorships() {
   `}).join('') || '<tr><td colspan="7" style="text-align:center;padding:40px;">후원 및 제휴 문의 내역이 없습니다.</td></tr>';
   const chk = document.getElementById('checkAllSp');
   if(chk) chk.checked = false;
+  renderDashboard();
 }
 
 function updateSponsorshipStatus(idx, newStatus) {
@@ -1163,6 +1350,7 @@ function renderInquiries() {
   document.getElementById('stat-inquiries').textContent = inquiries.length;
   const chk = document.getElementById('checkAllInq');
   if(chk) chk.checked = false;
+  renderDashboard();
 }
 
 function updateInquiryStatus(idx, newStatus) {
@@ -1211,6 +1399,7 @@ function init() {
   renderMembers();
   renderInquiries();
   renderSponsorships();
+  renderDashboard();
 }
 </script>
 </body>
