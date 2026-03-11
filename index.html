@@ -1643,6 +1643,13 @@ function textToHtml(text){
   return sanitizeText(text).replace(/\n/g, '<br>');
 }
 
+function escapeForInlineJs(value){
+  return String(value || '')
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/\r?\n/g, ' ');
+}
+
 function normalizeDateText(dateText){
   const raw = String(dateText || '').replace(/\s+/g, '');
   const normalized = raw.replace(/[/-]/g, '.').replace(/\.+$/,'');
@@ -1701,12 +1708,12 @@ function submitWrite(){
       id: Date.now(),
       tag: 'notice',
       tagLabel: '공지',
-      title: sanitizeText(title),
+      title,
       date,
       views: 0,
       body: textToHtml(content),
       isNew: true,
-      author: sanitizeText(author)
+      author
     });
     renderHome();
     renderNoticeList();
@@ -1714,10 +1721,10 @@ function submitWrite(){
     DATA.events.unshift({
       id: Date.now(),
       emoji: '📅',
-      title: sanitizeText(title),
+      title,
       date,
       time: '시간 추후 공지',
-      location: `작성자: ${sanitizeText(author)}`,
+      location: `작성자: ${author}`,
       seats: 50,
       apply: true,
       color: '#0B6E6E',
@@ -1727,8 +1734,8 @@ function submitWrite(){
     renderEvents();
   } else if(_writeType === 'press') {
     DATA.press.unshift({
-      media: sanitizeText(author),
-      title: sanitizeText(title),
+      media: author,
+      title,
       date,
       body: textToHtml(content)
     });
@@ -1737,7 +1744,7 @@ function submitWrite(){
     DATA.gallery.unshift({
       id: Date.now(),
       emoji: '📸',
-      title: sanitizeText(title),
+      title,
       caption: textToHtml(content),
       date
     });
