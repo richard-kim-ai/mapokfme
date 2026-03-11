@@ -970,7 +970,13 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       </a>
     </div>
   </div>
-  <div class="list-wrap" id="noticeList"></div>
+  <div class="list-wrap">
+    <div class="section-head" style="margin-bottom:16px;">
+      <div class="section-title" style="font-size:20px;"><span>NOTICE</span>공지 목록</div>
+      <button class="btn-form content-write-btn" data-write-type="notice" style="width:auto; padding:8px 16px; font-size:12px; display:none;" onclick="openWriteModal('notice')">📝 공지 작성</button>
+    </div>
+    <div id="noticeList"></div>
+  </div>
 </div>
 
 <!-- NOTICE DETAIL -->
@@ -1032,6 +1038,10 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
   <div class="breadcrumb"><div class="breadcrumb-inner"><a onclick="showPage('home')">홈</a> › 행사·교육</div></div>
   <div class="section">
     <div class="section-inner">
+      <div class="section-head" style="margin-bottom:18px;">
+        <div class="section-title"><span>EVENT CONTENT</span>행사 콘텐츠 관리</div>
+        <button class="btn-form content-write-btn" data-write-type="events" style="width:auto; padding:8px 16px; font-size:12px; display:none;" onclick="openWriteModal('events')">📅 행사 등록</button>
+      </div>
       <div class="event-grid" id="eventsGrid"></div>
     </div>
   </div>
