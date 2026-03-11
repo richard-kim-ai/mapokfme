@@ -839,20 +839,26 @@ function registerNewMember() {
 }
 
 // ═══════════════════════════════════════
-//  SUPABASE UPLOAD
+//  SUPABASE UPLOAD (banners 버킷 필요)
 // ═══════════════════════════════════════
-// .env 파일의 값을 여기에 직접 입력하거나 Vercel 환경변수를 사용하세요.
-const SB_URL = ''; // VITE_SUPABASE_URL
-const SB_KEY = ''; // VITE_SUPABASE_ANON_KEY
+// 1. Supabase 접속 -> SQL Editor -> 아래 SQL 실행하여 버킷 생성 필수:
+/*
+  insert into storage.buckets (id, name, public) values ('banners', 'banners', true);
+  create policy "Public Access" on storage.objects for select using ( bucket_id = 'banners' );
+  create policy "Allow Uploads" on storage.objects for insert with check ( bucket_id = 'banners' );
+*/
+// 2. 아래에 실제 프로젝트 URL과 Anon Key를 입력하세요.
+const SB_URL = 'https://YOUR_PROJECT_ID.supabase.co'; 
+const SB_KEY = 'YOUR_ANON_KEY';
 
 let supabaseClient = null;
-if (SB_URL && SB_KEY) {
+if (SB_URL && !SB_URL.includes('YOUR_PROJECT_ID')) {
   supabaseClient = supabase.createClient(SB_URL, SB_KEY);
 }
 
 async function uploadAdImage() {
   if (!supabaseClient) {
-    alert('Supabase 설정(URL, Key)이 필요합니다. 관리자에게 문의하세요.');
+    alert('⚠️ Supabase 설정이 필요합니다.\nadmin.html 코드 상단의 SB_URL과 SB_KEY를 실제 값으로 수정해주세요.');
     return;
   }
 
