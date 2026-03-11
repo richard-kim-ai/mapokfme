@@ -467,6 +467,49 @@ tr:hover { background: #fcfdfd; }
       <div class="stat-card"><div class="stat-label">진행중 지원사업</div><div class="stat-value">8</div></div>
       <div class="stat-card"><div class="stat-label">오늘 방문자</div><div class="stat-value">1,245</div></div>
     </div>
+    <div class="dash-detail-top">
+      <article class="dash-panel">
+        <h3 class="dash-panel-title">운영 핵심 지표</h3>
+        <div class="dash-kpi-grid">
+          <div class="dash-kpi-item">
+            <div class="dash-kpi-label">회원 승인 대기</div>
+            <div class="dash-kpi-value" id="dash-pending-members">0</div>
+          </div>
+          <div class="dash-kpi-item">
+            <div class="dash-kpi-label">미답변 일반 문의</div>
+            <div class="dash-kpi-value" id="dash-pending-inquiries">0</div>
+          </div>
+          <div class="dash-kpi-item">
+            <div class="dash-kpi-label">미답변 후원/제휴</div>
+            <div class="dash-kpi-value" id="dash-pending-sponsorships">0</div>
+          </div>
+          <div class="dash-kpi-item">
+            <div class="dash-kpi-label">오늘 접수 문의</div>
+            <div class="dash-kpi-value" id="dash-today-inquiries">0</div>
+          </div>
+        </div>
+      </article>
+      <article class="dash-panel">
+        <h3 class="dash-panel-title">즉시 확인 항목</h3>
+        <ul class="dash-alert-list" id="dash-alert-list">
+          <li class="dash-empty">지금 확인이 필요한 항목이 없습니다.</li>
+        </ul>
+      </article>
+    </div>
+    <div class="dash-detail-bottom">
+      <article class="dash-panel">
+        <h3 class="dash-panel-title">최근 회원 등록</h3>
+        <ul class="dash-list" id="dash-recent-members">
+          <li class="dash-empty">최근 등록된 회원이 없습니다.</li>
+        </ul>
+      </article>
+      <article class="dash-panel">
+        <h3 class="dash-panel-title">최근 문의 접수</h3>
+        <ul class="dash-list" id="dash-recent-inquiries">
+          <li class="dash-empty">최근 접수된 문의가 없습니다.</li>
+        </ul>
+      </article>
+    </div>
   </section>
 
   <!-- ADS -->
@@ -698,8 +741,12 @@ function switchPage(page) {
   document.getElementById('page-' + page).classList.remove('hidden');
   
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+  const clickedNav = (typeof event !== 'undefined' && event && event.currentTarget)
+    ? event.currentTarget
+    : document.querySelector(`#sidebarNav .nav-item[onclick*="'${page}'"]`);
+  if(clickedNav) clickedNav.classList.add('active');
   
+  if(page === 'dash') renderDashboard();
   if(page === 'ads') renderAds();
   if(page === 'members') renderMembers();
   if(page === 'inquiries') renderInquiries();
