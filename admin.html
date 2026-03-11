@@ -383,6 +383,10 @@ tr:hover { background: #FBFCFF; }
   <section id="page-ads" class="hidden">
     <div class="page-head">
       <div class="page-title">홈페이지 광고/배너 관리</div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-save" style="background:#2E7D55; margin:0;" onclick="toggleAllAds(true)">✅ 전체 활성화</button>
+        <button class="btn-save" style="background:#C62828; margin:0;" onclick="toggleAllAds(false)">🚫 전체 비활성화</button>
+      </div>
     </div>
     
     <div class="ads-panel">
@@ -720,6 +724,21 @@ function saveAdZone(key) {
   
   localStorage.setItem(AD_CFG_KEY, JSON.stringify(cfg));
   showToast(`✅ "${AD_ZONES.find(z=>z.key===key)?.name}" 설정이 저장되었습니다.`);
+  renderAdminAdContent(_adTab);
+}
+
+function toggleAllAds(isActive) {
+  const statusText = isActive ? '활성화' : '비활성화';
+  if(!confirm(`홈페이지의 모든 광고를 일괄 ${statusText} 하시겠습니까?`)) return;
+  
+  const cfg = JSON.parse(localStorage.getItem(AD_CFG_KEY) || '{}');
+  AD_ZONES.forEach(z => {
+    if(!cfg[z.key]) cfg[z.key] = {};
+    cfg[z.key].active = isActive;
+  });
+  
+  localStorage.setItem(AD_CFG_KEY, JSON.stringify(cfg));
+  showToast(`✅ 모든 광고가 ${statusText} 되었습니다.`);
   renderAdminAdContent(_adTab);
 }
 
