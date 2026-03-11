@@ -1593,32 +1593,119 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
 
 <script>
 let _writeType = 'notice';
-const LEVEL_NAME_MAP = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+const SYSTEM_SETTINGS_KEY = 'mp_system_settings';
+const DEFAULT_SYSTEM_SETTINGS = {
+  levelNames: { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' },
+  adminEmailKeyword: 'admin',
+  permissionMatrix: {
+    write_notice: [3, 4],
+    write_events: [2, 3, 4],
+    write_gallery: [2, 3, 4],
+    write_press: [3, 4],
+    comment_write: [1, 2, 3, 4],
+    profile_biz_edit: [2, 3, 4],
+    ad_panel_open: [4],
+    ad_panel_quick_trigger: [3, 4],
+    ad_edit_buttons: [3, 4]
+  }
+};
 const WRITE_PERMISSION_RULES = {
-  notice: { minLevel: 3, label: '공지사항 글쓰기' },
-  events: { minLevel: 2, label: '행사·교육 등록' },
-  gallery: { minLevel: 2, label: '활동 사진 등록' },
-  press: { minLevel: 3, label: '보도자료 등록' }
+  notice: { featureKey: 'write_notice', label: '공지사항 글쓰기' },
+  events: { featureKey: 'write_events', label: '행사·교육 등록' },
+  gallery: { featureKey: 'write_gallery', label: '활동 사진 등록' },
+  press: { featureKey: 'write_press', label: '보도자료 등록' }
 };
 
-function getUserLevel(){
-  if(!currentUser) return 0;
-  const level = Number(currentUser.level);
+function cloneDefaultSystemSettings(){
+  return JSON.parse(JSON.stringify(DEFAULT_SYSTEM_SETTINGS));
+}
+
+function normalizePermissionLevels(levels, fallbackLevels){
+  const source = Array.isArray(levels) ? levels : fallbackLevels;
+  const normalized = [...new Set(source.map(v => parseInt(v, 10)).filter(v => v >= 1 && v <= 4))].sort((a,b)=>a-b);
+  return normalized.length ? normalized : [4];
+}
+
+function getSystemSettings(){
+  const defaults = cloneDefaultSystemSettings();
+  try{
+    const raw = JSON.parse(localStorage.getItem(SYSTEM_SETTINGS_KEY) || 'null');
+    if(!raw || typeof raw !== 'object') return defaults;
+
+    const settings = cloneDefaultSystemSettings();
+    settings.adminEmailKeyword = String(raw.adminEmailKeyword ?? defaults.adminEmailKeyword).trim() || defaults.adminEmailKeyword;
+    for(let level = 1; level <= 4; level++){
+      const fallback = defaults.levelNames[level];
+      const candidate = String(raw.levelNames?.[level] ?? '').trim();
+      settings.levelNames[level] = candidate || fallback;
+    }
+    Object.keys(defaults.permissionMatrix).forEach(featureKey => {
+      settings.permissionMatrix[featureKey] = normalizePermissionLevels(
+        raw.permissionMatrix?.[featureKey],
+        defaults.permissionMatrix[featureKey]
+      );
+    });
+    return settings;
+  }catch{
+    return defaults;
+  }
+}
+
+function getLevelNameMap(){
+  return getSystemSettings().levelNames;
+}
+
+function getAllowedLevelsForFeature(featureKey){
+  const settings = getSystemSettings();
+  const defaults = DEFAULT_SYSTEM_SETTINGS.permissionMatrix[featureKey] || [4];
+  return normalizePermissionLevels(settings.permissionMatrix?.[featureKey], defaults);
+}
+
+function getMinLevelForFeature(featureKey){
+  const allowed = getAllowedLevelsForFeature(featureKey);
+  return allowed.length ? Math.min(...allowed) : 4;
+}
+
+function getUserLevel(user){
+  const target = user || currentUser;
+  if(!target) return 0;
+  const level = Number(target.level);
   return Number.isFinite(level) && level > 0 ? level : 1;
 }
 
+function hasFeaturePermission(featureKey, user){
+  const target = user || currentUser;
+  if(!target) return false;
+  return getAllowedLevelsForFeature(featureKey).includes(getUserLevel(target));
+}
+
+function getAdminEmailKeyword(){
+  return String(getSystemSettings().adminEmailKeyword || '').trim().toLowerCase();
+}
+
+function isEmailKeywordAdmin(user){
+  if(!user) return false;
+  const keyword = getAdminEmailKeyword();
+  if(!keyword) return false;
+  return String(user.email || '').toLowerCase().includes(keyword);
+}
+
 function canWriteType(type){
-  const rule = WRITE_PERMISSION_RULES[type] || { minLevel: 4 };
-  return getUserLevel() >= rule.minLevel;
+  const rule = WRITE_PERMISSION_RULES[type];
+  if(!rule) return false;
+  return hasFeaturePermission(rule.featureKey);
 }
 
 function getWriteDeniedMessage(type){
-  const rule = WRITE_PERMISSION_RULES[type] || { minLevel: 4, label: '콘텐츠 작성' };
-  const needed = LEVEL_NAME_MAP[rule.minLevel] || `${rule.minLevel}레벨`;
+  const rule = WRITE_PERMISSION_RULES[type] || { featureKey: '', label: '콘텐츠 작성' };
+  const levelNames = getLevelNameMap();
+  const minLevel = rule.featureKey ? getMinLevelForFeature(rule.featureKey) : 4;
+  const needed = levelNames[minLevel] || `${minLevel}레벨`;
   if(!currentUser){
     return `로그인 후 ${rule.label}이 가능합니다.`;
   }
-  const current = LEVEL_NAME_MAP[getUserLevel()] || `${getUserLevel()}레벨`;
+  const currentLevel = getUserLevel();
+  const current = levelNames[currentLevel] || `${currentLevel}레벨`;
   return `${rule.label} 권한이 없습니다. (${current} → ${needed} 이상 필요)`;
 }
 
@@ -1918,7 +2005,7 @@ function renderMyPage(){
   if(!currentUser){showPage('home');openModal('authModal');return;}
   
   // Profile
-  const levelNames = { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' };
+  const levelNames = getLevelNameMap();
   const cmsNames = { 'none': '미신청', 'pending': '승인 대기 중', 'approved': '가입 완료' };
   
   document.getElementById('mp-avatar').textContent = currentUser.name ? currentUser.name[0] : 'U';
@@ -1929,14 +2016,14 @@ function renderMyPage(){
   document.getElementById('mp-joinDate').textContent = currentUser.joinDate || '-';
   
   const lvlBadge = document.getElementById('mp-level-badge');
-  lvlBadge.textContent = levelNames[currentUser.level || 1];
+  lvlBadge.textContent = levelNames[currentUser.level || 1] || `레벨 ${currentUser.level || 1}`;
   lvlBadge.className = 'app-status ' + (currentUser.level >= 2 ? 'status-done' : 'status-ing');
   
   document.getElementById('mp-cms-status').textContent = cmsNames[currentUser.cmsStatus || 'none'];
 
   // Biz Info (Level 2+)
   const bizSection = document.getElementById('mp-biz-section');
-  if(currentUser.level >= 2){
+  if(hasFeaturePermission('profile_biz_edit')){
     bizSection.style.display = 'block';
     const bd = currentUser.cmsData || {};
     document.getElementById('mb-bizType').value = bd.bizType || '-';
@@ -2012,7 +2099,7 @@ function renderMyPage(){
 }
 
 function updateBizInfo(){
-  if(!currentUser || currentUser.level < 2) return;
+  if(!currentUser || !hasFeaturePermission('profile_biz_edit')) return;
   const users = getUsers();
   const idx = users.findIndex(u => u.email === currentUser.email);
   if(idx > -1){
@@ -2214,6 +2301,12 @@ function submitComment(){
   const text=input.value.trim();
   if(!text){showToast('댓글 내용을 입력해주세요.');return;}
   if(!currentUser){openModal('authModal');showToast('로그인 후 댓글을 작성할 수 있습니다.');return;}
+  if(!hasFeaturePermission('comment_write')){
+    const levelNames = getLevelNameMap();
+    const currentLevel = getUserLevel();
+    showToast(`댓글 작성 권한이 없습니다. (${levelNames[currentLevel] || `레벨 ${currentLevel}`})`);
+    return;
+  }
   const comments=getComments(id);
   comments.push({author:currentUser.name,date:new Date().toLocaleDateString('ko-KR'),text});
   saveComments(id,comments);
@@ -2603,8 +2696,8 @@ function hideFloatingBanner(){document.getElementById('floatingBanner').classLis
 // ── 관리자 패널 ──
 let _adTab=0;
 function openAdAdmin(zoneKey){
-  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4));
-  if(!isAdmin){
+  const canOpen = hasFeaturePermission('ad_panel_open') || isEmailKeywordAdmin(currentUser);
+  if(!canOpen){
     showToast('⛔ 관리자 권한이 필요합니다.');
     return;
   }
@@ -2731,13 +2824,15 @@ function saveAdZone(key){
 
 // ── 관리자 트리거 (admin 계정) ──
 function updateAdminTrigger(){
-  const isAdmin = !!(currentUser && ((currentUser.email||'').toLowerCase().includes('admin') || currentUser.level === 4 || currentUser.level === 3));
+  const canByKeyword = isEmailKeywordAdmin(currentUser);
+  const canShowTrigger = hasFeaturePermission('ad_panel_quick_trigger') || hasFeaturePermission('ad_panel_open') || canByKeyword;
+  const canShowAdEdit = hasFeaturePermission('ad_edit_buttons') || hasFeaturePermission('ad_panel_open') || canByKeyword;
   const btn=document.getElementById('adminTrigger');
-  if(btn) btn.classList.toggle('show', isAdmin);
+  if(btn) btn.classList.toggle('show', canShowTrigger);
 
   // 광고 설정 버튼은 관리자만 노출
   document.querySelectorAll('.ad-edit-btn').forEach(el => {
-    el.style.display = isAdmin ? 'block' : 'none';
+    el.style.display = canShowAdEdit ? 'block' : 'none';
   });
 
   // 콘텐츠 작성 버튼은 로그인 사용자 레벨에 따라 노출
