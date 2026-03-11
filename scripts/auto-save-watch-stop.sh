@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -23,4 +23,3 @@ fi
 
 rm -f "$PID_FILE"
 echo "Stopped auto-save watcher (PID: $PID)"
-

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 export LANG="en_US.UTF-8"
@@ -15,7 +15,7 @@ echo "$$" > "$PID_FILE"
 trap 'rm -f "$PID_FILE"' EXIT
 
 log() {
-  print -r -- "[$(date '+%Y-%m-%d %H:%M:%S %z')] $*"
+  echo "[$(date '+%Y-%m-%d %H:%M:%S %z')] $*"
 }
 
 snapshot() {
@@ -50,4 +50,3 @@ while true; do
     LAST_SNAPSHOT="$CURRENT_SNAPSHOT"
   fi
 done
-

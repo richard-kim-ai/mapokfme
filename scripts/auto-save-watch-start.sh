@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -15,7 +15,7 @@ if [ -f "$PID_FILE" ]; then
   rm -f "$PID_FILE"
 fi
 
-nohup /bin/zsh "$PROJECT_DIR/scripts/auto-save-watch-loop.sh" >/dev/null 2>&1 &
+nohup "$PROJECT_DIR/scripts/auto-save-watch-loop.sh" >/dev/null 2>&1 &
 sleep 0.3
 
 NEW_PID="$(cat "$PID_FILE" 2>/dev/null || true)"
@@ -25,4 +25,3 @@ else
   echo "Failed to start auto-save watcher."
   exit 1
 fi
-
