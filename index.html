@@ -1861,6 +1861,7 @@ function updateAuthUI(){
     area.innerHTML = `<button class="btn-login" onclick="openModal('authModal')">로그인</button><button class="btn-join" onclick="openModal('authModal','join')">회원가입</button>`;
     mobileArea.innerHTML = `<div style="display:flex;gap:8px;margin-bottom:20px"><button class="btn-outline" style="flex:1" onclick="openModal('authModal');toggleMobileNav()">로그인</button><button class="btn-form" style="flex:1;padding:11px" onclick="openModal('authModal','join');toggleMobileNav()">회원가입</button></div>`;
   }
+  updateContentWriteButtons();
 }
 
 function doLogin(){
@@ -2071,13 +2072,16 @@ function updateProfile(){
 function showNoticeDetail(id){
   const item=DATA.notices.find(n=>n.id===id);
   if(!item)return;
+  item.views = Number(item.views ?? item.view ?? 0) + 1;
+  if('view' in item) delete item.view;
+  persistSiteContent();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-notice-detail').classList.add('active');
   const tagMap={notice:'tag-notice',support:'tag-support',event:'tag-event',news:'tag-news'};
-  document.getElementById('detailTags').innerHTML=`<span class="notice-tag ${tagMap[item.tag]||'tag-notice'}">${item.tagLabel}</span>`;
+  document.getElementById('detailTags').innerHTML=`<span class="notice-tag ${tagMap[item.tag]||'tag-notice'}">${sanitizeText(item.tagLabel || '공지')}</span>`;
   document.getElementById('detailTitle').textContent=item.title;
-  document.getElementById('detailMeta').innerHTML=`<span>📅 ${item.date}</span><span>👁 ${item.views}회</span>`;
-  document.getElementById('detailBody').innerHTML=item.body;
+  document.getElementById('detailMeta').innerHTML=`<span>📅 ${sanitizeText(item.date || '-')}</span><span>👁 ${Number(item.views ?? item.view ?? 0)}회</span>`;
+  document.getElementById('detailBody').innerHTML=item.body || textToHtml(item.content || '');
   renderComments(id);
   window.scrollTo(0,0);
   window._currentNoticeId=id;
