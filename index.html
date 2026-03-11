@@ -1816,6 +1816,28 @@ function saveEventApps(a){try{localStorage.setItem('mp_event_apps',JSON.stringif
 function getSupportApps(){try{return JSON.parse(localStorage.getItem('mp_support_apps')||'[]')}catch{return[]}}
 function saveSupportApps(a){try{localStorage.setItem('mp_support_apps',JSON.stringify(a))}catch{}}
 
+const SITE_CONTENT_KEY = 'mp_site_content';
+function hydrateSiteContent(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(SITE_CONTENT_KEY) || 'null');
+    if(!saved || typeof saved !== 'object') return;
+    if(Array.isArray(saved.notices)) DATA.notices = saved.notices;
+    if(Array.isArray(saved.events)) DATA.events = saved.events;
+    if(Array.isArray(saved.gallery)) DATA.gallery = saved.gallery;
+    if(Array.isArray(saved.press)) DATA.press = saved.press;
+  }catch{}
+}
+function persistSiteContent(){
+  try{
+    localStorage.setItem(SITE_CONTENT_KEY, JSON.stringify({
+      notices: DATA.notices,
+      events: DATA.events,
+      gallery: DATA.gallery,
+      press: DATA.press
+    }));
+  }catch{}
+}
+
 // ═══════════════════════════════════════
 //  AUTH
 // ═══════════════════════════════════════
