@@ -853,6 +853,78 @@ const AD_ZONES = [
   {key:'popup',         name:'팝업 배너',              size:'모달'},
   {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
 ];
+const SYSTEM_SETTINGS_KEY = 'mp_system_settings';
+const SETTINGS_FEATURES = [
+  { key: 'write_notice', label: '공지사항 글쓰기', desc: '홈/공지 영역 글쓰기 버튼 및 등록' },
+  { key: 'write_events', label: '행사·교육 등록', desc: '행사 카드 신규 등록' },
+  { key: 'write_gallery', label: '활동 사진 등록', desc: '활동정리 갤러리 항목 등록' },
+  { key: 'write_press', label: '보도자료 등록', desc: '활동정리 보도자료 항목 등록' },
+  { key: 'comment_write', label: '댓글 작성', desc: '공지 상세 댓글 등록' },
+  { key: 'profile_biz_edit', label: '마이페이지 사업자 정보 수정', desc: '레벨별 사업자 상세정보 수정 가능' },
+  { key: 'ad_panel_open', label: '홈페이지 광고 관리자 열기', desc: '광고 관리자 패널 접근' },
+  { key: 'ad_panel_quick_trigger', label: '광고 관리자 버튼 노출', desc: '우측 하단 톱니 버튼 노출' },
+  { key: 'ad_edit_buttons', label: '광고 영역 편집 버튼 노출', desc: '페이지 내 광고 설정 버튼 노출' },
+];
+const DEFAULT_SYSTEM_SETTINGS = {
+  levelNames: { 1: '홈페이지 회원', 2: '정회원', 3: '운영자', 4: '시스템관리자' },
+  adminEmailKeyword: 'admin',
+  permissionMatrix: {
+    write_notice: [3, 4],
+    write_events: [2, 3, 4],
+    write_gallery: [2, 3, 4],
+    write_press: [3, 4],
+    comment_write: [1, 2, 3, 4],
+    profile_biz_edit: [2, 3, 4],
+    ad_panel_open: [4],
+    ad_panel_quick_trigger: [3, 4],
+    ad_edit_buttons: [3, 4],
+  },
+};
+
+function cloneDefaultSystemSettings() {
+  return JSON.parse(JSON.stringify(DEFAULT_SYSTEM_SETTINGS));
+}
+
+function normalizePermissionLevels(levels, fallbackLevels) {
+  const source = Array.isArray(levels) ? levels : fallbackLevels;
+  const normalized = [...new Set(source.map(v => parseInt(v, 10)).filter(v => v >= 1 && v <= 4))].sort((a, b) => a - b);
+  return normalized.length ? normalized : [4];
+}
+
+function getSystemSettings() {
+  const defaults = cloneDefaultSystemSettings();
+  try {
+    const raw = JSON.parse(localStorage.getItem(SYSTEM_SETTINGS_KEY) || 'null');
+    if(!raw || typeof raw !== 'object') return defaults;
+
+    const settings = cloneDefaultSystemSettings();
+    settings.adminEmailKeyword = String(raw.adminEmailKeyword ?? defaults.adminEmailKeyword).trim() || defaults.adminEmailKeyword;
+
+    for(let level = 1; level <= 4; level++) {
+      const fallback = defaults.levelNames[level];
+      const candidate = String(raw.levelNames?.[level] ?? '').trim();
+      settings.levelNames[level] = candidate || fallback;
+    }
+
+    SETTINGS_FEATURES.forEach(feature => {
+      settings.permissionMatrix[feature.key] = normalizePermissionLevels(
+        raw.permissionMatrix?.[feature.key],
+        defaults.permissionMatrix[feature.key]
+      );
+    });
+    return settings;
+  } catch (err) {
+    return defaults;
+  }
+}
+
+function saveSystemSettings(settings) {
+  localStorage.setItem(SYSTEM_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+function getLevelNames() {
+  return getSystemSettings().levelNames;
+}
 
 // ═══════════════════════════════════════
 //  AUTH & NAVIGATION
@@ -895,6 +967,7 @@ function switchPage(page) {
   if(page === 'members') renderMembers();
   if(page === 'inquiries') renderInquiries();
   if(page === 'sponsorships') renderSponsorships();
+  if(page === 'settings') renderSystemSettings();
   
   // Mobile: menu close after click
   if(window.innerWidth <= 900) toggleSidebar('forceClose');
