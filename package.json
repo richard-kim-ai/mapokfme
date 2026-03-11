@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "autosave:start": "zsh scripts/auto-save-watch-start.sh",
+    "autosave:stop": "zsh scripts/auto-save-watch-stop.sh",
+    "autosave:status": "zsh scripts/auto-save-watch-status.sh"
   },
   "keywords": [],
   "author": "",
