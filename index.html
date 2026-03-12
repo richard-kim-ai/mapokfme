@@ -1187,6 +1187,20 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
       <div class="fg"><label>내용 <span class="req">*</span></label><textarea id="inqContent" rows="5" placeholder="문의 내용을 자세히 입력해주세요"></textarea></div>
       <button class="btn-form" onclick="submitInquiry()">문의 접수하기</button>
     </div>
+
+    <!-- 문의페이지 하단 광고 (970×90) -->
+    <div class="ad-zone" id="adEl-inquiry-bottom" style="margin-top:20px; border-radius:14px; height:90px; overflow:hidden">
+      <span class="ad-label">광고</span>
+      <button class="ad-edit-btn" onclick="openAdAdmin('inquiry-bottom')">✏️ 광고 설정</button>
+      <a class="ad-inner" id="adLink-inquiry-bottom" href="#" target="_blank" rel="noopener">
+        <div class="ad-placeholder">
+          <div class="ap-icon">🖼️</div>
+          <div class="ap-text">상담문의 하단 배너</div>
+          <div class="ap-size">970 × 90 px</div>
+        </div>
+      </a>
+    </div>
+
     <div class="form-wrap" style="background:var(--teal-xlight);border:1px solid var(--border)">
       <div class="form-title" style="border-color:rgba(11,110,110,0.2)">📍 연락처 정보</div>
       <p style="font-size:14px;color:var(--text2);line-height:2.2">
