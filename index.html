@@ -636,6 +636,18 @@ footer{background:var(--teal-dark);color:rgba(255,255,255,0.7);padding:48px 20px
         <span class="wing-icon">✉️</span>
         <span class="wing-label">문의하기</span>
       </a>
+
+      <!-- 윙배너 하단 광고 (110×150) -->
+      <div class="ad-zone" id="adEl-wing-left-bottom" style="margin-top:10px; border-radius:8px; height:150px; border:1px solid var(--border)">
+        <span class="ad-label">광고</span>
+        <button class="ad-edit-btn" onclick="openAdAdmin('wing-left-bottom')" style="top:2px; right:2px; padding:2px 6px; font-size:9px">✏️</button>
+        <a class="ad-inner" id="adLink-wing-left-bottom" href="#" target="_blank" rel="noopener">
+          <div class="ad-placeholder" style="background:#f9f9f9">
+            <div class="ap-icon" style="font-size:20px">🖼️</div>
+            <div class="ap-text" style="font-size:10px">빠른메뉴 배너</div>
+          </div>
+        </a>
+      </div>
     </div>
   </div>
 </div>
@@ -2666,6 +2678,7 @@ const AD_ZONES = [
   {key:'prefooter',     name:'푸터 전 빌보드',      size:'970×90',  wrap:'adZone-prefooter'},
   {key:'inquiry-page-bottom', name:'문의페이지 하단', size:'970×90', wrap:null},
   {key:'wing-right-bottom', name:'상담문의 하단',    size:'110×150', wrap:null},
+  {key:'wing-left-bottom', name:'빠른메뉴 하단',    size:'110×150', wrap:null},
   {key:'popup',         name:'팝업 배너',              size:'모달'},
   {key:'floating',      name:'플로팅 하단 배너',       size:'하단바'},
 ];
